@@ -217,7 +217,26 @@ def _ps7(ns):
     yield "5 low_rank_error follows the tail of the singular values", _code(ns, "low_rank_error", err_ok)
 
 
-CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4, 5: _ps5, 6: _ps6, 7: _ps7}
+# ---------------------------------------------------------------- PS8 broadcasting, floats, low-rank updates
+def _ps8(ns):
+    K = ns["K"]
+    yield "1 hand column-centred K agrees with centre_columns(K)", _agree(ns, "K_centred", "centre_columns", K)
+    yield "2 hand parameter count of a rank-2 update of a 10 x 10 matrix agrees with update_params(10, 10, 2)", _agree(
+        ns, "params_10_2", "update_params", 10, 10, 2)
+    def cc_ok(f):
+        B = RNG.standard_normal((5, 3)) + 10
+        out = np.asarray(f(B))
+        return out.shape == (5, 3) and _close(out.mean(axis=0), 0) and _close(out, B - B.mean(axis=0))
+    yield "3 centre_columns works on a rectangular matrix", _code(ns, "centre_columns", cc_ok)
+    yield "4 update_params counts a d_out x r and an r x d_in factor", _code(
+        ns, "update_params", lambda f: f(64, 32, 4) == 4 * (64 + 32) and f(5, 5, 1) == 10)
+    def var_ok(f):
+        x = np.arange(20001, 20011, dtype=np.float32)
+        return abs(float(f(x)) - float(np.var(np.arange(20001, 20011, dtype=np.float64), ddof=1))) < 1e-3
+    yield "5 stable_variance survives float32 data with a large mean", _code(ns, "stable_variance", var_ok)
+
+
+CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4, 5: _ps5, 6: _ps6, 7: _ps7, 8: _ps8}
 
 
 def check(n: int, ns: dict) -> int:

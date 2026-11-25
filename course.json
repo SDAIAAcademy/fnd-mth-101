@@ -516,7 +516,7 @@
       "deck": "slides/week8.html",
       "sessions": [
         {
-          "title": "Low rank in practice and checking your work",
+          "title": "Low rank in practice",
           "outcomes": [
             "Predict held-out ratings with a truncated SVD and choose the rank",
             "Count the parameters of a low-rank weight update",
@@ -531,7 +531,7 @@
           "lab": {
             "id": "8.1",
             "title": "Low-rank ratings and adapter updates, checked by hand",
-            "summary": "Predict held-out course ratings with a truncated SVD, count the parameters of a low-rank weight update, and find a planted broadcasting bug and a rounding trap by checking against hand work.",
+            "summary": "Predict held-out course ratings with a truncated SVD, count a low-rank update's parameters, and find a planted bug and a rounding trap against hand work.",
             "minutes": 105,
             "href": "W8_1.ipynb",
             "steps": [
@@ -540,31 +540,31 @@
                 "minutes": 10
               },
               {
-                "text": "Ratings: fill, centre, truncate, and test error by rank",
+                "text": "Ratings: fill, centre, truncate, test",
                 "minutes": 25
               },
               {
-                "text": "A low-rank weight update: parameters against the full matrix",
+                "text": "A low-rank weight update",
                 "minutes": 15
               },
               {
-                "text": "Floating-point limits: 32 against 64 bits, and cancellation",
+                "text": "Floating-point limits",
                 "minutes": 15
               },
               {
-                "text": "Check a function against a hand case, with a tolerance",
+                "text": "Check a function against hand cases",
                 "minutes": 15
               },
               {
-                "text": "Find and fix the planted broadcasting bug",
+                "text": "Find and fix the planted bug",
                 "minutes": 15
               },
               {
-                "text": "Choose the capstone dataset and write its plan",
+                "text": "Write your capstone plan",
                 "minutes": 10
               }
             ],
-            "stretch": "Fit the ratings with alternating least squares on the observed entries only and compare with the SVD"
+            "stretch": "Fit the ratings by alternating least squares and compare"
           },
           "summary": "Low-rank structure in recommenders and in model adaptation, vectorisation and broadcasting, floating-point limits, and checking code against hand computation"
         }

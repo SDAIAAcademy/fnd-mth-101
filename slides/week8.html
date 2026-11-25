@@ -1,56 +1,216 @@
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">REPLACE: welcome; introduce yourself; one question to the room that calibrates the pace; the rhythm of the day</aside>
+  <aside class="notes"><p>Collect PS7 difficulties: usually the Frobenius error computed with the kept singular values. Last teaching week: low rank where machine learning uses it, the numerical habits that keep code honest, and the capstone plan.</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-auto="agenda"></section>
+
+<section class="slide" id="review-week7" data-lo="LO6">
+  <div class="kicker">Review · week 7</div>
+  <h2>Choosing a rank for an image</h2>
+  <div class="quiz" data-type="single" data-lo="LO6">
+    <p class="lead">A 600 × 400 image has singular values that fall slowly: rank 300 still leaves 5% relative error. What should you conclude?</p>
+    <div class="opts">
+      <div class="opt" data-why="Assumes any truncation saves space: a rank-300 copy stores 300 × 1,001 numbers, more than 240,000">A rank-300 copy is a good way to save space</div>
+      <div class="opt" data-why="Thinks the SVD failed: slow decay is a property of the image">The SVD was computed wrongly</div>
+      <div class="opt" data-ok>This image has little low-rank structure; truncation is a poor compressor for it</div>
+      <div class="opt" data-why="Thinks centring always makes a matrix low-rank: it removes one layer at most">Centring the image would make rank 10 enough</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Storage k(m + n + 1) exceeds m n from k = 240, and the error is still 5%: the singular values decide.</div>
+  </div>
+  <aside class="notes"><p>Answer C. 600 × 400 / 1,001 ≈ 240: past that k the copy is larger than the image.</p></aside>
+</section>
 
 <!-- Session 1 -->
 
 <section class="slide section" id="s1" data-auto="section" data-session="1"></section>
 
-<section class="slide" id="s1-idea">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
-  </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+<section class="slide" id="recommenders" data-lo="LO6 LO2">
+  <div class="kicker">Block A · recommenders</div>
+  <h2>A ratings matrix is close to low rank because tastes are few</h2>
+  <ul class="bullets">
+    <li>Rows are people, columns are items; most entries are missing</li>
+    <li>A rank-k model: each person is k numbers of taste, each item k numbers of character</li>
+    <li>A predicted rating is the dot product of the two</li>
+    <li>Truncated SVD after filling the gaps is the simplest version; methods that fit only the observed entries do better</li>
+  </ul>
+  <aside class="notes"><p>Link to week 1: a prediction is a dot product of two vectors, a person's and an item's. The lab uses the course-mean fill and the SVD; the stretch fits only observed entries by alternating least squares (week 5).</p></aside>
 </section>
 
-<section class="slide" id="s1-steps">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" id="choose-rank-held-out" data-lo="LO6">
+  <div class="kicker">Choosing k</div>
+  <h2>Choose the rank on ratings the model did not see</h2>
+  <div class="cols cols-2">
+    <div class="card c-coral"><h4>Training error</h4><p class="small mb0">Falls with every extra layer, down to zero at full rank. It cannot choose k.</p></div>
+    <div class="card c-teal"><h4>Held-out error</h4><p class="small mb0">Falls, then rises once extra layers fit noise. Its lowest point is the rank to use.</p></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <div class="callout warn mt"><b>The trap.</b> Choosing k on the test set and then reporting the test error flatters the model. With enough data, keep a third split for the final report.</div>
+  <aside class="notes"><p>Do not give the lab's best rank: ask the room to predict the shape of the curve and where its minimum might be.</p></aside>
+</section>
+
+<section class="slide" id="adapters" data-lo="LO6 LO2">
+  <div class="kicker">Model adaptation</div>
+  <h2>A low-rank update adapts a large model by training two thin matrices</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>W' = W + <b>B A</b>, with B d × r and A r × d, W frozen</p>
+      <p>d = 1,024, r = 8: <b>16,384</b> trainable numbers against 1,048,576: <b>1.56%</b></p>
+    </div>
+    <div class="card c-navy tint"><h4>Low-Rank Adaptation (LoRA)</h4><p class="small mb0">The 2021 paper that introduced the method reports up to 10,000 times fewer trainable parameters on its largest model.</p></div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 8, and Hu et al., "LoRA: Low-Rank Adaptation of Large Language Models", arXiv 2106.09685 (2021). Sources: the arXiv abstract page. The bet is that the change a task needs is close to low rank; the paper tests it, this course only shows the arithmetic.</p></aside>
+</section>
+
+<section class="slide" id="check-rank-choice" data-lo="LO6">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which rank would you report?</h2>
+  <div class="quiz" data-type="single" data-lo="LO6">
+    <p class="lead">Held-out errors for ranks 1 to 6 of a film-ratings model: 0.91, 0.86, 0.84, 0.85, 0.87, 0.90. Training errors fall from 0.88 to 0.61. Which rank?</p>
+    <div class="opts">
+      <div class="opt" data-why="Chooses by training error, which always favours the largest rank">6, with the lowest training error</div>
+      <div class="opt" data-ok>3, with the lowest held-out error</div>
+      <div class="opt" data-why="Picks the smallest model by habit: rank 1 is clearly worse on held-out data">1, the simplest model</div>
+      <div class="opt" data-why="Averages ranks instead of comparing errors: the average has no meaning here">4, the middle of the range</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Held-out error is lowest at rank 3 and rises after: later layers fit noise.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Invented numbers for a different domain, not the lab's.</p></aside>
+</section>
+
+<section class="slide" id="broadcasting-rules" data-lo="LO4">
+  <div class="kicker">Block B · vectorisation and broadcasting</div>
+  <h2>Broadcasting lines shapes up from the right and stretches dimensions of 1</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>(3, 1) + (1, 2) gives (3, 2):</p>
+      <pre class="code" data-file="numpy"><code class="language-python">a = np.array([[1], [2], [3]])   # (3, 1)
+b = np.array([[10, 20]])        # (1, 2)
+a + b   # [[11, 21], [12, 22], [13, 23]]</code></pre>
+    </div>
+    <ol class="bullets">
+      <li>Compare shapes from the last dimension</li>
+      <li>Equal sizes match; a size of 1 stretches</li>
+      <li>Anything else is an error</li>
+    </ol>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 8. Week 2 met vectorisation for speed; here the rules, because a wrong broadcast does not always raise an error.</p></aside>
+</section>
+
+<section class="slide" id="axis-bugs" data-lo="LO4">
+  <div class="kicker">Silent errors</div>
+  <h2>A square test matrix hides an axis bug</h2>
+  <ul class="bullets">
+    <li><code>M - M.mean(axis=1)</code> on an n × m matrix lines the row means up with the columns</li>
+    <li>If n ≠ m it fails with an error; if n = m it runs and is wrong</li>
+    <li>Use <code>keepdims=True</code>, or a shape that says what you mean: (n, 1)</li>
+    <li>Test with rectangular shapes, such as 2 × 3, never only square ones</li>
+  </ul>
+  <aside class="notes"><p>This is the shape of the planted bug in the lab: let participants find it themselves. Say only that it is a broadcast that runs.</p></aside>
+</section>
+
+<section class="slide" id="check-broadcast" data-lo="LO4">
+  <div class="kicker">Checkpoint</div>
+  <h2>Predict the shape</h2>
+  <div class="quiz" data-type="single" data-lo="LO4">
+    <p class="lead">X has shape (100, 5). What does <code>X - X.mean(axis=0)</code> do?</p>
+    <div class="opts">
+      <div class="opt" data-why="Confuses axis 0 with rows: axis=0 averages down the rows, one mean per column">Subtracts each row's mean from that row</div>
+      <div class="opt" data-why="Expects an error: shapes (100, 5) and (5,) line up from the right">Raises a shape error</div>
+      <div class="opt" data-why="Thinks the mean is a single number: axis=0 gives one per column">Subtracts one overall mean from every entry</div>
+      <div class="opt" data-ok>Subtracts each column's mean from that column</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> X.mean(axis=0) has shape (5,); it lines up with the last dimension and stretches over the 100 rows.</div>
+  </div>
+  <aside class="notes"><p>Answer D. This is the centring of weeks 1, 6 and 7, written correctly.</p></aside>
+</section>
+
+<section class="slide" id="float-limits" data-lo="LO3 LO4">
+  <div class="kicker">Block C · floating point</div>
+  <h2>A float keeps a fixed number of significant digits, about 7 or 16</h2>
+  <table class="t">
+    <tr><th>Expression</th><th>Result</th><th>Why</th></tr>
+    <tr><td>1e16 + 1 − 1e16</td><td>0.0</td><td>At 10¹⁶ the gap between float64 numbers is 2</td></tr>
+    <tr><td>float32: 1 + 10⁻⁸ == 1</td><td>True</td><td>Machine epsilon for float32 is 1.19 × 10⁻⁷</td></tr>
+    <tr class="hl"><td>Subtracting nearly equal numbers</td><td>Most digits cancel</td><td>What is left is mostly rounding</td></tr>
+  </table>
+  <aside class="notes"><p>From slide_numbers.py, week 8. Link back: conditioning (week 5) says how much a problem amplifies these rounding errors; this slide says how big they start.</p></aside>
+</section>
+
+<section class="slide" id="hand-checks" data-lo="LO4">
+  <div class="kicker">Checking code</div>
+  <h2>Trust code that agrees with a hand case and a trusted library, within a stated tolerance</h2>
+  <div class="flow">
+    <div class="step c-teal"><b>1 · Hand case</b>a 2 × 2 or 2 × 3 you worked on paper</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>2 · Properties</b>Qᵀ Q = I, A x = b, rows sum to zero</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>3 · Random cases</b>against the library, with a tolerance</div>
+  </div>
+  <div class="callout tip mt"><b>Tolerance.</b> Compare with <code>np.allclose(a, b, atol, rtol)</code>, never with ==. State the tolerance you chose and why.</div>
+  <aside class="notes"><p>This is what every problem set's checker did, and what the capstone rubric asks for: "a small case agrees with hand work".</p></aside>
+</section>
+
+<section class="slide" id="check-float" data-lo="LO4">
+  <div class="kicker">Checkpoint</div>
+  <h2>Why does this test fail?</h2>
+  <div class="quiz" data-type="single" data-lo="LO4">
+    <p class="lead">A test asserts <code>Q.T @ Q == np.eye(3)</code> for a correct QR and fails. What is wrong?</p>
+    <div class="opts">
+      <div class="opt" data-ok>Exact equality on floats: compare with a tolerance instead</div>
+      <div class="opt" data-why="Blames the factorisation: a correct Q is orthonormal only up to rounding">The QR routine has a bug</div>
+      <div class="opt" data-why="Thinks Q.T @ Q needs a different order: Q Qᵀ is not the identity for a tall Q">The product should be Q @ Q.T</div>
+      <div class="opt" data-why="Believes float32 would fix it: fewer digits make the gap larger">Convert Q to float32 first</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Entries differ from 0 and 1 by about 10⁻¹⁶: correct, but not exactly equal.</div>
+  </div>
+  <aside class="notes"><p>Answer A. Option C is a good discussion: Q Qᵀ is the projection onto the column space, the identity only when Q is square.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-8-1" data-auto="lab" data-lab="8.1">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>AI-tutor: hints only, until the capstone plan, which opens the AI-full capstone. Approve each participant's dataset in step 7: public, licence that allows sharing, an image, ratings or embedding matrix, no personal data.</p></aside>
+</section>
+
+<section class="slide" id="debrief-ratings" data-lo="LO6">
+  <div class="kicker">Debrief · lab 8.1</div>
+  <h2>Rank 3 predicted held-out ratings best: 0.543 against 0.602 for the course mean</h2>
+  <div class="bars">
+    <div class="row"><span>Course mean</span><div class="bar c-coral" style="--w:100%"></div><span class="val">0.6022</span></div>
+    <div class="row"><span>Rank 1</span><div class="bar c-cyan" style="--w:95%"></div><span class="val">0.5709</span></div>
+    <div class="row"><span>Rank 3</span><div class="bar c-teal" style="--w:90%"></div><span class="val">0.5432</span></div>
+    <div class="row"><span>Rank 6</span><div class="bar c-cyan" style="--w:93%"></div><span class="val">0.5607</span></div>
+    <div class="row"><span>Rank 10</span><div class="bar c-cyan" style="--w:94%"></div><span class="val">0.5683</span></div>
+  </div>
+  <p class="small mt">RMSE on 665 held-out ratings. The data were generated with three taste dimensions: the curve found them.</p>
+  <aside class="notes"><p>From the solution run of lab 8.1. The synthetic update's singular values: 300.93, 278.92, 240.94, 235.94, then 0.31: rank 4, as built. The float32 one-pass variance of 10,001 to 10,005 came out 0.0; the two-pass gave 2.5.</p></aside>
+</section>
+
+<section class="slide" id="capstone-brief" data-lo="LO6">
+  <div class="kicker">The capstone</div>
+  <h2>A low-rank analysis of a public dataset of your choice, defended in ten minutes</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>A public image, ratings or embedding matrix, with a licence that allows sharing</li>
+      <li>A notebook in a public repository: the data, the SVD checked by hand on a small case, error by rank, the rank you choose, the leading components interpreted</li>
+      <li>AI-full: any assistant may help; you must explain and redo every step</li>
+    </ul>
+    <div class="card c-coral"><h4>The oral check</h4><p class="small mb0">Four minutes walking through the notebook, six reworking one step with new numbers the assessor gives you, by hand and in code.</p></div>
+  </div>
+  <aside class="notes"><p>The rubric is on the capstone deck. Practise the rework with a neighbour: one gives a 2 × 2 matrix, the other finds its singular values by hand and checks them in code.</p></aside>
 </section>
 
 <section class="slide" id="wrap-up">
   <div class="kicker">Week 8 · wrap-up</div>
   <h2>Three things to keep</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-coral"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-purple"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
+    <div class="card c-teal"><h4>Low rank is a model</h4><p class="small mb0">Ratings and model updates are close to low rank; choose k on held-out data.</p></div>
+    <div class="card c-coral"><h4>Shapes, then values</h4><p class="small mb0">Broadcasting can run and be wrong. Test with rectangular shapes.</p></div>
+    <div class="card c-purple"><h4>Check with tolerance</h4><p class="small mb0">A hand case, properties and the library, compared with a stated tolerance.</p></div>
   </div>
+  <aside class="notes"><p>Close the teaching weeks: ask each participant for the one habit from the eight weeks they will keep.</p></aside>
 </section>
 
 <section class="slide dark" id="next" data-label="Next">
   <div class="kicker">Next</div>
-  <h2>Capstone: Capstone project presentations</h2>
-  <p class="lead">REPLACE: what participants prepare before then; unfinished labs can be finished at home</p>
-  <aside class="notes">REPLACE: accounts, installs or reading participants need before the next unit</aside>
+  <h2>The capstone and the second supervised test</h2>
+  <p class="lead">Problem set 8 (60 minutes, AI off for the first attempt): labs/problem-sets/PS8.ipynb. Then the second supervised test, and the capstone notebook and oral check.</p>
+  <aside class="notes"><p>The second supervised test covers weeks 5 to 8, 90 minutes, AI off, half on paper and half at the keyboard. The capstone time: a 30-minute dataset clinic, independent work, a peer dry run of the oral check, then the ten-minute oral check.</p></aside>
 </section>

@@ -143,7 +143,17 @@ def week7():
     print("break-even k for 512x512", 512 * 512 / (512 + 512 + 1))
 
 
-WEEKS = {1: week1, 2: week2, 3: week3, 4: week4, 5: week5, 6: week6, 7: week7}
+def week8():
+    print("(3,1)+(1,2)", (np.zeros((3, 1)) + np.zeros((1, 2))).shape)
+    a = np.array([[1.0], [2.0], [3.0]]); b = np.array([[10.0, 20.0]])
+    print("a+b", (a + b).tolist())
+    d, r = 1024, 8
+    print("adapter 1024 r8", 2 * d * r, d * d, round(2 * d * r / d / d, 4))
+    print("1e16 + 1 - 1e16 =", 1e16 + 1 - 1e16, "| float32 eps", np.finfo(np.float32).eps)
+    print("float32 1 + 1e-8 == 1:", np.float32(1) + np.float32(1e-8) == np.float32(1))
+
+
+WEEKS = {1: week1, 2: week2, 3: week3, 4: week4, 5: week5, 6: week6, 7: week7, 8: week8}
 
 if __name__ == "__main__":
     for w in ([int(a) for a in sys.argv[1:]] or sorted(WEEKS)):
