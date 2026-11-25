@@ -110,7 +110,29 @@ def week5():
         print("rhs", rhs, "solution", np.linalg.solve(A, np.array(rhs)).round(4))
 
 
-WEEKS = {1: week1, 2: week2, 3: week3, 4: week4, 5: week5}
+def week6():
+    A = np.array([[4.0, 1], [1, 4]])
+    w, V = np.linalg.eigh(A)
+    print("eig [[4,1],[1,4]]", w, V.round(4).tolist())
+    print("A (1,0)", A @ np.array([1.0, 0]), "A (1,1)", A @ np.array([1.0, 1]))
+    D = np.array([[60.0, 65], [70, 72], [80, 79], [90, 88], [50, 56]])
+    Dc = D - D.mean(axis=0)
+    C = Dc.T @ Dc / (len(D) - 1)
+    w, V = np.linalg.eigh(C)
+    print("scores mean", D.mean(axis=0), "cov", C.round(2).tolist(), "eig", w.round(3), "lead", V[:, -1].round(4), "share", round(w[-1] / w.sum(), 4))
+    # a 3-page graph: P to Q and R, Q to R, R to P
+    M = np.array([[0, 0, 1.0], [0.5, 0, 0], [0.5, 1, 0]])
+    x = np.full(3, 1 / 3)
+    for k in range(1, 4):
+        x = M @ x
+        print("step", k, x.round(4))
+    for _ in range(200):
+        x = M @ x
+    print("limit", x.round(4))
+    print("damped steps to 1e-10 for d=0.85 roughly", round(np.log(1e-10) / np.log(0.85), 1))
+
+
+WEEKS = {1: week1, 2: week2, 3: week3, 4: week4, 5: week5, 6: week6}
 
 if __name__ == "__main__":
     for w in ([int(a) for a in sys.argv[1:]] or sorted(WEEKS)):

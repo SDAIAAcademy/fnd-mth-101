@@ -171,7 +171,31 @@ def _ps5(ns):
     yield "6 residual(A, b) is orthogonal to the columns", _code(ns, "residual", resid_ok)
 
 
-CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4, 5: _ps5}
+# ---------------------------------------------------------------- PS6 eigenpairs, covariance, power iteration
+def _ps6(ns):
+    A, Z = ns["A"], ns["Z"]
+    yield "1 hand eigenvalues of A agree with eigenvalues2(A)", _agree(
+        ns, "eig_A", "eigenvalues2", A, transform=lambda e: sorted(np.asarray(e, dtype=float)))
+    yield "2 hand covariance of Z agrees with covariance(Z)", _agree(ns, "cov_Z", "covariance", Z)
+    def ev2_ok(f):
+        B = RNG.standard_normal((2, 2))
+        B = B + B.T
+        return _close(sorted(np.asarray(f(B), dtype=float)), np.linalg.eigvalsh(B))
+    yield "3 eigenvalues2 is right on a random symmetric 2 x 2", _code(ns, "eigenvalues2", ev2_ok)
+    def cov_ok(f):
+        Y = RNG.standard_normal((30, 4))
+        return _close(f(Y), np.cov(Y, rowvar=False))
+    yield "4 covariance matches the library on random data", _code(ns, "covariance", cov_ok)
+    def pi_ok(f):
+        B = RNG.standard_normal((6, 6))
+        B = B @ B.T + np.diag([20, 0, 0, 0, 0, 0])
+        lam, v = f(B, 500)
+        v = np.asarray(v, dtype=float)
+        return _close(lam, np.linalg.eigvalsh(B)[-1], tol=1e-4) and _close(B @ v, lam * v, tol=1e-3)
+    yield "5 dominant(B, steps) finds the largest eigenvalue and its vector", _code(ns, "dominant", pi_ok)
+
+
+CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4, 5: _ps5, 6: _ps6}
 
 
 def check(n: int, ns: dict) -> int:

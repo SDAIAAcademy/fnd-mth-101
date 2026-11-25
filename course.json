@@ -393,7 +393,7 @@
       "deck": "slides/week6.html",
       "sessions": [
         {
-          "title": "Eigenvectors, covariance and power iteration",
+          "title": "Eigenvectors and link ranking",
           "outcomes": [
             "Find the eigenvalues and eigenvectors of a two-by-two symmetric matrix by hand",
             "Explain what the leading eigenvector of a covariance matrix shows",
@@ -407,12 +407,12 @@
           "lab": {
             "id": "6.1",
             "title": "Power iteration and link ranking on a synthetic web graph",
-            "summary": "Rank the 40 pages of the help centre by power iteration, find what a dangling page, an island and a link farm do, and fix them with damping.",
+            "summary": "Rank the 40 help-centre pages by power iteration, see what a dangling page, an island and a link farm do, and fix them with damping.",
             "minutes": 105,
             "href": "W6_1.ipynb",
             "steps": [
               {
-                "text": "Set up; eigenpairs of a two-by-two symmetric matrix by hand, then the library",
+                "text": "Set up; eigenpairs of a two-by-two by hand",
                 "minutes": 15
               },
               {
@@ -420,7 +420,7 @@
                 "minutes": 15
               },
               {
-                "text": "Power iteration without damping: what goes wrong",
+                "text": "Power iteration without damping",
                 "minutes": 15
               },
               {
@@ -428,11 +428,11 @@
                 "minutes": 20
               },
               {
-                "text": "Convergence: iterations against tolerance, and a check with the library",
+                "text": "Convergence, and a check with the library",
                 "minutes": 15
               },
               {
-                "text": "The link farm: its effect, and a damping sweep",
+                "text": "The link farm and a damping sweep",
                 "minutes": 15
               },
               {
@@ -440,7 +440,7 @@
                 "minutes": 10
               }
             ],
-            "stretch": "Show that the number of iterations follows the damping factor"
+            "stretch": "Show that the number of steps follows the damping factor"
           },
           "summary": "Eigenvectors of symmetric matrices, covariance and the idea of principal components, and power iteration for link ranking"
         }
