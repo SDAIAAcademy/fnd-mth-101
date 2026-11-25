@@ -1,0 +1,20 @@
+{
+ "0.0001": {
+  "cond": 17300.0,
+  "householder": 0.0,
+  "classical": 0.0,
+  "modified": 0.0
+ },
+ "1e-07": {
+  "cond": 17300000.0,
+  "householder": 0.0,
+  "classical": 0.0133,
+  "modified": 0.0
+ },
+ "1e-08": {
+  "cond": 173000000.0,
+  "householder": 0.0,
+  "classical": 0.5,
+  "modified": 0.0
+ }
+}

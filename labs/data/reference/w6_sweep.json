@@ -1,0 +1,22 @@
+{
+ "0.5": {
+  "farm_share": 0.1067,
+  "p31_position": 12,
+  "steps": 27
+ },
+ "0.85": {
+  "farm_share": 0.129,
+  "p31_position": 7,
+  "steps": 110
+ },
+ "0.95": {
+  "farm_share": 0.1802,
+  "p31_position": 2,
+  "steps": 311
+ },
+ "0.99": {
+  "farm_share": 0.3475,
+  "p31_position": 2,
+  "steps": 972
+ }
+}

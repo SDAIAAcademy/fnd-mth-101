@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="foundations">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capstone · Capstone oral checks · Linear Algebra for Machine Learning</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="capstone.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Linear Algebra for Machine Learning" data-track="foundations" data-day="Capstone">
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Linear Algebra for Machine Learning</div>
+  <h1>Capstone oral checks</h1>
+  <p class="lead mt">Capstone: Ten minutes each: four to walk through the notebook, six to rework one step with new numbers</p>
+  <div class="meta"><span class="track">Data &amp; AI Foundations Track</span><span>8 weeks + capstone</span><span>4 min talk and demo · 6 min Q&amp;A</span><span>FND-MTH-101</span></div>
+  <aside class="notes"><p>Today is theirs: keep your own talking to the opening and the closing. Before the first check, confirm the running order, that every notebook link opens, and that you have the private set of new-number items for the rework (the trainer pack; never project them before a participant's turn).</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">Capstone</div>
+  <h2>How the oral checks run</h2>
+  <div class="agenda">
+    <div class="item now"><div><b>Expectations and final preparation</b><small>the rubric, the format, a last rehearsal</small></div></div>
+    <div class="item"><div><b>Oral checks</b><small>ten minutes each: a walkthrough, then a step reworked with new numbers</small></div></div>
+    <div class="item"><div><b>Review and closing</b><small>peer feedback, the trainer's review, what next</small></div></div>
+  </div>
+  <aside class="notes"><p>Capstone time in the plan: a 30-minute dataset clinic (in week 8), about 280 minutes of independent work, a 25-minute peer dry run of the oral check, the 10-minute check, 5 minutes of changeover and 10 of written feedback from the assessor.</p></aside>
+</section>
+
+<section class="slide" id="what-you-submit" data-lo="LO6" data-label="What you submit" data-n="3">
+  <div class="kicker">The submission</div>
+  <h2>A notebook in a public repository, then ten minutes with the assessor</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>A public image, ratings or embedding matrix, with its address and licence</li>
+      <li>The matrix stated: rows, columns, shape, centring and scaling</li>
+      <li>The SVD, checked on a small case by hand</li>
+      <li>Relative error by rank, the rank chosen, the leading components interpreted</li>
+    </ul>
+    <div class="card c-navy tint"><h4>Submission</h4><p class="small mb0">The link to a public GitHub repository holding the notebook, its outputs and the data source. Nothing personal, nothing whose licence forbids sharing.</p></div>
+  </div>
+  <aside class="notes"><p>The capstone is AI-full: an assistant may help with any step. The oral check is where authenticity is tested: the participant must explain and redo a step without it.</p></aside>
+</section>
+
+<section class="slide" id="rubric" data-label="The rubric" data-n="4">
+  <div class="kicker">How the notebook is scored</div>
+  <h2>The rubric</h2>
+  <div class="bars">
+    <div class="row"><span>Data matrix stated and justified: source, licence, shape, centring, scaling</span><div class="bar c-teal" style="--w:60%"></div><span class="val">15%</span></div>
+    <div class="row"><span>SVD checked by hand on a small case; error reported by rank</span><div class="bar c-cyan" style="--w:100%"></div><span class="val">25%</span></div>
+    <div class="row"><span>Rank chosen from the error curve, trade-off stated</span><div class="bar c-coral" style="--w:80%"></div><span class="val">20%</span></div>
+    <div class="row"><span>Leading components interpreted, with their limits</span><div class="bar c-purple" style="--w:100%"></div><span class="val">25%</span></div>
+    <div class="row"><span>Runs top to bottom; seed and source stated; outputs honest</span><div class="bar c-amber" style="--w:60%"></div><span class="val">15%</span></div>
+  </div>
+  <aside class="notes"><p>The full wording of each criterion is in the README and course.json. Walk through each with one example of full marks: an error by rank you computed is worth more than a rank you asserted. The notebook is 30% of the course; the oral check is scored separately (10%), so nothing in this table is counted twice.</p></aside>
+</section>
+
+<section class="slide" id="assessment-overall" data-label="The whole course" data-n="5">
+  <div class="kicker">The whole course</div>
+  <h2>How the course is assessed</h2>
+  <table class="t">
+    <tr><th>Assessed work</th><th class="num">Weight</th></tr>
+    <tr><td>Weekly problem sets, auto-checked</td><td class="num">20%</td></tr>
+    <tr><td>Two supervised AI-off tests, on paper and at the keyboard</td><td class="num">40%</td></tr>
+    <tr class="hl"><td>Capstone notebook, rubric-scored</td><td class="num">30%</td></tr>
+    <tr class="hl"><td>Oral check</td><td class="num">10%</td></tr>
+  </table>
+  <p class="small mt">Passing: 60% overall and at least 50% on each supervised test. Certificate: completion with assessed work.</p>
+  <aside class="notes"><p>Authenticity: proctored tests without assistance, and an oral check in which the participant reworks a capstone step with new numbers.</p></aside>
+</section>
+
+<section class="slide" id="format" data-label="Format" data-n="6">
+  <div class="kicker">Format</div>
+  <h2>Ten minutes each: four to walk through, six to rework a step</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>1 · The matrix</h4><p class="small mb0">What the rows and columns are, and why you centred or scaled.</p></div>
+    <div class="card c-cyan"><h4>2 · The result</h4><p class="small mb0">The error by rank, the rank chosen, what the leading components show.</p></div>
+    <div class="card c-coral"><h4>3 · The rework</h4><p class="small mb0">The assessor gives new numbers for one step; you redo it by hand and check it in code.</p></div>
+  </div>
+  <div class="callout note mt"><b>Peer feedback.</b> After each check, everyone writes one strength, one question and one suggestion.</div>
+  <aside class="notes"><p>Choose the step to rework from the participant's own notebook: a centring, a 2 × 2 SVD, a rank-k error from a list of singular values, a projection or a variance share. The new numbers are in the trainer pack, not in this repository.</p></aside>
+</section>
+
+<section class="slide" id="rework-example" data-lo="LO6 LO4" data-label="A rework, rehearsed" data-n="7">
+  <div class="kicker">Rehearse the rework</div>
+  <h2>A rework looks like this: new numbers, the same step, by hand and in code</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>"Your singular values were replaced by 12, 5, 2 and 1. What relative error does rank 2 give?"</p>
+      <p>By hand: √(2² + 1²) / √(12² + 5² + 2² + 1²) = √5 / √174 ≈ <b>0.170</b></p>
+    </div>
+    <pre class="code" data-file="numpy"><code class="language-python">s = np.array([<span class="hljs-number">12</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1.0</span>])
+tail = (s[<span class="hljs-number">2</span>:]**<span class="hljs-number">2</span>).<span class="hljs-built_in">sum</span>()
+np.sqrt(tail / (s**<span class="hljs-number">2</span>).<span class="hljs-built_in">sum</span>())
+<span class="hljs-comment"># 0.1695</span></code></pre>
+  </div>
+  <aside class="notes"><p>A rehearsal example only; the items used in the checks are different and private. Run it with the room before the first check.</p></aside>
+</section>
+
+<section class="slide order" id="running-order" data-label="Running order" data-n="8">
+  <div class="kicker">Running order</div>
+  <h2>Who presents when</h2>
+  <table class="t small">
+    <tr><th>#</th><th>Participant</th><th>Dataset</th></tr>
+    <tr><td>1</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>2</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>3</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>4</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>5</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>6</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>7</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>8</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+  </table>
+  <aside class="notes"><p>Type the names in at the start; the fields can be edited live and are not saved, so keep the list in your notes too.</p></aside>
+</section>
+
+<section class="slide dark" id="final-prep" data-label="Before the first check" data-n="9">
+  <div class="kicker">Before the first check</div>
+  <h1>Final preparation · 20 minutes</h1>
+  <div class="timer" data-minutes="20"></div>
+  <p class="lead">Run your notebook from the top once more, and rehearse one rework with a neighbour.</p>
+  <aside class="notes"><p>Press T to start the timer. Breaks are not slides: press B when the room needs one.</p></aside>
+</section>
+
+<section class="slide dark presenting" id="now-presenting" data-label="Now presenting" data-n="10">
+  <div class="kicker center">Now presenting</div>
+  <div class="center"><input placeholder="Participant · dataset"></div>
+  <div class="timers mt">
+    <div><h3>Walkthrough</h3><div class="timer" data-minutes="4"></div></div>
+    <div><h3>Rework with new numbers</h3><div class="timer" data-minutes="6"></div></div>
+  </div>
+  <aside class="notes"><p>Type the participant's name and press T to start the first timer. At four minutes, give the new numbers on paper and start the second. Score the rework on correctness by hand, agreement with code, and the explanation. Reuse this slide for every participant.</p></aside>
+</section>
+
+<section class="slide" id="review" data-label="Trainer review" data-n="11">
+  <div class="kicker">Trainer review</div>
+  <h2>What the capstones showed</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>Strongest patterns</h4><p class="small mb0">What several notebooks got right.</p></div>
+    <div class="card c-coral"><h4>Common gaps</h4><p class="small mb0">What most notebooks would fix next.</p></div>
+    <div class="card c-purple"><h4>One surprise</h4><p class="small mb0">Something nobody expected.</p></div>
+  </div>
+  <aside class="notes"><p>Fill these in from your scoring notes during the last break. Name notebooks for strengths; keep gaps anonymous. Typical gaps: no hand check, the rank chosen by habit, components named without evidence.</p></aside>
+</section>
+
+<section class="slide" id="what-next" data-label="After the course" data-n="12">
+  <div class="kicker">After the course</div>
+  <h2>Keep going</h2>
+  <ul class="bullets">
+    <li><b>Your notebook stays yours:</b> keep it reproducible, and add the next analysis you named today</li>
+    <li><b>Next Academy courses:</b> FND-MTH-102 Calculus and Optimisation for Machine Learning, and FND-AIC-101 How Machine Learning Works, where the least squares and projections of this course return as models</li>
+  </ul>
+  <aside class="notes"><p>Point those who want the optimisation side of machine learning to FND-MTH-102, which takes gradients of losses built on the same matrices; FND-AIC-101 does not require this course.</p></aside>
+</section>
+
+<section class="slide dark" id="thanks" data-label="Thank you" data-n="13">
+  <div class="kicker">SDAIA Academy</div>
+  <h1>Thank you</h1>
+  <p class="lead">Linear Algebra for Machine Learning</p>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-25T06:33:42Z","version":"2027.1.0","commit":"f5792fb"},"course":{"id":"fnd-mth-101","code":"FND-MTH-101","title":"Linear Algebra for Machine Learning","track":"foundations","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/fnd-mth-101/","repo":"SDAIAAcademy/fnd-mth-101","home":"../index.html"},"deck":{"id":"capstone","kind":"capstone","day":9,"label":"Capstone","title":"Capstone oral checks","prev":"week8.html","next":null,"md":"capstone.md","alt":{}},"sessions":[],"slides":[{"id":"title","n":1,"title":"Capstone oral checks","kind":"title","session":0,"hash":"2df078d1","md":"#### [capstone#title] Capstone oral checks\n\n*SDAIA Academy · Linear Algebra for Machine Learning*\n\nCapstone: Ten minutes each: four to walk through the notebook, six to rework one step with new numbers\n\nData & AI Foundations Track · 8 weeks + capstone · 4 min talk and demo · 6 min Q&A · FND-MTH-101","notes":"Today is theirs: keep your own talking to the opening and the closing. Before the first check, confirm the running order, that every notebook link opens, and that you have the private set of new-number items for the rework (the trainer pack; never project them before a participant's turn).","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"How the oral checks run","kind":"content","session":0,"hash":"cd2e9bf0","md":"#### [capstone#agenda] How the oral checks run\n\n*Capstone*\n\n- **Expectations and final preparation**: the rubric, the format, a last rehearsal\n- **Oral checks**: ten minutes each: a walkthrough, then a step reworked with new numbers\n- **Review and closing**: peer feedback, the trainer's review, what next","notes":"Capstone time in the plan: a 30-minute dataset clinic (in week 8), about 280 minutes of independent work, a 25-minute peer dry run of the oral check, the 10-minute check, 5 minutes of changeover and 10 of written feedback from the assessor.","minutes":null,"lo":[]},{"id":"what-you-submit","n":3,"title":"A notebook in a public repository, then ten minutes with the assessor","kind":"content","session":0,"hash":"83dff2ca","md":"#### [capstone#what-you-submit] A notebook in a public repository, then ten minutes with the assessor\n\n*The submission*\n\n- A public image, ratings or embedding matrix, with its address and licence\n- The matrix stated: rows, columns, shape, centring and scaling\n- The SVD, checked on a small case by hand\n- Relative error by rank, the rank chosen, the leading components interpreted\n\n- **Submission.** The link to a public GitHub repository holding the notebook, its outputs and the data source. Nothing personal, nothing whose licence forbids sharing.","notes":"The capstone is AI-full: an assistant may help with any step. The oral check is where authenticity is tested: the participant must explain and redo a step without it.","minutes":null,"lo":["LO6"]},{"id":"rubric","n":4,"title":"The rubric","kind":"content","session":0,"hash":"07fb925f","md":"#### [capstone#rubric] The rubric\n\n*How the notebook is scored*\n\n| Item | Value |\n| --- | --- |\n| Data matrix stated and justified: source, licence, shape, centring, scaling | 15% |\n| SVD checked by hand on a small case; error reported by rank | 25% |\n| Rank chosen from the error curve, trade-off stated | 20% |\n| Leading components interpreted, with their limits | 25% |\n| Runs top to bottom; seed and source stated; outputs honest | 15% |","notes":"The full wording of each criterion is in the README and course.json. Walk through each with one example of full marks: an error by rank you computed is worth more than a rank you asserted. The notebook is 30% of the course; the oral check is scored separately (10%), so nothing in this table is counted twice.","minutes":null,"lo":[]},{"id":"assessment-overall","n":5,"title":"How the course is assessed","kind":"content","session":0,"hash":"f5846160","md":"#### [capstone#assessment-overall] How the course is assessed\n\n*The whole course*\n\n| Assessed work | Weight |\n| --- | --- |\n| Weekly problem sets, auto-checked | 20% |\n| Two supervised AI-off tests, on paper and at the keyboard | 40% |\n| Capstone notebook, rubric-scored | 30% |\n| Oral check | 10% |\n\nPassing: 60% overall and at least 50% on each supervised test. Certificate: completion with assessed work.","notes":"Authenticity: proctored tests without assistance, and an oral check in which the participant reworks a capstone step with new numbers.","minutes":null,"lo":[]},{"id":"format","n":6,"title":"Ten minutes each: four to walk through, six to rework a step","kind":"content","session":0,"hash":"564833ce","md":"#### [capstone#format] Ten minutes each: four to walk through, six to rework a step\n\n*Format*\n\n- **1 · The matrix.** What the rows and columns are, and why you centred or scaled.\n- **2 · The result.** The error by rank, the rank chosen, what the leading components show.\n- **3 · The rework.** The assessor gives new numbers for one step; you redo it by hand and check it in code.\n\n> **Peer feedback.** After each check, everyone writes one strength, one question and one suggestion.","notes":"Choose the step to rework from the participant's own notebook: a centring, a 2 × 2 SVD, a rank-k error from a list of singular values, a projection or a variance share. The new numbers are in the trainer pack, not in this repository.","minutes":null,"lo":[]},{"id":"rework-example","n":7,"title":"A rework looks like this: new numbers, the same step, by hand and in code","kind":"content","session":0,"hash":"beb76e52","md":"#### [capstone#rework-example] A rework looks like this: new numbers, the same step, by hand and in code\n\n*Rehearse the rework*\n\n\"Your singular values were replaced by 12, 5, 2 and 1. What relative error does rank 2 give?\"\n\nBy hand: √(2² + 1²) / √(12² + 5² + 2² + 1²) = √5 / √174 ≈ **0.170**\n\n```python\n# file: numpy\ns = np.array([12, 5, 2, 1.0])\ntail = (s[2:]**2).sum()\nnp.sqrt(tail / (s**2).sum())\n# 0.1695\n```","notes":"A rehearsal example only; the items used in the checks are different and private. Run it with the room before the first check.","minutes":null,"lo":["LO6","LO4"]},{"id":"running-order","n":8,"title":"Who presents when","kind":"order","session":0,"hash":"a46d05b0","md":"#### [capstone#running-order] Who presents when\n\n*Running order*\n\n| # | Participant | Dataset |\n| --- | --- | --- |\n| 1 |  |  |\n| 2 |  |  |\n| 3 |  |  |\n| 4 |  |  |\n| 5 |  |  |\n| 6 |  |  |\n| 7 |  |  |\n| 8 |  |  |","notes":"Type the names in at the start; the fields can be edited live and are not saved, so keep the list in your notes too.","minutes":null,"lo":[]},{"id":"final-prep","n":9,"title":"Final preparation · 20 minutes","kind":"content","session":0,"hash":"90c946c9","md":"#### [capstone#final-prep] Final preparation · 20 minutes\n\n*Before the first check*\n\nRun your notebook from the top once more, and rehearse one rework with a neighbour.","notes":"Press T to start the timer. Breaks are not slides: press B when the room needs one.","minutes":null,"lo":[]},{"id":"now-presenting","n":10,"title":"Walkthrough","kind":"presenting","session":0,"hash":"e34c0e42","md":"#### [capstone#now-presenting] Walkthrough\n\n*Now presenting*\n\n##### Rework with new numbers","notes":"Type the participant's name and press T to start the first timer. At four minutes, give the new numbers on paper and start the second. Score the rework on correctness by hand, agreement with code, and the explanation. Reuse this slide for every participant.","minutes":null,"lo":[]},{"id":"review","n":11,"title":"What the capstones showed","kind":"content","session":0,"hash":"e86fa951","md":"#### [capstone#review] What the capstones showed\n\n*Trainer review*\n\n- **Strongest patterns.** What several notebooks got right.\n- **Common gaps.** What most notebooks would fix next.\n- **One surprise.** Something nobody expected.","notes":"Fill these in from your scoring notes during the last break. Name notebooks for strengths; keep gaps anonymous. Typical gaps: no hand check, the rank chosen by habit, components named without evidence.","minutes":null,"lo":[]},{"id":"what-next","n":12,"title":"Keep going","kind":"content","session":0,"hash":"0e717b44","md":"#### [capstone#what-next] Keep going\n\n*After the course*\n\n- **Your notebook stays yours:** keep it reproducible, and add the next analysis you named today\n- **Next Academy courses:** FND-MTH-102 Calculus and Optimisation for Machine Learning, and FND-AIC-101 How Machine Learning Works, where the least squares and projections of this course return as models","notes":"Point those who want the optimisation side of machine learning to FND-MTH-102, which takes gradients of losses built on the same matrices; FND-AIC-101 does not require this course.","minutes":null,"lo":[]},{"id":"thanks","n":13,"title":"Thank you","kind":"content","session":0,"hash":"400b7a71","md":"#### [capstone#thanks] Thank you\n\n*SDAIA Academy*\n\nLinear Algebra for Machine Learning","notes":"","minutes":null,"lo":[]}],"activities":[],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"capstone.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>

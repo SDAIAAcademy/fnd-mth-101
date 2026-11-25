@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="foundations">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 8 · Low rank in practice, and working numerically · Linear Algebra for Machine Learning</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="week8.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Linear Algebra for Machine Learning" data-track="foundations" data-day="Week 8">
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Linear Algebra for Machine Learning</div>
+  <h1>Low rank in practice, and working numerically</h1>
+  <p class="lead mt">Week 8: Low-rank models in recommenders and adapters, and code you can trust</p>
+  <div class="meta"><span class="track">Data &amp; AI Foundations Track</span><span>8 weeks + capstone</span><span>1 session · 1 lab</span><span>FND-MTH-101</span></div>
+  <aside class="notes"><p>Collect PS7 difficulties: usually the Frobenius error computed with the kept singular values. Last teaching week: low rank where machine learning uses it, the numerical habits that keep code honest, and the capstone plan.</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-auto="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">This week</div>
+  <h2>Low rank in practice, and working numerically</h2>
+  <div class="agenda"><div class="item"><div><b>Session 1 · Low rank in practice</b><small>Low-rank structure in recommenders and in model adaptation, vectorisation and broadcasting, floating-point limits, and checking code against hand computation</small></div></div></div>
+</section>
+
+<section class="slide" id="review-week7" data-lo="LO6" data-n="3">
+  <div class="kicker">Review · week 7</div>
+  <h2>Choosing a rank for an image</h2>
+  <div class="quiz" data-type="single" data-lo="LO6" data-id="review-week7-q1">
+    <p class="lead">A 600 × 400 image has singular values that fall slowly: rank 300 still leaves 5% relative error. What should you conclude?</p>
+    <div class="opts">
+      <div class="opt" data-why="Assumes any truncation saves space: a rank-300 copy stores 300 × 1,001 numbers, more than 240,000" data-k="A">A rank-300 copy is a good way to save space</div>
+      <div class="opt" data-why="Thinks the SVD failed: slow decay is a property of the image" data-k="B">The SVD was computed wrongly</div>
+      <div class="opt" data-ok data-k="C">This image has little low-rank structure; truncation is a poor compressor for it</div>
+      <div class="opt" data-why="Thinks centring always makes a matrix low-rank: it removes one layer at most" data-k="D">Centring the image would make rank 10 enough</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Storage k(m + n + 1) exceeds m n from k = 240, and the error is still 5%: the singular values decide.</div>
+  </div>
+  <aside class="notes"><p>Answer C. 600 × 400 / 1,001 ≈ 240: past that k the copy is larger than the image.</p></aside>
+</section>
+
+<!-- Session 1 -->
+
+<section class="slide section" id="s1" data-auto="section" data-session="1" data-n="4">
+  <div class="kicker">Session 1</div>
+  <h1>Low rank in practice</h1>
+  <ul class="bullets outcomes"><li>Predict held-out ratings with a truncated SVD and choose the rank</li><li>Count the parameters of a low-rank weight update</li><li>Find a broadcasting or rounding error by checking code against a hand case</li></ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" id="recommenders" data-lo="LO6 LO2" data-n="5" data-session="1">
+  <div class="kicker">Block A · recommenders</div>
+  <h2>A ratings matrix is close to low rank because tastes are few</h2>
+  <ul class="bullets">
+    <li>Rows are people, columns are items; most entries are missing</li>
+    <li>A rank-k model: each person is k numbers of taste, each item k numbers of character</li>
+    <li>A predicted rating is the dot product of the two</li>
+    <li>Truncated SVD after filling the gaps is the simplest version; methods that fit only the observed entries do better</li>
+  </ul>
+  <aside class="notes"><p>Link to week 1: a prediction is a dot product of two vectors, a person's and an item's. The lab uses the course-mean fill and the SVD; the stretch fits only observed entries by alternating least squares (week 5).</p></aside>
+</section>
+
+<section class="slide" id="choose-rank-held-out" data-lo="LO6" data-n="6" data-session="1">
+  <div class="kicker">Choosing k</div>
+  <h2>Choose the rank on ratings the model did not see</h2>
+  <div class="cols cols-2">
+    <div class="card c-coral"><h4>Training error</h4><p class="small mb0">Falls with every extra layer, down to zero at full rank. It cannot choose k.</p></div>
+    <div class="card c-teal"><h4>Held-out error</h4><p class="small mb0">Falls, then rises once extra layers fit noise. Its lowest point is the rank to use.</p></div>
+  </div>
+  <div class="callout warn mt"><b>The trap.</b> Choosing k on the test set and then reporting the test error flatters the model. With enough data, keep a third split for the final report.</div>
+  <aside class="notes"><p>Do not give the lab's best rank: ask the room to predict the shape of the curve and where its minimum might be.</p></aside>
+</section>
+
+<section class="slide" id="adapters" data-lo="LO6 LO2" data-n="7" data-session="1">
+  <div class="kicker">Model adaptation</div>
+  <h2>A low-rank update adapts a large model by training two thin matrices</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>W' = W + <b>B A</b>, with B d × r and A r × d, W frozen</p>
+      <p>d = 1,024, r = 8: <b>16,384</b> trainable numbers against 1,048,576: <b>1.56%</b></p>
+    </div>
+    <div class="card c-navy tint"><h4>Low-Rank Adaptation (LoRA)</h4><p class="small mb0">The 2021 paper that introduced the method reports up to 10,000 times fewer trainable parameters on its largest model.</p></div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 8, and Hu et al., "LoRA: Low-Rank Adaptation of Large Language Models", arXiv 2106.09685 (2021). Sources: the arXiv abstract page. The bet is that the change a task needs is close to low rank; the paper tests it, this course only shows the arithmetic.</p></aside>
+</section>
+
+<section class="slide" id="check-rank-choice" data-lo="LO6" data-n="8" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which rank would you report?</h2>
+  <div class="quiz" data-type="single" data-lo="LO6" data-id="check-rank-choice-q1">
+    <p class="lead">Held-out errors for ranks 1 to 6 of a film-ratings model: 0.91, 0.86, 0.84, 0.85, 0.87, 0.90. Training errors fall from 0.88 to 0.61. Which rank?</p>
+    <div class="opts">
+      <div class="opt" data-why="Chooses by training error, which always favours the largest rank" data-k="A">6, with the lowest training error</div>
+      <div class="opt" data-ok data-k="B">3, with the lowest held-out error</div>
+      <div class="opt" data-why="Picks the smallest model by habit: rank 1 is clearly worse on held-out data" data-k="C">1, the simplest model</div>
+      <div class="opt" data-why="Averages ranks instead of comparing errors: the average has no meaning here" data-k="D">4, the middle of the range</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Held-out error is lowest at rank 3 and rises after: later layers fit noise.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Invented numbers for a different domain, not the lab's.</p></aside>
+</section>
+
+<section class="slide" id="broadcasting-rules" data-lo="LO4" data-n="9" data-session="1">
+  <div class="kicker">Block B · vectorisation and broadcasting</div>
+  <h2>Broadcasting lines shapes up from the right and stretches dimensions of 1</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>(3, 1) + (1, 2) gives (3, 2):</p>
+      <pre class="code" data-file="numpy"><code class="language-python">a = np.array([[<span class="hljs-number">1</span>], [<span class="hljs-number">2</span>], [<span class="hljs-number">3</span>]])   <span class="hljs-comment"># (3, 1)</span>
+b = np.array([[<span class="hljs-number">10</span>, <span class="hljs-number">20</span>]])        <span class="hljs-comment"># (1, 2)</span>
+a + b   <span class="hljs-comment"># [[11, 21], [12, 22], [13, 23]]</span></code></pre>
+    </div>
+    <ol class="bullets">
+      <li>Compare shapes from the last dimension</li>
+      <li>Equal sizes match; a size of 1 stretches</li>
+      <li>Anything else is an error</li>
+    </ol>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 8. Week 2 met vectorisation for speed; here the rules, because a wrong broadcast does not always raise an error.</p></aside>
+</section>
+
+<section class="slide" id="axis-bugs" data-lo="LO4" data-n="10" data-session="1">
+  <div class="kicker">Silent errors</div>
+  <h2>A square test matrix hides an axis bug</h2>
+  <ul class="bullets">
+    <li><code>M - M.mean(axis=1)</code> on an n × m matrix lines the row means up with the columns</li>
+    <li>If n ≠ m it fails with an error; if n = m it runs and is wrong</li>
+    <li>Use <code>keepdims=True</code>, or a shape that says what you mean: (n, 1)</li>
+    <li>Test with rectangular shapes, such as 2 × 3, never only square ones</li>
+  </ul>
+  <aside class="notes"><p>This is the shape of the planted bug in the lab: let participants find it themselves. Say only that it is a broadcast that runs.</p></aside>
+</section>
+
+<section class="slide" id="check-broadcast" data-lo="LO4" data-n="11" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Predict the shape</h2>
+  <div class="quiz" data-type="single" data-lo="LO4" data-id="check-broadcast-q1">
+    <p class="lead">X has shape (100, 5). What does <code>X - X.mean(axis=0)</code> do?</p>
+    <div class="opts">
+      <div class="opt" data-why="Confuses axis 0 with rows: axis=0 averages down the rows, one mean per column" data-k="A">Subtracts each row's mean from that row</div>
+      <div class="opt" data-why="Expects an error: shapes (100, 5) and (5,) line up from the right" data-k="B">Raises a shape error</div>
+      <div class="opt" data-why="Thinks the mean is a single number: axis=0 gives one per column" data-k="C">Subtracts one overall mean from every entry</div>
+      <div class="opt" data-ok data-k="D">Subtracts each column's mean from that column</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> X.mean(axis=0) has shape (5,); it lines up with the last dimension and stretches over the 100 rows.</div>
+  </div>
+  <aside class="notes"><p>Answer D. This is the centring of weeks 1, 6 and 7, written correctly.</p></aside>
+</section>
+
+<section class="slide" id="float-limits" data-lo="LO3 LO4" data-n="12" data-session="1">
+  <div class="kicker">Block C · floating point</div>
+  <h2>A float keeps a fixed number of significant digits, about 7 or 16</h2>
+  <table class="t">
+    <tr><th>Expression</th><th>Result</th><th>Why</th></tr>
+    <tr><td>1e16 + 1 − 1e16</td><td>0.0</td><td>At 10¹⁶ the gap between float64 numbers is 2</td></tr>
+    <tr><td>float32: 1 + 10⁻⁸ == 1</td><td>True</td><td>Machine epsilon for float32 is 1.19 × 10⁻⁷</td></tr>
+    <tr class="hl"><td>Subtracting nearly equal numbers</td><td>Most digits cancel</td><td>What is left is mostly rounding</td></tr>
+  </table>
+  <aside class="notes"><p>From slide_numbers.py, week 8. Link back: conditioning (week 5) says how much a problem amplifies these rounding errors; this slide says how big they start.</p></aside>
+</section>
+
+<section class="slide" id="hand-checks" data-lo="LO4" data-n="13" data-session="1">
+  <div class="kicker">Checking code</div>
+  <h2>Trust code that agrees with a hand case and a trusted library, within a stated tolerance</h2>
+  <div class="flow">
+    <div class="step c-teal"><b>1 · Hand case</b>a 2 × 2 or 2 × 3 you worked on paper</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>2 · Properties</b>Qᵀ Q = I, A x = b, rows sum to zero</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>3 · Random cases</b>against the library, with a tolerance</div>
+  </div>
+  <div class="callout tip mt"><b>Tolerance.</b> Compare with <code>np.allclose(a, b, atol, rtol)</code>, never with ==. State the tolerance you chose and why.</div>
+  <aside class="notes"><p>This is what every problem set's checker did, and what the capstone rubric asks for: "a small case agrees with hand work".</p></aside>
+</section>
+
+<section class="slide" id="check-float" data-lo="LO4" data-n="14" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Why does this test fail?</h2>
+  <div class="quiz" data-type="single" data-lo="LO4" data-id="check-float-q1">
+    <p class="lead">A test asserts <code>Q.T @ Q == np.eye(3)</code> for a correct QR and fails. What is wrong?</p>
+    <div class="opts">
+      <div class="opt" data-ok data-k="A">Exact equality on floats: compare with a tolerance instead</div>
+      <div class="opt" data-why="Blames the factorisation: a correct Q is orthonormal only up to rounding" data-k="B">The QR routine has a bug</div>
+      <div class="opt" data-why="Thinks Q.T @ Q needs a different order: Q Qᵀ is not the identity for a tall Q" data-k="C">The product should be Q @ Q.T</div>
+      <div class="opt" data-why="Believes float32 would fix it: fewer digits make the gap larger" data-k="D">Convert Q to float32 first</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Entries differ from 0 and 1 by about 10⁻¹⁶: correct, but not exactly equal.</div>
+  </div>
+  <aside class="notes"><p>Answer A. Option C is a good discussion: Q Qᵀ is the projection onto the column space, the identity only when Q is square.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-8-1" data-auto="lab" data-lab="8.1" data-label="Lab 8.1" data-n="15" data-session="1">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 8.1 · 105 min</div><h2>Low-rank ratings and adapter updates, checked by hand</h2><p class="lead small">Predict held-out course ratings with a truncated SVD, count a low-rank update's parameters, and find a planted bug and a rounding trap against hand work.</p><a class="nb" href="../labs/W8_1.ipynb">W8_1.ipynb</a></div><ul class="checklist"><li>Set up; broadcasting shapes by hand <span class="min">10 min</span></li><li>Ratings: fill, centre, truncate, test <span class="min">25 min</span></li><li>A low-rank weight update <span class="min">15 min</span></li><li>Floating-point limits <span class="min">15 min</span></li><li>Check a function against hand cases <span class="min">15 min</span></li><li>Find and fix the planted bug <span class="min">15 min</span></li><li>Write your capstone plan <span class="min">10 min</span></li><li class="stretch">✱ Stretch: Fit the ratings by alternating least squares and compare</li></ul></div>
+  <aside class="notes"><p>AI-tutor: hints only, until the capstone plan, which opens the AI-full capstone. Approve each participant's dataset in step 7: public, licence that allows sharing, an image, ratings or embedding matrix, no personal data.</p></aside>
+</section>
+
+<section class="slide" id="debrief-ratings" data-lo="LO6" data-n="16" data-session="1">
+  <div class="kicker">Debrief · lab 8.1</div>
+  <h2>Rank 3 predicted held-out ratings best: 0.543 against 0.602 for the course mean</h2>
+  <div class="bars">
+    <div class="row"><span>Course mean</span><div class="bar c-coral" style="--w:100%"></div><span class="val">0.6022</span></div>
+    <div class="row"><span>Rank 1</span><div class="bar c-cyan" style="--w:95%"></div><span class="val">0.5709</span></div>
+    <div class="row"><span>Rank 3</span><div class="bar c-teal" style="--w:90%"></div><span class="val">0.5432</span></div>
+    <div class="row"><span>Rank 6</span><div class="bar c-cyan" style="--w:93%"></div><span class="val">0.5607</span></div>
+    <div class="row"><span>Rank 10</span><div class="bar c-cyan" style="--w:94%"></div><span class="val">0.5683</span></div>
+  </div>
+  <p class="small mt">RMSE on 665 held-out ratings. The data were generated with three taste dimensions: the curve found them.</p>
+  <aside class="notes"><p>From the solution run of lab 8.1. The synthetic update's singular values: 300.93, 278.92, 240.94, 235.94, then 0.31: rank 4, as built. The float32 one-pass variance of 10,001 to 10,005 came out 0.0; the two-pass gave 2.5.</p></aside>
+</section>
+
+<section class="slide" id="capstone-brief" data-lo="LO6" data-n="17" data-session="1">
+  <div class="kicker">The capstone</div>
+  <h2>A low-rank analysis of a public dataset of your choice, defended in ten minutes</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>A public image, ratings or embedding matrix, with a licence that allows sharing</li>
+      <li>A notebook in a public repository: the data, the SVD checked by hand on a small case, error by rank, the rank you choose, the leading components interpreted</li>
+      <li>AI-full: any assistant may help; you must explain and redo every step</li>
+    </ul>
+    <div class="card c-coral"><h4>The oral check</h4><p class="small mb0">Four minutes walking through the notebook, six reworking one step with new numbers the assessor gives you, by hand and in code.</p></div>
+  </div>
+  <aside class="notes"><p>The rubric is on the capstone deck. Practise the rework with a neighbour: one gives a 2 × 2 matrix, the other finds its singular values by hand and checks them in code.</p></aside>
+</section>
+
+<section class="slide" id="wrap-up" data-n="18" data-session="1">
+  <div class="kicker">Week 8 · wrap-up</div>
+  <h2>Three things to keep</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>Low rank is a model</h4><p class="small mb0">Ratings and model updates are close to low rank; choose k on held-out data.</p></div>
+    <div class="card c-coral"><h4>Shapes, then values</h4><p class="small mb0">Broadcasting can run and be wrong. Test with rectangular shapes.</p></div>
+    <div class="card c-purple"><h4>Check with tolerance</h4><p class="small mb0">A hand case, properties and the library, compared with a stated tolerance.</p></div>
+  </div>
+  <aside class="notes"><p>Close the teaching weeks: ask each participant for the one habit from the eight weeks they will keep.</p></aside>
+</section>
+
+<section class="slide dark" id="next" data-label="Next" data-n="19" data-session="1">
+  <div class="kicker">Next</div>
+  <h2>The capstone and the second supervised test</h2>
+  <p class="lead">Problem set 8 (60 minutes, AI off for the first attempt): labs/problem-sets/PS8.ipynb. Then the second supervised test, and the capstone notebook and oral check.</p>
+  <aside class="notes"><p>The second supervised test covers weeks 5 to 8, 90 minutes, AI off, half on paper and half at the keyboard. The capstone time: a 30-minute dataset clinic, independent work, a peer dry run of the oral check, then the ten-minute oral check.</p></aside>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-25T06:33:42Z","version":"2027.1.0","commit":"f5792fb"},"course":{"id":"fnd-mth-101","code":"FND-MTH-101","title":"Linear Algebra for Machine Learning","track":"foundations","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/fnd-mth-101/","repo":"SDAIAAcademy/fnd-mth-101","home":"../index.html"},"deck":{"id":"week8","kind":"day","day":8,"label":"Week 8","title":"Low rank in practice, and working numerically","prev":"week7.html","next":"capstone.html","md":"week8.md","alt":{}},"sessions":[{"n":1,"label":"Session 1","title":"Low rank in practice","slide":"s1","outcomes":["Predict held-out ratings with a truncated SVD and choose the rank","Count the parameters of a low-rank weight update","Find a broadcasting or rounding error by checking code against a hand case"],"minutes":210,"lab":{"id":"8.1","title":"Low-rank ratings and adapter updates, checked by hand","minutes":105,"href":"../labs/W8_1.ipynb"}}],"slides":[{"id":"title","n":1,"title":"Low rank in practice, and working numerically","kind":"title","session":0,"hash":"18b4e4b9","md":"#### [week8#title] Low rank in practice, and working numerically\n\n*SDAIA Academy · Linear Algebra for Machine Learning*\n\nWeek 8: Low-rank models in recommenders and adapters, and code you can trust\n\nData & AI Foundations Track · 8 weeks + capstone · 1 session · 1 lab · FND-MTH-101","notes":"Collect PS7 difficulties: usually the Frobenius error computed with the kept singular values. Last teaching week: low rank where machine learning uses it, the numerical habits that keep code honest, and the capstone plan.","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"Low rank in practice, and working numerically","kind":"content","session":0,"hash":"2027fb49","md":"#### [week8#agenda] Low rank in practice, and working numerically\n\n*This week*\n\n- **Session 1 · Low rank in practice**: Low-rank structure in recommenders and in model adaptation, vectorisation and broadcasting, floating-point limits, and checking code against hand computation","notes":"","minutes":null,"lo":[]},{"id":"review-week7","n":3,"title":"Choosing a rank for an image","kind":"quiz","session":0,"hash":"155d6ecd","md":"#### [week8#review-week7] Choosing a rank for an image\n\n*Review · week 7*\n\n**Question:** A 600 × 400 image has singular values that fall slowly: rank 300 still leaves 5% relative error. What should you conclude?\n\n- A. A rank-300 copy is a good way to save space\n- B. The SVD was computed wrongly\n- C. This image has little low-rank structure; truncation is a poor compressor for it\n- D. Centring the image would make rank 10 enough","notes":"Answer C. 600 × 400 / 1,001 ≈ 240: past that k the copy is larger than the image.","minutes":null,"lo":["LO6"]},{"id":"s1","n":4,"title":"Low rank in practice","kind":"section","session":1,"hash":"886acb58","md":"#### [week8#s1] Low rank in practice\n\n*Session 1*\n\n- Predict held-out ratings with a truncated SVD and choose the rank\n- Count the parameters of a low-rank weight update\n- Find a broadcasting or rounding error by checking code against a hand case","notes":"","minutes":null,"lo":["LO2","LO4","LO6"]},{"id":"recommenders","n":5,"title":"A ratings matrix is close to low rank because tastes are few","kind":"content","session":1,"hash":"c4505222","md":"#### [week8#recommenders] A ratings matrix is close to low rank because tastes are few\n\n*Block A · recommenders*\n\n- Rows are people, columns are items; most entries are missing\n- A rank-k model: each person is k numbers of taste, each item k numbers of character\n- A predicted rating is the dot product of the two\n- Truncated SVD after filling the gaps is the simplest version; methods that fit only the observed entries do better","notes":"Link to week 1: a prediction is a dot product of two vectors, a person's and an item's. The lab uses the course-mean fill and the SVD; the stretch fits only observed entries by alternating least squares (week 5).","minutes":null,"lo":["LO6","LO2"]},{"id":"choose-rank-held-out","n":6,"title":"Choose the rank on ratings the model did not see","kind":"content","session":1,"hash":"7511642f","md":"#### [week8#choose-rank-held-out] Choose the rank on ratings the model did not see\n\n*Choosing k*\n\n- **Training error.** Falls with every extra layer, down to zero at full rank. It cannot choose k.\n- **Held-out error.** Falls, then rises once extra layers fit noise. Its lowest point is the rank to use.\n\n> **The trap.** Choosing k on the test set and then reporting the test error flatters the model. With enough data, keep a third split for the final report.","notes":"Do not give the lab's best rank: ask the room to predict the shape of the curve and where its minimum might be.","minutes":null,"lo":["LO6"]},{"id":"adapters","n":7,"title":"A low-rank update adapts a large model by training two thin matrices","kind":"content","session":1,"hash":"60376305","md":"#### [week8#adapters] A low-rank update adapts a large model by training two thin matrices\n\n*Model adaptation*\n\nW' = W + **B A**, with B d × r and A r × d, W frozen\n\nd = 1,024, r = 8: **16,384** trainable numbers against 1,048,576: **1.56%**\n\n- **Low-Rank Adaptation (LoRA).** The 2021 paper that introduced the method reports up to 10,000 times fewer trainable parameters on its largest model.","notes":"From slide_numbers.py, week 8, and Hu et al., \"LoRA: Low-Rank Adaptation of Large Language Models\", arXiv 2106.09685 (2021). Sources: the arXiv abstract page. The bet is that the change a task needs is close to low rank; the paper tests it, this course only shows the arithmetic.","minutes":null,"lo":["LO6","LO2"]},{"id":"check-rank-choice","n":8,"title":"Which rank would you report?","kind":"quiz","session":1,"hash":"b13d42f3","md":"#### [week8#check-rank-choice] Which rank would you report?\n\n*Checkpoint*\n\n**Question:** Held-out errors for ranks 1 to 6 of a film-ratings model: 0.91, 0.86, 0.84, 0.85, 0.87, 0.90. Training errors fall from 0.88 to 0.61. Which rank?\n\n- A. 6, with the lowest training error\n- B. 3, with the lowest held-out error\n- C. 1, the simplest model\n- D. 4, the middle of the range","notes":"Answer B. Invented numbers for a different domain, not the lab's.","minutes":null,"lo":["LO6"]},{"id":"broadcasting-rules","n":9,"title":"Broadcasting lines shapes up from the right and stretches dimensions of 1","kind":"content","session":1,"hash":"dc778bf6","md":"#### [week8#broadcasting-rules] Broadcasting lines shapes up from the right and stretches dimensions of 1\n\n*Block B · vectorisation and broadcasting*\n\n(3, 1) + (1, 2) gives (3, 2):\n\n```python\n# file: numpy\na = np.array([[1], [2], [3]])   # (3, 1)\nb = np.array([[10, 20]])        # (1, 2)\na + b   # [[11, 21], [12, 22], [13, 23]]\n```\n\n1. Compare shapes from the last dimension\n2. Equal sizes match; a size of 1 stretches\n3. Anything else is an error","notes":"From slide_numbers.py, week 8. Week 2 met vectorisation for speed; here the rules, because a wrong broadcast does not always raise an error.","minutes":null,"lo":["LO4"]},{"id":"axis-bugs","n":10,"title":"A square test matrix hides an axis bug","kind":"content","session":1,"hash":"fea4012e","md":"#### [week8#axis-bugs] A square test matrix hides an axis bug\n\n*Silent errors*\n\n- `M - M.mean(axis=1)` on an n × m matrix lines the row means up with the columns\n- If n ≠ m it fails with an error; if n = m it runs and is wrong\n- Use `keepdims=True`, or a shape that says what you mean: (n, 1)\n- Test with rectangular shapes, such as 2 × 3, never only square ones","notes":"This is the shape of the planted bug in the lab: let participants find it themselves. Say only that it is a broadcast that runs.","minutes":null,"lo":["LO4"]},{"id":"check-broadcast","n":11,"title":"Predict the shape","kind":"quiz","session":1,"hash":"399e1250","md":"#### [week8#check-broadcast] Predict the shape\n\n*Checkpoint*\n\n**Question:** X has shape (100, 5). What does `X - X.mean(axis=0)` do?\n\n- A. Subtracts each row's mean from that row\n- B. Raises a shape error\n- C. Subtracts one overall mean from every entry\n- D. Subtracts each column's mean from that column","notes":"Answer D. This is the centring of weeks 1, 6 and 7, written correctly.","minutes":null,"lo":["LO4"]},{"id":"float-limits","n":12,"title":"A float keeps a fixed number of significant digits, about 7 or 16","kind":"content","session":1,"hash":"74cfb3df","md":"#### [week8#float-limits] A float keeps a fixed number of significant digits, about 7 or 16\n\n*Block C · floating point*\n\n| Expression | Result | Why |\n| --- | --- | --- |\n| 1e16 + 1 − 1e16 | 0.0 | At 10¹⁶ the gap between float64 numbers is 2 |\n| float32: 1 + 10⁻⁸ == 1 | True | Machine epsilon for float32 is 1.19 × 10⁻⁷ |\n| Subtracting nearly equal numbers | Most digits cancel | What is left is mostly rounding |","notes":"From slide_numbers.py, week 8. Link back: conditioning (week 5) says how much a problem amplifies these rounding errors; this slide says how big they start.","minutes":null,"lo":["LO3","LO4"]},{"id":"hand-checks","n":13,"title":"Trust code that agrees with a hand case and a trusted library, within a stated tolerance","kind":"content","session":1,"hash":"9a387102","md":"#### [week8#hand-checks] Trust code that agrees with a hand case and a trusted library, within a stated tolerance\n\n*Checking code*\n\n1. **1 · Hand case** a 2 × 2 or 2 × 3 you worked on paper\n2. **2 · Properties** Qᵀ Q = I, A x = b, rows sum to zero\n3. **3 · Random cases** against the library, with a tolerance\n\n> **Tolerance.** Compare with `np.allclose(a, b, atol, rtol)`, never with ==. State the tolerance you chose and why.","notes":"This is what every problem set's checker did, and what the capstone rubric asks for: \"a small case agrees with hand work\".","minutes":null,"lo":["LO4"]},{"id":"check-float","n":14,"title":"Why does this test fail?","kind":"quiz","session":1,"hash":"428118b5","md":"#### [week8#check-float] Why does this test fail?\n\n*Checkpoint*\n\n**Question:** A test asserts `Q.T @ Q == np.eye(3)` for a correct QR and fails. What is wrong?\n\n- A. Exact equality on floats: compare with a tolerance instead\n- B. The QR routine has a bug\n- C. The product should be Q @ Q.T\n- D. Convert Q to float32 first","notes":"Answer A. Option C is a good discussion: Q Qᵀ is the projection onto the column space, the identity only when Q is square.","minutes":null,"lo":["LO4"]},{"id":"lab-8-1","n":15,"title":"Low-rank ratings and adapter updates, checked by hand","kind":"lab","session":1,"hash":"9008c91f","md":"#### [week8#lab-8-1] Low-rank ratings and adapter updates, checked by hand\n\nLab 8.1 · 105 min\n\nPredict held-out course ratings with a truncated SVD, count a low-rank update's parameters, and find a planted bug and a rounding trap against hand work.\n\n[W8_1.ipynb](https://sdaiaacademy.github.io/fnd-mth-101/labs/W8_1.ipynb)\n\n- [ ] Set up; broadcasting shapes by hand (10 min)\n- [ ] Ratings: fill, centre, truncate, test (25 min)\n- [ ] A low-rank weight update (15 min)\n- [ ] Floating-point limits (15 min)\n- [ ] Check a function against hand cases (15 min)\n- [ ] Find and fix the planted bug (15 min)\n- [ ] Write your capstone plan (10 min)\n- [ ] ✱ Stretch: Fit the ratings by alternating least squares and compare","notes":"AI-tutor: hints only, until the capstone plan, which opens the AI-full capstone. Approve each participant's dataset in step 7: public, licence that allows sharing, an image, ratings or embedding matrix, no personal data.","minutes":null,"lo":[]},{"id":"debrief-ratings","n":16,"title":"Rank 3 predicted held-out ratings best: 0.543 against 0.602 for the course mean","kind":"content","session":1,"hash":"bf38c577","md":"#### [week8#debrief-ratings] Rank 3 predicted held-out ratings best: 0.543 against 0.602 for the course mean\n\n*Debrief · lab 8.1*\n\n| Item | Value |\n| --- | --- |\n| Course mean | 0.6022 |\n| Rank 1 | 0.5709 |\n| Rank 3 | 0.5432 |\n| Rank 6 | 0.5607 |\n| Rank 10 | 0.5683 |\n\nRMSE on 665 held-out ratings. The data were generated with three taste dimensions: the curve found them.","notes":"From the solution run of lab 8.1. The synthetic update's singular values: 300.93, 278.92, 240.94, 235.94, then 0.31: rank 4, as built. The float32 one-pass variance of 10,001 to 10,005 came out 0.0; the two-pass gave 2.5.","minutes":null,"lo":["LO6"]},{"id":"capstone-brief","n":17,"title":"A low-rank analysis of a public dataset of your choice, defended in ten minutes","kind":"content","session":1,"hash":"d538a9d5","md":"#### [week8#capstone-brief] A low-rank analysis of a public dataset of your choice, defended in ten minutes\n\n*The capstone*\n\n- A public image, ratings or embedding matrix, with a licence that allows sharing\n- A notebook in a public repository: the data, the SVD checked by hand on a small case, error by rank, the rank you choose, the leading components interpreted\n- AI-full: any assistant may help; you must explain and redo every step\n\n- **The oral check.** Four minutes walking through the notebook, six reworking one step with new numbers the assessor gives you, by hand and in code.","notes":"The rubric is on the capstone deck. Practise the rework with a neighbour: one gives a 2 × 2 matrix, the other finds its singular values by hand and checks them in code.","minutes":null,"lo":["LO6"]},{"id":"wrap-up","n":18,"title":"Three things to keep","kind":"content","session":1,"hash":"517ac187","md":"#### [week8#wrap-up] Three things to keep\n\n*Week 8 · wrap-up*\n\n- **Low rank is a model.** Ratings and model updates are close to low rank; choose k on held-out data.\n- **Shapes, then values.** Broadcasting can run and be wrong. Test with rectangular shapes.\n- **Check with tolerance.** A hand case, properties and the library, compared with a stated tolerance.","notes":"Close the teaching weeks: ask each participant for the one habit from the eight weeks they will keep.","minutes":null,"lo":[]},{"id":"next","n":19,"title":"The capstone and the second supervised test","kind":"content","session":1,"hash":"5843fe78","md":"#### [week8#next] The capstone and the second supervised test\n\n*Next*\n\nProblem set 8 (60 minutes, AI off for the first attempt): labs/problem-sets/PS8.ipynb. Then the second supervised test, and the capstone notebook and oral check.","notes":"The second supervised test covers weeks 5 to 8, 90 minutes, AI off, half on paper and half at the keyboard. The capstone time: a 30-minute dataset clinic, independent work, a peer dry run of the oral check, then the ten-minute oral check.","minutes":null,"lo":[]}],"activities":[{"id":"review-week7-q1","slide":"review-week7","type":"single","prompt":"A 600 × 400 image has singular values that fall slowly: rank 300 still leaves 5% relative error. What should you conclude?","options":[{"key":"A","text":"A rank-300 copy is a good way to save space"},{"key":"B","text":"The SVD was computed wrongly"},{"key":"C","text":"This image has little low-rank structure; truncation is a poor compressor for it"},{"key":"D","text":"Centring the image would make rank 10 enough"}],"correct":[2],"explanation":"Storage k(m + n + 1) exceeds m n from k = 240, and the error is still 5%: the singular values decide.","misconceptions":["Assumes any truncation saves space: a rank-300 copy stores 300 × 1,001 numbers, more than 240,000","Thinks the SVD failed: slow decay is a property of the image","","Thinks centring always makes a matrix low-rank: it removes one layer at most"],"lo":["LO6"]},{"id":"check-rank-choice-q1","slide":"check-rank-choice","type":"single","prompt":"Held-out errors for ranks 1 to 6 of a film-ratings model: 0.91, 0.86, 0.84, 0.85, 0.87, 0.90. Training errors fall from 0.88 to 0.61. Which rank?","options":[{"key":"A","text":"6, with the lowest training error"},{"key":"B","text":"3, with the lowest held-out error"},{"key":"C","text":"1, the simplest model"},{"key":"D","text":"4, the middle of the range"}],"correct":[1],"explanation":"Held-out error is lowest at rank 3 and rises after: later layers fit noise.","misconceptions":["Chooses by training error, which always favours the largest rank","","Picks the smallest model by habit: rank 1 is clearly worse on held-out data","Averages ranks instead of comparing errors: the average has no meaning here"],"lo":["LO6"]},{"id":"check-broadcast-q1","slide":"check-broadcast","type":"single","prompt":"X has shape (100, 5). What does X - X.mean(axis=0) do?","options":[{"key":"A","text":"Subtracts each row's mean from that row"},{"key":"B","text":"Raises a shape error"},{"key":"C","text":"Subtracts one overall mean from every entry"},{"key":"D","text":"Subtracts each column's mean from that column"}],"correct":[3],"explanation":"X.mean(axis=0) has shape (5,); it lines up with the last dimension and stretches over the 100 rows.","misconceptions":["Confuses axis 0 with rows: axis=0 averages down the rows, one mean per column","Expects an error: shapes (100, 5) and (5,) line up from the right","Thinks the mean is a single number: axis=0 gives one per column",""],"lo":["LO4"]},{"id":"check-float-q1","slide":"check-float","type":"single","prompt":"A test asserts Q.T @ Q == np.eye(3) for a correct QR and fails. What is wrong?","options":[{"key":"A","text":"Exact equality on floats: compare with a tolerance instead"},{"key":"B","text":"The QR routine has a bug"},{"key":"C","text":"The product should be Q @ Q.T"},{"key":"D","text":"Convert Q to float32 first"}],"correct":[0],"explanation":"Entries differ from 0 and 1 by about 10⁻¹⁶: correct, but not exactly equal.","misconceptions":["","Blames the factorisation: a correct Q is orthonormal only up to rounding","Thinks Q.T @ Q needs a different order: Q Qᵀ is not the identity for a tall Q","Believes float32 would fix it: fewer digits make the gap larger"],"lo":["LO4"]}],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"week8.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>

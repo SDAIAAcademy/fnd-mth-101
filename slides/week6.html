@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="foundations">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 6 · Eigenvectors and link ranking · Linear Algebra for Machine Learning</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="week6.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Linear Algebra for Machine Learning" data-track="foundations" data-day="Week 6">
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Linear Algebra for Machine Learning</div>
+  <h1>Eigenvectors and link ranking</h1>
+  <p class="lead mt">Week 6: Directions a matrix only stretches, and the page a random reader ends on</p>
+  <div class="meta"><span class="track">Data &amp; AI Foundations Track</span><span>8 weeks + capstone</span><span>1 session · 1 lab</span><span>FND-MTH-101</span></div>
+  <aside class="notes"><p>Collect PS5 difficulties: usually the difference between cond(D) and cond(DᵀD). This week the question changes from "solve" to "which directions does a matrix favour".</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-auto="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">This week</div>
+  <h2>Eigenvectors and link ranking</h2>
+  <div class="agenda"><div class="item"><div><b>Session 1 · Eigenvectors and link ranking</b><small>Eigenvectors of symmetric matrices, covariance and the idea of principal components, and power iteration for link ranking</small></div></div></div>
+</section>
+
+<section class="slide" id="review-week5" data-lo="LO3 LO5" data-n="3">
+  <div class="kicker">Review · week 5</div>
+  <h2>Normal equations or QR?</h2>
+  <div class="quiz" data-type="single" data-lo="LO5" data-id="review-week5-q1">
+    <p class="lead">A model fitted by the normal equations and by QR gives coefficients that differ in the third significant digit. The residual norms agree to eight digits. What is the most likely cause?</p>
+    <div class="opts">
+      <div class="opt" data-ok data-k="A">Nearly collinear columns: cond(X) is high and the normal equations square it</div>
+      <div class="opt" data-why="Blames the solver for a bug: two correct methods disagree exactly where the problem is ill-conditioned" data-k="B">A bug in the QR routine of the library</div>
+      <div class="opt" data-why="Thinks equal residuals prove equal coefficients: many β give nearly the same fit" data-k="C">Nothing: equal residuals mean the coefficients must be equal too</div>
+      <div class="opt" data-why="Takes the sample size as the cause: conditioning is about the columns' angles" data-k="D">Too few rows; more data would make the methods agree</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Stable residuals with unstable coefficients is the signature of near-collinearity, amplified by forming XᵀX.</div>
+  </div>
+  <aside class="notes"><p>Answer A. More rows can help if they break the collinearity, which is why D is tempting; but the cause is the columns.</p></aside>
+</section>
+
+<!-- Session 1 -->
+
+<section class="slide section" id="s1" data-auto="section" data-session="1" data-n="4">
+  <div class="kicker">Session 1</div>
+  <h1>Eigenvectors and link ranking</h1>
+  <ul class="bullets outcomes"><li>Find the eigenvalues and eigenvectors of a two-by-two symmetric matrix by hand</li><li>Explain what the leading eigenvector of a covariance matrix shows</li><li>Rank pages by power iteration with damping, and explain dangling pages and islands</li></ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" id="eigen-idea" data-lo="LO2" data-n="5" data-session="1">
+  <div class="kicker">Block A · eigenvectors</div>
+  <h2>An eigenvector is a direction the matrix only stretches</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>A = [[4, 1], [1, 4]]</p>
+      <p>A (1, 0) = (4, 1): turned, not an eigenvector</p>
+      <p>A (1, 1) = (5, 5) = <b>5 × (1, 1)</b>: an eigenvector, eigenvalue 5</p>
+    </div>
+    <div class="card c-teal"><h4>A v = λ v</h4><p class="small mb0">λ is the stretch factor. A negative λ flips the direction; λ = 0 squashes it: the matrix is singular.</p></div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 6. Ask for the other eigenvector: (1, −1), with A(1, −1) = (3, −3), eigenvalue 3.</p></aside>
+</section>
+
+<section class="slide" id="characteristic" data-lo="LO2 LO4" data-n="6" data-session="1">
+  <div class="kicker">By hand</div>
+  <h2>Eigenvalues solve det(A − λI) = 0</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>det([[4 − λ, 1], [1, 4 − λ]]) = (4 − λ)² − 1 = 0</p>
+      <p>4 − λ = ±1, so <b>λ = 5 or 3</b></p>
+      <p class="small">For a 2 × 2: λ² − (trace) λ + det = 0. Here trace 8, det 15.</p>
+    </div>
+    <pre class="code" data-file="numpy"><code class="language-python">w, V = np.linalg.eigh(A)
+w          <span class="hljs-comment"># [3., 5.]  ascending</span>
+V[:, <span class="hljs-number">1</span>]    <span class="hljs-comment"># [0.7071, 0.7071]</span></code></pre>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 6. eigh is for symmetric matrices: real eigenvalues in ascending order, orthonormal eigenvectors. For larger matrices nobody uses the polynomial: libraries iterate.</p></aside>
+</section>
+
+<section class="slide" id="symmetric-spectral" data-lo="LO2" data-n="7" data-session="1">
+  <div class="kicker">Symmetric matrices</div>
+  <h2>A symmetric matrix has real eigenvalues and orthogonal eigenvectors</h2>
+  <ul class="bullets">
+    <li>A = Q Λ Qᵀ: rotate into the eigenvector basis, stretch each axis, rotate back</li>
+    <li>(1, 1)/√2 and (1, −1)/√2 are orthogonal, as week 4 would want</li>
+    <li>Covariance matrices and XᵀX are symmetric: everything this week applies to them</li>
+  </ul>
+  <div class="callout note mt"><b>Machine learning use.</b> The eigenvalues of XᵀX are the squares of X's singular values; their ratio is cond(X)², week 5's number.</div>
+  <aside class="notes"><p>The spectral theorem, stated not proved. Link back: a zero eigenvalue of XᵀX is a dependent column of X (week 3).</p></aside>
+</section>
+
+<section class="slide" id="check-eigen" data-lo="LO2" data-n="8" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Reading eigenvalues</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="check-eigen-q1">
+    <p class="lead">A symmetric 3 × 3 matrix has eigenvalues 9, 4 and 0. Which statement is right?</p>
+    <div class="opts">
+      <div class="opt" data-why="Thinks eigenvalues are diagonal entries: they are only for a diagonal matrix" data-k="A">Its diagonal entries are 9, 4 and 0</div>
+      <div class="opt" data-why="Believes a zero eigenvalue only means a small entry: it means a direction sent to zero" data-k="B">It is invertible, because two eigenvalues are positive</div>
+      <div class="opt" data-ok data-k="C">It has rank 2 and squashes one direction to zero</div>
+      <div class="opt" data-why="Confuses symmetric with orthogonal: an orthogonal matrix keeps lengths, eigenvalues of size 1" data-k="D">Its eigenvectors have lengths 9, 4 and 0</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> A v = 0 for the eigenvector of 0: that direction is lost, so the rank is 2 and there is no inverse.</div>
+  </div>
+  <aside class="notes"><p>Answer C. Eigenvectors have any length you choose; only their direction is fixed.</p></aside>
+</section>
+
+<section class="slide" id="covariance" data-lo="LO2" data-n="9" data-session="1">
+  <div class="kicker">Block B · covariance</div>
+  <h2>A covariance matrix records how features vary together</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Learner</th><th class="num">Quiz 1</th><th class="num">Quiz 2</th></tr>
+      <tr><td>1</td><td class="num">60</td><td class="num">65</td></tr>
+      <tr><td>2</td><td class="num">70</td><td class="num">72</td></tr>
+      <tr><td>3</td><td class="num">80</td><td class="num">79</td></tr>
+      <tr><td>4</td><td class="num">90</td><td class="num">88</td></tr>
+      <tr><td>5</td><td class="num">50</td><td class="num">56</td></tr>
+    </table>
+    <div>
+      <p>Centre the columns (means 70 and 72), then C = XcᵀXc / (n − 1):</p>
+      <p><b>C = [[250, 195], [195, 152.5]]</b></p>
+      <p class="small">Diagonal: variances. Off the diagonal: how the two move together.</p>
+    </div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 6. Five invented learners, a different set from any lab. Covariance is a product of the centred data with itself: week 1's centring again.</p></aside>
+</section>
+
+<section class="slide" id="pca-idea" data-lo="LO2" data-n="10" data-session="1">
+  <div class="kicker">Principal components</div>
+  <h2>The leading eigenvector of the covariance is the direction of greatest spread</h2>
+  <div class="cols cols-2">
+    <div class="stat center"><div class="big">99.94%</div><div class="lbl">of the total variance lies along (0.79, 0.62)</div></div>
+    <ul class="bullets">
+      <li>Eigenvalues 402.25 and 0.25</li>
+      <li>The two quizzes are almost one measurement: "overall score"</li>
+      <li>That direction is the <b>first principal component</b></li>
+    </ul>
+  </div>
+  <div class="callout note mt"><b>Machine learning use.</b> Principal component analysis (PCA) keeps the few directions that hold most of the variance. Week 7 computes it through the SVD.</div>
+  <aside class="notes"><p>From slide_numbers.py, week 6 (the library returned the vector with both signs negative; either sign is the same direction). Ask what the second component, with 0.06% of the variance, might be: the difference between the quizzes.</p></aside>
+</section>
+
+<section class="slide" id="check-pca" data-lo="LO2" data-n="11" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>What does the first component tell you?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="check-pca-q1">
+    <p class="lead">Four features of course pages have a covariance matrix with eigenvalues 30, 5, 1 and 0.5. What can you say?</p>
+    <div class="opts">
+      <div class="opt" data-why="Equates the number of eigenvalues with the number of useful features: the spread is uneven" data-k="A">All four features carry about the same information</div>
+      <div class="opt" data-ok data-k="B">About 82% of the variance lies along one direction, a combination of the features</div>
+      <div class="opt" data-why="Thinks a component is one of the original features: it is a combination of all four" data-k="C">The first feature explains 82% of the variance</div>
+      <div class="opt" data-why="Reads the smallest eigenvalue as an error: a small variance is still variance" data-k="D">The fourth feature is an error and must be removed</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> 30 / (30 + 5 + 1 + 0.5) ≈ 0.82, along the leading eigenvector, which mixes the features.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Keep the distinction clear: components are directions, not columns.</p></aside>
+</section>
+
+<section class="slide" id="power-iteration" data-lo="LO2 LO4" data-n="12" data-session="1">
+  <div class="kicker">Block C · power iteration</div>
+  <h2>Multiply by the matrix again and again, and the leading eigenvector wins</h2>
+  <ul class="bullets">
+    <li>Write the start as a mix of eigenvectors</li>
+    <li>Each multiplication scales each part by its eigenvalue</li>
+    <li>The part with the largest |λ| outgrows the rest; normalise to keep the numbers in range</li>
+    <li>The error shrinks by about |λ₂ / λ₁| per step</li>
+  </ul>
+  <aside class="notes"><p>No eigenvalue formula needed: just products. This is how a matrix with millions of rows has its leading eigenvector found.</p></aside>
+</section>
+
+<section class="slide" id="random-reader" data-lo="LO2" data-n="13" data-session="1">
+  <div class="kicker">Link ranking</div>
+  <h2>A page's rank is the chance a random reader is on it, in the long run</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>Pages P, Q, R. P links to Q and R, Q to R, R to P. Column-stochastic M; start (1/3, 1/3, 1/3).</p>
+      <table class="t small">
+        <tr><th>Step</th><th>P, Q, R</th></tr>
+        <tr><td>1</td><td>0.333, 0.167, 0.500</td></tr>
+        <tr><td>2</td><td>0.500, 0.167, 0.333</td></tr>
+        <tr class="hl"><td>limit</td><td>0.4, 0.2, 0.4</td></tr>
+      </table>
+    </div>
+    <div class="card c-teal"><h4>An eigenvector</h4><p class="small mb0">The limit satisfies M x = x: the eigenvector of eigenvalue 1, scaled to add up to 1.</p></div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 6. Work step 1 by hand: P receives all of R's 1/3; Q receives half of P's; R receives half of P's and all of Q's.</p></aside>
+</section>
+
+<section class="slide" id="damping" data-lo="LO2" data-n="14" data-session="1">
+  <div class="kicker">What goes wrong</div>
+  <h2>Dead ends, closed loops and link farms break the plain walk; damping repairs it</h2>
+  <table class="t">
+    <tr><th>Problem</th><th>Effect</th><th>Repair</th></tr>
+    <tr><td>A page with no links out</td><td>Probability leaks away</td><td>Jump anywhere from it</td></tr>
+    <tr><td>A closed group of pages</td><td>The walk is trapped, may cycle</td><td>Damping: jump anywhere with probability 1 − d</td></tr>
+    <tr class="hl"><td>Pages that link to each other to lift one</td><td>The group gains rank</td><td>Smaller d limits it; it does not remove it</td></tr>
+  </table>
+  <aside class="notes"><p>With damping d, every entry of G is positive, the eigenvalue 1 is unique and the others are at most d in size, so convergence takes about log(tolerance) / log(d) steps: about 142 for 10⁻¹⁰ at d = 0.85 (slide_numbers.py). The lab measures the real count.</p></aside>
+</section>
+
+<section class="slide" id="check-power" data-lo="LO2" data-n="15" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Why does damping speed up convergence?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="check-power-q1">
+    <p class="lead">With damping d = 0.85, power iteration converges in about a hundred steps; at d = 0.99 it takes many more. Why?</p>
+    <div class="opts">
+      <div class="opt" data-why="Thinks larger d means fewer pages: the graph is the same" data-k="A">A larger d removes pages from the graph</div>
+      <div class="opt" data-why="Thinks the leading eigenvalue changes: it stays exactly 1" data-k="B">A larger d makes the leading eigenvalue larger than 1</div>
+      <div class="opt" data-why="Thinks convergence depends on the starting vector only: the eigenvalue gap governs it" data-k="C">A larger d needs a better starting vector</div>
+      <div class="opt" data-ok data-k="D">The second-largest eigenvalue is at most d, so the error shrinks more slowly when d is near 1</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The error shrinks by about |λ₂| per step, and |λ₂| ≤ d: 0.99 shrinks it by only 1% a step.</div>
+  </div>
+  <aside class="notes"><p>Answer D. The lab's stretch checks it.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-6-1" data-auto="lab" data-lab="6.1" data-label="Lab 6.1" data-n="16" data-session="1">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 6.1 · 105 min</div><h2>Power iteration and link ranking on a synthetic web graph</h2><p class="lead small">Rank the 40 help-centre pages by power iteration, see what a dangling page, an island and a link farm do, and fix them with damping.</p><a class="nb" href="../labs/W6_1.ipynb">W6_1.ipynb</a></div><ul class="checklist"><li>Set up; eigenpairs of a two-by-two by hand <span class="min">15 min</span></li><li>Build the link matrix of the 40 pages <span class="min">15 min</span></li><li>Power iteration without damping <span class="min">15 min</span></li><li>Fix the dangling page and add damping <span class="min">20 min</span></li><li>Convergence, and a check with the library <span class="min">15 min</span></li><li>The link farm and a damping sweep <span class="min">15 min</span></li><li>Record the ranking for the content lead <span class="min">10 min</span></li><li class="stretch">✱ Stretch: Show that the number of steps follows the damping factor</li></ul></div>
+  <aside class="notes"><p>AI-tutor: hints only. Watch for: the link matrix built row-stochastic (M[i, j] in place of M[j, i]), which gives a different, wrong vector; eigenvectors from eig that come out complex-typed or negative: take the real part and rescale to add up to 1.</p></aside>
+</section>
+
+<section class="slide" id="debrief-undamped" data-lo="LO2" data-n="17" data-session="1">
+  <div class="kicker">Debrief · lab 6.1</div>
+  <h2>Without damping, two thirds of the probability leaked away in 200 steps</h2>
+  <div class="cols cols-3">
+    <div class="stat center"><div class="big">0.3252</div><div class="lbl">total left after 200 steps</div></div>
+    <div class="stat center"><div class="big">38%</div><div class="lbl">of what was left sat on the island P36 to P40</div></div>
+    <div class="stat center"><div class="big">110</div><div class="lbl">steps to 10⁻¹⁰ with d = 0.85</div></div>
+  </div>
+  <aside class="notes"><p>From the solution run of lab 6.1. The undamped walk was still changing (4.7 × 10⁻⁶ in the last step): the island's five pages form a cycle. With damping the second eigenvalue was exactly 0.85, and power iteration matched the library's eigenvector to 6 × 10⁻¹¹. 110 steps, fewer than the bound of about 142.</p></aside>
+</section>
+
+<section class="slide" id="debrief-farm" data-lo="LO2" data-n="18" data-session="1">
+  <div class="kicker">Debrief · lab 6.1</div>
+  <h2>A link-farm page ranked first, and a larger d helped the farm more</h2>
+  <table class="t">
+    <tr><th class="num">d</th><th class="num">Farm share (P31 to P34)</th><th class="num">P31's position</th><th class="num">Steps</th></tr>
+    <tr><td class="num">0.50</td><td class="num">10.7%</td><td class="num">12</td><td class="num">27</td></tr>
+    <tr class="hl"><td class="num">0.85</td><td class="num">12.9%</td><td class="num">7</td><td class="num">110</td></tr>
+    <tr><td class="num">0.95</td><td class="num">18.0%</td><td class="num">2</td><td class="num">311</td></tr>
+    <tr><td class="num">0.99</td><td class="num">34.8%</td><td class="num">2</td><td class="num">972</td></tr>
+  </table>
+  <p class="small mt">At d = 0.85 the top page was P32, a farm page, ahead of the home page P01 in fourth place.</p>
+  <aside class="notes"><p>From the solution run of lab 6.1. Four pages, a tenth of the 40, hold 12.9% of the rank by link structure alone. The record for the content lead should say that the ranking measures links, not usefulness, and that the farm pages need review.</p></aside>
+</section>
+
+<section class="slide" id="wrap-up" data-n="19" data-session="1">
+  <div class="kicker">Week 6 · wrap-up</div>
+  <h2>Three things to keep</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>Directions that only stretch</h4><p class="small mb0">Eigenvectors; symmetric matrices have orthogonal ones and real eigenvalues.</p></div>
+    <div class="card c-coral"><h4>Spread has a direction</h4><p class="small mb0">The leading eigenvector of a covariance matrix is the direction of greatest variance.</p></div>
+    <div class="card c-purple"><h4>Repeat to find it</h4><p class="small mb0">Power iteration finds the leading eigenvector by products alone; damping makes it converge.</p></div>
+  </div>
+  <aside class="notes"><p>Ask: which machine learning use of an eigenvalue would you name in the test? PCA (variance), link ranking (stationary vector), conditioning (ratio of eigenvalues of XᵀX).</p></aside>
+</section>
+
+<section class="slide dark" id="next" data-label="Next" data-n="20" data-session="1">
+  <div class="kicker">Next</div>
+  <h2>Week 7: Singular values and low rank</h2>
+  <p class="lead">Problem set 6 (60 minutes, AI off for the first attempt): labs/problem-sets/PS6.ipynb.</p>
+  <aside class="notes"><p>Week 7 downloads a public test image through SciPy's datasets module on first use: ask participants to run the setup cell of lab 7.1 at home if their network is slow.</p></aside>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-25T06:33:42Z","version":"2027.1.0","commit":"f5792fb"},"course":{"id":"fnd-mth-101","code":"FND-MTH-101","title":"Linear Algebra for Machine Learning","track":"foundations","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/fnd-mth-101/","repo":"SDAIAAcademy/fnd-mth-101","home":"../index.html"},"deck":{"id":"week6","kind":"day","day":6,"label":"Week 6","title":"Eigenvectors and link ranking","prev":"week5.html","next":"week7.html","md":"week6.md","alt":{}},"sessions":[{"n":1,"label":"Session 1","title":"Eigenvectors and link ranking","slide":"s1","outcomes":["Find the eigenvalues and eigenvectors of a two-by-two symmetric matrix by hand","Explain what the leading eigenvector of a covariance matrix shows","Rank pages by power iteration with damping, and explain dangling pages and islands"],"minutes":210,"lab":{"id":"6.1","title":"Power iteration and link ranking on a synthetic web graph","minutes":105,"href":"../labs/W6_1.ipynb"}}],"slides":[{"id":"title","n":1,"title":"Eigenvectors and link ranking","kind":"title","session":0,"hash":"06648a45","md":"#### [week6#title] Eigenvectors and link ranking\n\n*SDAIA Academy · Linear Algebra for Machine Learning*\n\nWeek 6: Directions a matrix only stretches, and the page a random reader ends on\n\nData & AI Foundations Track · 8 weeks + capstone · 1 session · 1 lab · FND-MTH-101","notes":"Collect PS5 difficulties: usually the difference between cond(D) and cond(DᵀD). This week the question changes from \"solve\" to \"which directions does a matrix favour\".","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"Eigenvectors and link ranking","kind":"content","session":0,"hash":"caf8e282","md":"#### [week6#agenda] Eigenvectors and link ranking\n\n*This week*\n\n- **Session 1 · Eigenvectors and link ranking**: Eigenvectors of symmetric matrices, covariance and the idea of principal components, and power iteration for link ranking","notes":"","minutes":null,"lo":[]},{"id":"review-week5","n":3,"title":"Normal equations or QR?","kind":"quiz","session":0,"hash":"15763e62","md":"#### [week6#review-week5] Normal equations or QR?\n\n*Review · week 5*\n\n**Question:** A model fitted by the normal equations and by QR gives coefficients that differ in the third significant digit. The residual norms agree to eight digits. What is the most likely cause?\n\n- A. Nearly collinear columns: cond(X) is high and the normal equations square it\n- B. A bug in the QR routine of the library\n- C. Nothing: equal residuals mean the coefficients must be equal too\n- D. Too few rows; more data would make the methods agree","notes":"Answer A. More rows can help if they break the collinearity, which is why D is tempting; but the cause is the columns.","minutes":null,"lo":["LO3","LO5"]},{"id":"s1","n":4,"title":"Eigenvectors and link ranking","kind":"section","session":1,"hash":"d60af02b","md":"#### [week6#s1] Eigenvectors and link ranking\n\n*Session 1*\n\n- Find the eigenvalues and eigenvectors of a two-by-two symmetric matrix by hand\n- Explain what the leading eigenvector of a covariance matrix shows\n- Rank pages by power iteration with damping, and explain dangling pages and islands","notes":"","minutes":null,"lo":["LO2","LO4"]},{"id":"eigen-idea","n":5,"title":"An eigenvector is a direction the matrix only stretches","kind":"content","session":1,"hash":"7dc58002","md":"#### [week6#eigen-idea] An eigenvector is a direction the matrix only stretches\n\n*Block A · eigenvectors*\n\nA = [[4, 1], [1, 4]]\n\nA (1, 0) = (4, 1): turned, not an eigenvector\n\nA (1, 1) = (5, 5) = **5 × (1, 1)**: an eigenvector, eigenvalue 5\n\n- **A v = λ v.** λ is the stretch factor. A negative λ flips the direction; λ = 0 squashes it: the matrix is singular.","notes":"From slide_numbers.py, week 6. Ask for the other eigenvector: (1, −1), with A(1, −1) = (3, −3), eigenvalue 3.","minutes":null,"lo":["LO2"]},{"id":"characteristic","n":6,"title":"Eigenvalues solve det(A − λI) = 0","kind":"content","session":1,"hash":"064061b8","md":"#### [week6#characteristic] Eigenvalues solve det(A − λI) = 0\n\n*By hand*\n\ndet([[4 − λ, 1], [1, 4 − λ]]) = (4 − λ)² − 1 = 0\n\n4 − λ = ±1, so **λ = 5 or 3**\n\nFor a 2 × 2: λ² − (trace) λ + det = 0. Here trace 8, det 15.\n\n```python\n# file: numpy\nw, V = np.linalg.eigh(A)\nw          # [3., 5.]  ascending\nV[:, 1]    # [0.7071, 0.7071]\n```","notes":"From slide_numbers.py, week 6. eigh is for symmetric matrices: real eigenvalues in ascending order, orthonormal eigenvectors. For larger matrices nobody uses the polynomial: libraries iterate.","minutes":null,"lo":["LO2","LO4"]},{"id":"symmetric-spectral","n":7,"title":"A symmetric matrix has real eigenvalues and orthogonal eigenvectors","kind":"content","session":1,"hash":"323c97c4","md":"#### [week6#symmetric-spectral] A symmetric matrix has real eigenvalues and orthogonal eigenvectors\n\n*Symmetric matrices*\n\n- A = Q Λ Qᵀ: rotate into the eigenvector basis, stretch each axis, rotate back\n- (1, 1)/√2 and (1, −1)/√2 are orthogonal, as week 4 would want\n- Covariance matrices and XᵀX are symmetric: everything this week applies to them\n\n> **Machine learning use.** The eigenvalues of XᵀX are the squares of X's singular values; their ratio is cond(X)², week 5's number.","notes":"The spectral theorem, stated not proved. Link back: a zero eigenvalue of XᵀX is a dependent column of X (week 3).","minutes":null,"lo":["LO2"]},{"id":"check-eigen","n":8,"title":"Reading eigenvalues","kind":"quiz","session":1,"hash":"2ff5f3fe","md":"#### [week6#check-eigen] Reading eigenvalues\n\n*Checkpoint*\n\n**Question:** A symmetric 3 × 3 matrix has eigenvalues 9, 4 and 0. Which statement is right?\n\n- A. Its diagonal entries are 9, 4 and 0\n- B. It is invertible, because two eigenvalues are positive\n- C. It has rank 2 and squashes one direction to zero\n- D. Its eigenvectors have lengths 9, 4 and 0","notes":"Answer C. Eigenvectors have any length you choose; only their direction is fixed.","minutes":null,"lo":["LO2"]},{"id":"covariance","n":9,"title":"A covariance matrix records how features vary together","kind":"content","session":1,"hash":"3aa3307a","md":"#### [week6#covariance] A covariance matrix records how features vary together\n\n*Block B · covariance*\n\n| Learner | Quiz 1 | Quiz 2 |\n| --- | --- | --- |\n| 1 | 60 | 65 |\n| 2 | 70 | 72 |\n| 3 | 80 | 79 |\n| 4 | 90 | 88 |\n| 5 | 50 | 56 |\n\nCentre the columns (means 70 and 72), then C = XcᵀXc / (n − 1):\n\n**C = [[250, 195], [195, 152.5]]**\n\nDiagonal: variances. Off the diagonal: how the two move together.","notes":"From slide_numbers.py, week 6. Five invented learners, a different set from any lab. Covariance is a product of the centred data with itself: week 1's centring again.","minutes":null,"lo":["LO2"]},{"id":"pca-idea","n":10,"title":"The leading eigenvector of the covariance is the direction of greatest spread","kind":"content","session":1,"hash":"c814bb35","md":"#### [week6#pca-idea] The leading eigenvector of the covariance is the direction of greatest spread\n\n*Principal components*\n\n**99.94%** of the total variance lies along (0.79, 0.62)\n\n- Eigenvalues 402.25 and 0.25\n- The two quizzes are almost one measurement: \"overall score\"\n- That direction is the **first principal component**\n\n> **Machine learning use.** Principal component analysis (PCA) keeps the few directions that hold most of the variance. Week 7 computes it through the SVD.","notes":"From slide_numbers.py, week 6 (the library returned the vector with both signs negative; either sign is the same direction). Ask what the second component, with 0.06% of the variance, might be: the difference between the quizzes.","minutes":null,"lo":["LO2"]},{"id":"check-pca","n":11,"title":"What does the first component tell you?","kind":"quiz","session":1,"hash":"627ac8e5","md":"#### [week6#check-pca] What does the first component tell you?\n\n*Checkpoint*\n\n**Question:** Four features of course pages have a covariance matrix with eigenvalues 30, 5, 1 and 0.5. What can you say?\n\n- A. All four features carry about the same information\n- B. About 82% of the variance lies along one direction, a combination of the features\n- C. The first feature explains 82% of the variance\n- D. The fourth feature is an error and must be removed","notes":"Answer B. Keep the distinction clear: components are directions, not columns.","minutes":null,"lo":["LO2"]},{"id":"power-iteration","n":12,"title":"Multiply by the matrix again and again, and the leading eigenvector wins","kind":"content","session":1,"hash":"27249645","md":"#### [week6#power-iteration] Multiply by the matrix again and again, and the leading eigenvector wins\n\n*Block C · power iteration*\n\n- Write the start as a mix of eigenvectors\n- Each multiplication scales each part by its eigenvalue\n- The part with the largest |λ| outgrows the rest; normalise to keep the numbers in range\n- The error shrinks by about |λ₂ / λ₁| per step","notes":"No eigenvalue formula needed: just products. This is how a matrix with millions of rows has its leading eigenvector found.","minutes":null,"lo":["LO2","LO4"]},{"id":"random-reader","n":13,"title":"A page's rank is the chance a random reader is on it, in the long run","kind":"content","session":1,"hash":"d02a1e92","md":"#### [week6#random-reader] A page's rank is the chance a random reader is on it, in the long run\n\n*Link ranking*\n\nPages P, Q, R. P links to Q and R, Q to R, R to P. Column-stochastic M; start (1/3, 1/3, 1/3).\n\n| Step | P, Q, R |\n| --- | --- |\n| 1 | 0.333, 0.167, 0.500 |\n| 2 | 0.500, 0.167, 0.333 |\n| limit | 0.4, 0.2, 0.4 |\n\n- **An eigenvector.** The limit satisfies M x = x: the eigenvector of eigenvalue 1, scaled to add up to 1.","notes":"From slide_numbers.py, week 6. Work step 1 by hand: P receives all of R's 1/3; Q receives half of P's; R receives half of P's and all of Q's.","minutes":null,"lo":["LO2"]},{"id":"damping","n":14,"title":"Dead ends, closed loops and link farms break the plain walk; damping repairs it","kind":"content","session":1,"hash":"c8534cc2","md":"#### [week6#damping] Dead ends, closed loops and link farms break the plain walk; damping repairs it\n\n*What goes wrong*\n\n| Problem | Effect | Repair |\n| --- | --- | --- |\n| A page with no links out | Probability leaks away | Jump anywhere from it |\n| A closed group of pages | The walk is trapped, may cycle | Damping: jump anywhere with probability 1 − d |\n| Pages that link to each other to lift one | The group gains rank | Smaller d limits it; it does not remove it |","notes":"With damping d, every entry of G is positive, the eigenvalue 1 is unique and the others are at most d in size, so convergence takes about log(tolerance) / log(d) steps: about 142 for 10⁻¹⁰ at d = 0.85 (slide_numbers.py). The lab measures the real count.","minutes":null,"lo":["LO2"]},{"id":"check-power","n":15,"title":"Why does damping speed up convergence?","kind":"quiz","session":1,"hash":"9d6fbfc2","md":"#### [week6#check-power] Why does damping speed up convergence?\n\n*Checkpoint*\n\n**Question:** With damping d = 0.85, power iteration converges in about a hundred steps; at d = 0.99 it takes many more. Why?\n\n- A. A larger d removes pages from the graph\n- B. A larger d makes the leading eigenvalue larger than 1\n- C. A larger d needs a better starting vector\n- D. The second-largest eigenvalue is at most d, so the error shrinks more slowly when d is near 1","notes":"Answer D. The lab's stretch checks it.","minutes":null,"lo":["LO2"]},{"id":"lab-6-1","n":16,"title":"Power iteration and link ranking on a synthetic web graph","kind":"lab","session":1,"hash":"152fb04d","md":"#### [week6#lab-6-1] Power iteration and link ranking on a synthetic web graph\n\nLab 6.1 · 105 min\n\nRank the 40 help-centre pages by power iteration, see what a dangling page, an island and a link farm do, and fix them with damping.\n\n[W6_1.ipynb](https://sdaiaacademy.github.io/fnd-mth-101/labs/W6_1.ipynb)\n\n- [ ] Set up; eigenpairs of a two-by-two by hand (15 min)\n- [ ] Build the link matrix of the 40 pages (15 min)\n- [ ] Power iteration without damping (15 min)\n- [ ] Fix the dangling page and add damping (20 min)\n- [ ] Convergence, and a check with the library (15 min)\n- [ ] The link farm and a damping sweep (15 min)\n- [ ] Record the ranking for the content lead (10 min)\n- [ ] ✱ Stretch: Show that the number of steps follows the damping factor","notes":"AI-tutor: hints only. Watch for: the link matrix built row-stochastic (M[i, j] in place of M[j, i]), which gives a different, wrong vector; eigenvectors from eig that come out complex-typed or negative: take the real part and rescale to add up to 1.","minutes":null,"lo":[]},{"id":"debrief-undamped","n":17,"title":"Without damping, two thirds of the probability leaked away in 200 steps","kind":"content","session":1,"hash":"10da81d7","md":"#### [week6#debrief-undamped] Without damping, two thirds of the probability leaked away in 200 steps\n\n*Debrief · lab 6.1*\n\n- **0.3252** total left after 200 steps\n- **38%** of what was left sat on the island P36 to P40\n- **110** steps to 10⁻¹⁰ with d = 0.85","notes":"From the solution run of lab 6.1. The undamped walk was still changing (4.7 × 10⁻⁶ in the last step): the island's five pages form a cycle. With damping the second eigenvalue was exactly 0.85, and power iteration matched the library's eigenvector to 6 × 10⁻¹¹. 110 steps, fewer than the bound of about 142.","minutes":null,"lo":["LO2"]},{"id":"debrief-farm","n":18,"title":"A link-farm page ranked first, and a larger d helped the farm more","kind":"content","session":1,"hash":"41bd772c","md":"#### [week6#debrief-farm] A link-farm page ranked first, and a larger d helped the farm more\n\n*Debrief · lab 6.1*\n\n| d | Farm share (P31 to P34) | P31's position | Steps |\n| --- | --- | --- | --- |\n| 0.50 | 10.7% | 12 | 27 |\n| 0.85 | 12.9% | 7 | 110 |\n| 0.95 | 18.0% | 2 | 311 |\n| 0.99 | 34.8% | 2 | 972 |\n\nAt d = 0.85 the top page was P32, a farm page, ahead of the home page P01 in fourth place.","notes":"From the solution run of lab 6.1. Four pages, a tenth of the 40, hold 12.9% of the rank by link structure alone. The record for the content lead should say that the ranking measures links, not usefulness, and that the farm pages need review.","minutes":null,"lo":["LO2"]},{"id":"wrap-up","n":19,"title":"Three things to keep","kind":"content","session":1,"hash":"5f937e2c","md":"#### [week6#wrap-up] Three things to keep\n\n*Week 6 · wrap-up*\n\n- **Directions that only stretch.** Eigenvectors; symmetric matrices have orthogonal ones and real eigenvalues.\n- **Spread has a direction.** The leading eigenvector of a covariance matrix is the direction of greatest variance.\n- **Repeat to find it.** Power iteration finds the leading eigenvector by products alone; damping makes it converge.","notes":"Ask: which machine learning use of an eigenvalue would you name in the test? PCA (variance), link ranking (stationary vector), conditioning (ratio of eigenvalues of XᵀX).","minutes":null,"lo":[]},{"id":"next","n":20,"title":"Week 7: Singular values and low rank","kind":"content","session":1,"hash":"072bc5ca","md":"#### [week6#next] Week 7: Singular values and low rank\n\n*Next*\n\nProblem set 6 (60 minutes, AI off for the first attempt): labs/problem-sets/PS6.ipynb.","notes":"Week 7 downloads a public test image through SciPy's datasets module on first use: ask participants to run the setup cell of lab 7.1 at home if their network is slow.","minutes":null,"lo":[]}],"activities":[{"id":"review-week5-q1","slide":"review-week5","type":"single","prompt":"A model fitted by the normal equations and by QR gives coefficients that differ in the third significant digit. The residual norms agree to eight digits. What is the most likely cause?","options":[{"key":"A","text":"Nearly collinear columns: cond(X) is high and the normal equations square it"},{"key":"B","text":"A bug in the QR routine of the library"},{"key":"C","text":"Nothing: equal residuals mean the coefficients must be equal too"},{"key":"D","text":"Too few rows; more data would make the methods agree"}],"correct":[0],"explanation":"Stable residuals with unstable coefficients is the signature of near-collinearity, amplified by forming XᵀX.","misconceptions":["","Blames the solver for a bug: two correct methods disagree exactly where the problem is ill-conditioned","Thinks equal residuals prove equal coefficients: many β give nearly the same fit","Takes the sample size as the cause: conditioning is about the columns' angles"],"lo":["LO5"]},{"id":"check-eigen-q1","slide":"check-eigen","type":"single","prompt":"A symmetric 3 × 3 matrix has eigenvalues 9, 4 and 0. Which statement is right?","options":[{"key":"A","text":"Its diagonal entries are 9, 4 and 0"},{"key":"B","text":"It is invertible, because two eigenvalues are positive"},{"key":"C","text":"It has rank 2 and squashes one direction to zero"},{"key":"D","text":"Its eigenvectors have lengths 9, 4 and 0"}],"correct":[2],"explanation":"A v = 0 for the eigenvector of 0: that direction is lost, so the rank is 2 and there is no inverse.","misconceptions":["Thinks eigenvalues are diagonal entries: they are only for a diagonal matrix","Believes a zero eigenvalue only means a small entry: it means a direction sent to zero","","Confuses symmetric with orthogonal: an orthogonal matrix keeps lengths, eigenvalues of size 1"],"lo":["LO2"]},{"id":"check-pca-q1","slide":"check-pca","type":"single","prompt":"Four features of course pages have a covariance matrix with eigenvalues 30, 5, 1 and 0.5. What can you say?","options":[{"key":"A","text":"All four features carry about the same information"},{"key":"B","text":"About 82% of the variance lies along one direction, a combination of the features"},{"key":"C","text":"The first feature explains 82% of the variance"},{"key":"D","text":"The fourth feature is an error and must be removed"}],"correct":[1],"explanation":"30 / (30 + 5 + 1 + 0.5) ≈ 0.82, along the leading eigenvector, which mixes the features.","misconceptions":["Equates the number of eigenvalues with the number of useful features: the spread is uneven","","Thinks a component is one of the original features: it is a combination of all four","Reads the smallest eigenvalue as an error: a small variance is still variance"],"lo":["LO2"]},{"id":"check-power-q1","slide":"check-power","type":"single","prompt":"With damping d = 0.85, power iteration converges in about a hundred steps; at d = 0.99 it takes many more. Why?","options":[{"key":"A","text":"A larger d removes pages from the graph"},{"key":"B","text":"A larger d makes the leading eigenvalue larger than 1"},{"key":"C","text":"A larger d needs a better starting vector"},{"key":"D","text":"The second-largest eigenvalue is at most d, so the error shrinks more slowly when d is near 1"}],"correct":[3],"explanation":"The error shrinks by about |λ₂| per step, and |λ₂| ≤ d: 0.99 shrinks it by only 1% a step.","misconceptions":["Thinks larger d means fewer pages: the graph is the same","Thinks the leading eigenvalue changes: it stays exactly 1","Thinks convergence depends on the starting vector only: the eigenvalue gap governs it",""],"lo":["LO2"]}],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"week6.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>

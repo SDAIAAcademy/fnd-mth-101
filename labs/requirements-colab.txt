@@ -1,0 +1,5 @@
+# The free hosted notebook has NumPy, SciPy, scikit-learn and scikit-image; this states the versions the labs need
+numpy>=2.1
+scipy>=1.14
+scikit-learn>=1.5
+scikit-image>=0.24

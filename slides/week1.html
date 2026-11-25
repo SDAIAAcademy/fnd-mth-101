@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="foundations">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 1 · Vectors and similarity · Linear Algebra for Machine Learning</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="week1.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Linear Algebra for Machine Learning" data-track="foundations" data-day="Week 1">
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Linear Algebra for Machine Learning</div>
+  <h1>Vectors and similarity</h1>
+  <p class="lead mt">Week 1: Data as vectors, and the angle between them as similarity</p>
+  <div class="meta"><span class="track">Data &amp; AI Foundations Track</span><span>8 weeks + capstone</span><span>1 session · 1 lab</span><span>FND-MTH-101</span></div>
+  <aside class="notes"><p>Welcome the group and introduce yourself. Ask one calibrating question: who has multiplied two matrices by hand since school? The answers set the pace of block A.</p><p>The rhythm of every week: about 105 minutes of teaching in three blocks, each closing with a checkpoint, then a 105-minute lab. Each week ends with a 60-minute problem set, AI off for the first attempt.</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-auto="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">This week</div>
+  <h2>Vectors and similarity</h2>
+  <div class="agenda"><div class="item"><div><b>Session 1 · Vectors, dot products and similarity</b><small>Vectors as data points and directions, the dot product, norms and cosine similarity, and what distance means in high dimensions</small></div></div></div>
+</section>
+
+<section class="slide" id="how-the-course-runs" data-lo="LO4" data-n="3">
+  <div class="kicker">Eight weeks</div>
+  <h2>Every idea is computed twice: by hand, then in code</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>By hand</h4><p class="small mb0">A two- or three-dimensional case on paper, small enough to see the geometry.</p></div>
+    <div class="card c-cyan"><h4>In code</h4><p class="small mb0">The same operation in NumPy, on data with thousands of numbers.</p></div>
+    <div class="card c-coral"><h4>Checked</h4><p class="small mb0">The two must agree within a tolerance. When they do not, one of them is wrong.</p></div>
+  </div>
+  <table class="t small mt">
+    <tr><th>Assessed work</th><th class="num">Weight</th></tr>
+    <tr><td>Weekly problem sets, auto-checked</td><td class="num">20%</td></tr>
+    <tr><td>Two supervised AI-off tests, on paper and at the keyboard</td><td class="num">40%</td></tr>
+    <tr><td>Capstone notebook, rubric-scored</td><td class="num">30%</td></tr>
+    <tr><td>Oral check</td><td class="num">10%</td></tr>
+  </table>
+  <aside class="notes"><p>Passing needs 60% overall and at least 50% on each supervised test. AI policy: AI-off for first attempts at problem sets and in both tests; AI-tutor in labs, giving hints without answers; AI-full in the capstone, which is defended orally.</p><p>Say why the hand work matters: the tests are on paper for half their time, and the oral check asks them to rework a step with new numbers.</p></aside>
+</section>
+
+<section class="slide" id="setup-check" data-lo="LO4" data-n="4">
+  <div class="kicker">Setup check</div>
+  <h2>One command proves your setup</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>From the course folder, in a terminal:</p>
+      <pre class="code" data-file="terminal"><code class="language-bash"><span class="hljs-built_in">cd</span> labs
+uv run python -c <span class="hljs-string">&quot;import numpy, scipy, sklearn; print(numpy.__version__)&quot;</span></code></pre>
+      <p class="small">A version number means you are ready. In a free hosted notebook, the first cell of each lab installs what it needs.</p>
+    </div>
+    <div class="card c-navy tint"><h4>What the course assumes</h4><p class="small mb0">Python with lists, loops and functions (FND-PRG-101 or equivalent), and school algebra. Nothing of FND-PRG-101 is taught again here.</p></div>
+  </div>
+  <aside class="notes"><p>Run the command on the projector first. Typical failures: uv not on the path (open a new terminal after installing), or a corporate proxy blocking the first download. The hosted notebook route needs only a browser.</p></aside>
+</section>
+
+<!-- Session 1 -->
+
+<section class="slide section" id="s1" data-auto="section" data-session="1" data-n="5">
+  <div class="kicker">Session 1</div>
+  <h1>Vectors, dot products and similarity</h1>
+  <ul class="bullets outcomes"><li>Compute a dot product, a norm and a cosine by hand and in NumPy</li><li>Explain why cosine compares directions and ignores length</li><li>Describe how distances behave as the dimension grows</li></ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" id="point-and-arrow" data-lo="LO1" data-n="6" data-session="1">
+  <div class="kicker">Block A · vectors</div>
+  <h2>A vector is a point and an arrow at the same time</h2>
+  <div class="cols cols-2">
+    <div class="card c-teal"><h4>A point: a data record</h4><p class="small mb0">A learner's week as (videos, quizzes, posts) = (1, 2, 2). Each coordinate is one measured quantity.</p></div>
+    <div class="card c-cyan"><h4>An arrow: a direction</h4><p class="small mb0">The same numbers drawn from the origin. Its direction says the mix of activity; its length says how much.</p></div>
+  </div>
+  <div class="callout note mt"><b>Order matters.</b> (1, 2, 2) and (2, 1, 2) hold the same numbers and are different vectors: the coordinates are named positions.</div>
+  <aside class="notes"><p>Draw the vector (1, 2) on the board as a point and as an arrow. Ask: what would a learner with (2, 4) look like? Same direction, twice as long: the same mix, twice the activity.</p></aside>
+</section>
+
+<section class="slide" id="add-and-scale" data-lo="LO1 LO4" data-n="7" data-session="1">
+  <div class="kicker">Two operations</div>
+  <h2>Adding vectors adds coordinates; scaling stretches the arrow</h2>
+  <table class="t">
+    <tr><th>Operation</th><th>Example</th><th>Result</th><th>Geometry</th></tr>
+    <tr><td>Sum</td><td>(1, 2, 2) + (2, 1, 2)</td><td>(3, 3, 4)</td><td>Head to tail</td></tr>
+    <tr><td>Scale</td><td>3 × (1, 2, 2)</td><td>(3, 6, 6)</td><td>Same direction, three times as long</td></tr>
+    <tr><td>Difference</td><td>(2, 1, 2) − (1, 2, 2)</td><td>(1, −1, 0)</td><td>The arrow from the first point to the second</td></tr>
+  </table>
+  <p class="small mt">In NumPy each line is one expression on arrays: <code>x + y</code>, <code>3 * x</code>, <code>y - x</code>.</p>
+  <aside class="notes"><p>Work the three rows on the board before showing the result column. Stress the difference vector: it is what a distance is measured on, next slide.</p></aside>
+</section>
+
+<section class="slide" id="norm-is-length" data-lo="LO1 LO4" data-n="8" data-session="1">
+  <div class="kicker">The norm</div>
+  <h2>The norm is the length of the arrow</h2>
+  <div class="cols cols-2">
+    <div>
+      <p><b>‖x‖ = √(x₁² + x₂² + x₃²)</b>, Pythagoras in three dimensions.</p>
+      <p>For x = (1, 2, 2): ‖x‖ = √(1 + 4 + 4) = √9 = <b>3</b>.</p>
+      <p>The distance between two points is the norm of their difference: ‖y − x‖ = ‖(1, −1, 0)‖ = √2 ≈ 1.41.</p>
+    </div>
+    <div class="card c-amber"><h4>Units</h4><p class="small mb0">A norm adds squares of coordinates. If one coordinate is minutes and another is counts, the minutes dominate. Scale before you measure.</p></div>
+  </div>
+  <aside class="notes"><p>Numbers from labs/_tools/slide_numbers.py, week 1. Ask the room for ‖3x‖ before revealing: 9, three times 3. Scaling a vector by c scales its norm by |c|.</p></aside>
+</section>
+
+<section class="slide" id="check-norm-units" data-lo="LO1" data-n="9" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which learner is nearest?</h2>
+  <div class="quiz" data-type="single" data-lo="LO1" data-id="check-norm-units-q1">
+    <p class="lead">Learners are vectors of (video minutes, quizzes). Learner K is (300, 2). Which is nearest to K by Euclidean distance: M (305, 9), N (330, 2) or P (290, 2)?</p>
+    <div class="opts">
+      <div class="opt" data-why="Takes a perfect match on one coordinate as closeness: P is still 10 minutes away, more than M's distance" data-k="A">P, because it matches K exactly on quizzes</div>
+      <div class="opt" data-why="Counts how many coordinates differ instead of how far: N's one difference is 30 minutes, the largest gap of the three" data-k="B">N, because its only difference is in one coordinate</div>
+      <div class="opt" data-ok data-k="C">M, at a distance of about 8.6</div>
+      <div class="opt" data-why="Believes a distance cannot be computed across units: it can, but its meaning depends on the scales chosen" data-k="D">None: minutes and quizzes cannot be combined in one distance</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> M: √(5² + 7²) ≈ 8.6; P: 10; N: 30. M wins although it took seven more quizzes, because one quiz counts as much as one minute here. Whether that is sensible is a scaling decision.</div>
+  </div>
+  <aside class="notes"><p>Answer C. Then ask: should one quiz weigh as much as one minute? This is why features are scaled before distances are trusted; week 5 returns to scaling.</p></aside>
+</section>
+
+<section class="slide" id="dot-product" data-lo="LO1 LO4" data-n="10" data-session="1">
+  <div class="kicker">Block B · the dot product</div>
+  <h2>The dot product multiplies matching coordinates and adds them</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>x = (1, 2, 2), y = (2, 1, 2)</p>
+      <p><b>x · y = 1×2 + 2×1 + 2×2 = 8</b></p>
+      <p>And x · x = 1 + 4 + 4 = 9 = ‖x‖²: the norm is a dot product with itself.</p>
+    </div>
+    <pre class="code" data-file="numpy"><code class="language-python">x = np.array([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>])
+y = np.array([<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>])
+x @ y              <span class="hljs-comment"># 8</span>
+np.sqrt(x @ x)     <span class="hljs-comment"># 3.0</span></code></pre>
+  </div>
+  <aside class="notes"><p>Have everyone compute x · y on paper before the code appears. The <code>@</code> operator is NumPy's product; on two vectors it is the dot product.</p></aside>
+</section>
+
+<section class="slide" id="dot-is-angle" data-lo="LO1" data-n="11" data-session="1">
+  <div class="kicker">Geometry</div>
+  <h2>x · y = ‖x‖ ‖y‖ cos θ: the dot product measures an angle</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>For our pair: cos θ = 8 / (3 × 3) = <b>0.889</b>, so θ ≈ <b>27.3°</b>.</p>
+      <p>The <b>cosine similarity</b> is that cosine: the dot product of the two vectors after each is scaled to length 1.</p>
+    </div>
+    <div class="stat center"><div class="big">0.889</div><div class="lbl">cosine of (1, 2, 2) and (2, 1, 2)</div></div>
+  </div>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 1. The formula follows from the law of cosines on the triangle formed by x, y and y − x; derive it if the group is comfortable, otherwise state it and check it on the example.</p></aside>
+</section>
+
+<section class="slide" id="sign-of-dot" data-lo="LO1" data-n="12" data-session="1">
+  <div class="kicker">Reading the sign</div>
+  <h2>The sign of a dot product says acute, right or obtuse</h2>
+  <table class="t">
+    <tr><th>Pair</th><th class="num">Dot product</th><th class="num">Angle</th><th>Reading</th></tr>
+    <tr><td>(1, 0) and (1, 1)</td><td class="num">1</td><td class="num">45°</td><td>Pointing the same way, partly</td></tr>
+    <tr class="hl"><td>(1, 0) and (0, 1)</td><td class="num">0</td><td class="num">90°</td><td>Orthogonal: nothing in common</td></tr>
+    <tr><td>(1, 0) and (−1, 1)</td><td class="num">−1</td><td class="num">135°</td><td>Pointing partly opposite</td></tr>
+  </table>
+  <div class="callout tip mt"><b>Orthogonal</b> means dot product zero. It comes back in every week from week 4 on.</div>
+  <aside class="notes"><p>Sketch the three pairs. Ask: if two learners' activity vectors are orthogonal, what do they share? Nothing: each does what the other does not.</p></aside>
+</section>
+
+<section class="slide" id="cosine-ignores-length" data-lo="LO1" data-n="13" data-session="1">
+  <div class="kicker">Length or direction</div>
+  <h2>Cosine ignores length; the dot product does not</h2>
+  <div class="cols cols-2">
+    <div class="card c-teal"><h4>x and 3x</h4><p class="small mb0">x · 3x = 27, larger than x · y = 8. Yet cos(x, 3x) = 1: the same direction exactly.</p></div>
+    <div class="card c-coral"><h4>Why a search cares</h4><p class="small mb0">A long document has a long vector. Ranking by raw dot product would favour length over meaning. Cosine compares only direction.</p></div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py: x · 3x = 27, cosine 1. Ask which of the two a help-centre search should use, and why. Cosine, unless length itself carries meaning.</p></aside>
+</section>
+
+<section class="slide" id="many-dots-at-once" data-lo="LO1 LO4" data-n="14" data-session="1">
+  <div class="kicker">At scale</div>
+  <h2>A matrix times a vector is many dot products at once</h2>
+  <div class="cols cols-2">
+    <pre class="code" data-file="numpy"><code class="language-python">D = np.array([[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>],
+              [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+              [<span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">6</span>]], <span class="hljs-built_in">float</span>)
+N = D / np.linalg.norm(D, axis=<span class="hljs-number">1</span>, keepdims=<span class="hljs-literal">True</span>)
+q = np.array([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>]) / <span class="hljs-number">3</span>
+N @ q      <span class="hljs-comment"># [1.0, 0.889, 1.0]</span></code></pre>
+    <ul class="bullets">
+      <li>Each row of <b>D</b> is one item; normalise every row to length 1</li>
+      <li><b>N @ q</b> gives the cosine of the question with every row</li>
+      <li>The best match is the largest entry: <code>np.argmax</code></li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Run it live. Point out that rows 1 and 3 tie at 1.0: the same direction, different lengths. This is the search the lab builds, on 60 help articles instead of three rows.</p></aside>
+</section>
+
+<section class="slide" id="check-dot-or-cosine" data-lo="LO1" data-n="15" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Dot product or cosine?</h2>
+  <div class="quiz" data-type="single" data-lo="LO1" data-id="check-dot-or-cosine-q1">
+    <p class="lead">A question vector q = (1, 1). Two help articles: A = (4, 4) and B = (1, 1.2). Which statement is right?</p>
+    <div class="opts">
+      <div class="opt" data-why="Takes the larger dot product as the closer direction: A wins on dot product only because it is longer" data-k="A">A is closer in direction, since q · A = 8 beats q · B = 2.2</div>
+      <div class="opt" data-why="Treats different lengths as different directions: A is exactly four times q" data-k="B">A and q differ in direction, since A is four times longer</div>
+      <div class="opt" data-why="Assumes cosine and dot product always rank the same way: they agree only when all vectors have equal length" data-k="C">Both measures rank A first, so the choice never matters</div>
+      <div class="opt" data-ok data-k="D">A has cosine 1 with q and B a little less; the dot product also rewards A's length</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> A = 4q, so cos(q, A) = 1; B is slightly off q's direction. Both measures put A first here, for different reasons.</div>
+  </div>
+  <aside class="notes"><p>Answer D. cos(q, B) = 2.2 / (1.414 × 1.562) ≈ 0.996. If the room picks C, give a counter-example: q = (1, 0), A = (5, 5), B = (1, 0.1). Dot product puts A first, cosine puts B first.</p></aside>
+</section>
+
+<section class="slide" id="embeddings" data-lo="LO1" data-n="16" data-session="1">
+  <div class="kicker">Block C · embeddings</div>
+  <h2>An embedding places words so that related words point the same way</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>A model reads a large text collection and gives each word a vector</li>
+      <li>Words used in similar contexts get vectors at small angles</li>
+      <li>The course uses <b>GloVe</b>: 400,000 words, 50 numbers each, trained on 6 billion tokens of encyclopedia and news text</li>
+    </ul>
+    <div class="card c-navy tint"><h4>Licence</h4><p class="small mb0">The pre-trained GloVe vectors are released under the Public Domain Dedication and License. The lab downloads them; nothing is copied into the course.</p></div>
+  </div>
+  <aside class="notes"><p>Sources: the GloVe repository README (licence) and the gensim-data listing (file, size, checksum). The vectors are from 2014 text: an old, small model, chosen because it is public, light and runs on a laptop. Modern sentence models are better, and the geometry is the same.</p></aside>
+</section>
+
+<section class="slide" id="sentence-as-mean" data-lo="LO1 LO4" data-n="17" data-session="1">
+  <div class="kicker">From words to sentences</div>
+  <h2>Here a sentence vector is the mean of its word vectors</h2>
+  <div class="flow">
+    <div class="step c-teal"><b>1 · Split</b>"video will not play" into four words</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>2 · Look up</b>four GloVe vectors of 50 numbers</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>3 · Average</b>one vector of 50 numbers for the sentence</div>
+  </div>
+  <div class="callout warn mt"><b>A baseline, not a sentence model.</b> The mean ignores word order and is pulled by frequent words. It is the simplest public sentence embedding, and the lab measures how far it gets.</div>
+  <aside class="notes"><p>Be plain about this: the course does not call a sentence model, because that would mean downloading one or using a paid service. The mean of public word vectors is a documented baseline, and its weaknesses are part of the lesson.</p></aside>
+</section>
+
+<section class="slide" id="the-cone" data-lo="LO1" data-n="18" data-session="1">
+  <div class="kicker">A shared direction</div>
+  <h2>When every vector shares a big common part, every cosine looks high</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Toy vectors</th><th class="num">Pair cosines</th></tr>
+      <tr><td>(6, 4), (4, 6), (6, 6)</td><td class="num">0.923, 0.981, 0.981</td></tr>
+      <tr class="hl"><td>After subtracting their mean</td><td class="num">−0.800, −0.316, −0.316</td></tr>
+    </table>
+    <ul class="bullets">
+      <li>The three share the part (5, 5); their differences are small</li>
+      <li><b>Centring</b> subtracts the mean vector and leaves the differences</li>
+      <li>After centring, angles describe how the items differ</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Toy numbers from slide_numbers.py, week 1. Predict with the room: if every help title contains "my" and "the", what does their mean vector share? The lab measures this on the real titles; do not give its numbers now.</p></aside>
+</section>
+
+<section class="slide" id="high-dimensions" data-lo="LO1" data-n="19" data-session="1">
+  <div class="kicker">High dimensions</div>
+  <h2>In many dimensions, the nearest and the farthest point come close</h2>
+  <div class="bars">
+    <div class="row"><span>2 dimensions</span><div class="bar c-teal" style="--w:100%"></div><span class="val">58.69</span></div>
+    <div class="row"><span>10 dimensions</span><div class="bar c-cyan" style="--w:6%"></div><span class="val">3.49</span></div>
+    <div class="row"><span>100 dimensions</span><div class="bar c-coral" style="--w:2%"></div><span class="val">0.46</span></div>
+    <div class="row"><span>1,000 dimensions</span><div class="bar c-purple" style="--w:1%"></div><span class="val">0.13</span></div>
+  </div>
+  <p class="small mt">Contrast = (farthest − nearest) / nearest, from one random point to 499 others with independent standard normal coordinates.</p>
+  <aside class="notes"><p>From slide_numbers.py, week 1 (seed 7; the lab uses another seed). Real embeddings are not random, so neighbours still mean something, but differences between scores are small and easy to over-read.</p></aside>
+</section>
+
+<section class="slide" id="associations" data-lo="LO1" data-n="20" data-session="1">
+  <div class="kicker">What the vectors learnt</div>
+  <h2>Vectors learn the associations of the text they were trained on</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>The <b>lean</b> of a word w between two word lists:</p>
+      <p>lean(w) = mean of cos(w, female word) − cos(w, male word), over pairs such as she/he and woman/man.</p>
+      <p class="small">Positive: closer to the female words. Zero: no lean.</p>
+    </div>
+    <div class="card c-coral"><h4>Why it matters</h4><p class="small mb0">A search that matches a learner's free-text goal to courses through these vectors inherits their leans. The lab measures them; whether a search treats learners differently must be tested on the search.</p></div>
+  </div>
+  <aside class="notes"><p>Define the measure only; the lab computes it on 14 occupation words. Ask what a lean near zero would mean, and what it would not prove (it would not prove a search is fair: other words could carry the same association).</p></aside>
+</section>
+
+<section class="slide" id="check-high-dim" data-lo="LO1" data-n="21" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Reading a search score</h2>
+  <div class="quiz" data-type="single" data-lo="LO1" data-id="check-high-dim-q1">
+    <p class="lead">A search over mean word vectors returns two articles with cosines 0.951 and 0.949 to a question. What is the soundest reading?</p>
+    <div class="opts">
+      <div class="opt" data-ok data-k="A">The scores barely differ; check whether a shared direction inflates every cosine before trusting the order</div>
+      <div class="opt" data-why="Reads a high cosine as a strong match: when all vectors share a direction, every cosine is high" data-k="B">Both are excellent matches, since a cosine above 0.9 means near-identical meaning</div>
+      <div class="opt" data-why="Treats a small gap in a high-dimensional score as a clear ranking: distances concentrate" data-k="C">The first article is clearly the better answer, since it scores higher</div>
+      <div class="opt" data-why="Confuses cosine with a probability: a cosine is an angle measure, not a chance" data-k="D">There is a 95% chance that either article answers the question</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> High, nearly equal cosines are what a shared direction produces. Centring the vectors and comparing again shows whether the order means anything.</div>
+  </div>
+  <aside class="notes"><p>Answer A. Link back to the cone slide. This is exactly what the lab investigates in step 5.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-1-1" data-auto="lab" data-lab="1.1" data-label="Lab 1.1" data-n="22" data-session="1">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 1.1 · 105 min</div><h2>Cosine-similarity search over public sentence embeddings</h2><p class="lead small">Search 60 help articles by meaning with mean GloVe vectors, remove the shared direction, and measure how occupation words lean towards gendered words.</p><a class="nb" href="../labs/W1_1.ipynb">W1_1.ipynb</a></div><ul class="checklist"><li>Set up and load the data <span class="min">10 min</span></li><li>By hand, then in code: dot product, norms and cosine <span class="min">15 min</span></li><li>Embed the 60 article titles <span class="min">15 min</span></li><li>Search with one matrix product and score ten questions <span class="min">20 min</span></li><li>Find the cone, centre it, search again <span class="min">20 min</span></li><li>Distances in high dimensions <span class="min">10 min</span></li><li>Measure occupation words against gendered words and record what it means <span class="min">15 min</span></li><li class="stretch">✱ Stretch: Show that Euclidean distance and cosine rank unit vectors in the same order</li></ul></div>
+  <aside class="notes"><p>AI-tutor in this lab: hints, no answers (labs/tutor/TUTOR.md). Watch for: the first GloVe download (69 MB) on a slow network, so start it during step 1; participants who normalise columns instead of rows (axis=0); hand results typed as fractions in strings.</p><p>Fallback: every exercise cell has a safety net, so a participant who is stuck can run on and come back.</p></aside>
+</section>
+
+<section class="slide" id="debrief-search" data-lo="LO1" data-n="23" data-session="1">
+  <div class="kicker">Debrief · lab 1.1</div>
+  <h2>Centring and dropping frequent words more than doubled the questions answered first</h2>
+  <table class="t">
+    <tr><th>Sentence vectors</th><th class="num">Mean pair cosine</th><th class="num">Best article first</th><th class="num">In the top 3</th></tr>
+    <tr><td>Mean of all word vectors</td><td class="num">0.853</td><td class="num">2 of 10</td><td class="num">3 of 10</td></tr>
+    <tr class="hl"><td>Content words only, centred</td><td class="num">−0.014</td><td class="num">5 of 10</td><td class="num">6 of 10</td></tr>
+  </table>
+  <p class="small mt">Four questions still miss the top 3: a mean of word vectors cannot know that "retake" and "take again" mean the same.</p>
+  <aside class="notes"><p>Numbers from the solution run of lab 1.1 (full mode). Ask a participant to read out a question that failed and its best article. The honest conclusion for the search lead: this baseline is not good enough to ship; it is good enough to learn the geometry.</p></aside>
+</section>
+
+<section class="slide" id="debrief-lean" data-lo="LO1" data-n="24" data-session="1">
+  <div class="kicker">Debrief · lab 1.1</div>
+  <h2>Nurse, receptionist and housekeeper lean towards the female words</h2>
+  <div class="bars">
+    <div class="row"><span>nurse</span><div class="bar c-coral" style="--w:100%"></div><span class="val">+0.130</span></div>
+    <div class="row"><span>receptionist</span><div class="bar c-coral" style="--w:98%"></div><span class="val">+0.128</span></div>
+    <div class="row"><span>housekeeper</span><div class="bar c-coral" style="--w:92%"></div><span class="val">+0.120</span></div>
+    <div class="row"><span>engineer</span><div class="bar c-cyan" style="--w:51%"></div><span class="val">−0.066</span></div>
+    <div class="row"><span>secretary</span><div class="bar c-cyan" style="--w:58%"></div><span class="val">−0.076</span></div>
+  </div>
+  <p class="small mt">"Secretary" leans male, perhaps because news text often uses it as a title of office. One small model, five word pairs, no error bars: the leans describe the texts' usage, not the jobs, and not yet the search.</p>
+  <aside class="notes"><p>From the solution run of lab 1.1. Bars are lengths of the lean, coral for female, cyan for male. Collect two or three of the participants' recorded notes. A good note says what could change for a learner who writes "she" in a goal, and names a test to run on the search before it goes live (the same goal with she and he, compared).</p></aside>
+</section>
+
+<section class="slide" id="wrap-up" data-n="25" data-session="1">
+  <div class="kicker">Week 1 · wrap-up</div>
+  <h2>Three things to keep</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>Length and angle</h4><p class="small mb0">The norm is a length; the dot product divided by two lengths is the cosine of an angle.</p></div>
+    <div class="card c-coral"><h4>Centre first</h4><p class="small mb0">A direction every vector shares makes every cosine high. Subtract the mean before comparing.</p></div>
+    <div class="card c-purple"><h4>Vectors carry text</h4><p class="small mb0">Embeddings inherit the associations of their training text. Measure them before building on them.</p></div>
+  </div>
+  <aside class="notes"><p>Ask each participant to say which of the three they would explain to a colleague first, and how.</p></aside>
+</section>
+
+<section class="slide dark" id="next" data-label="Next" data-n="26" data-session="1">
+  <div class="kicker">Next</div>
+  <h2>Week 2: Matrices as maps, and their cost</h2>
+  <p class="lead">Problem set 1 (60 minutes, AI off for the first attempt): labs/problem-sets/PS1.ipynb, before the next session. Finish lab 1.1 at home if needed.</p>
+  <aside class="notes"><p>Show where the problem set lives and run its last cell once to show the score line. Remind the group that the checker never prints an answer: it compares their hand work with their own code.</p></aside>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-25T06:33:42Z","version":"2027.1.0","commit":"f5792fb"},"course":{"id":"fnd-mth-101","code":"FND-MTH-101","title":"Linear Algebra for Machine Learning","track":"foundations","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/fnd-mth-101/","repo":"SDAIAAcademy/fnd-mth-101","home":"../index.html"},"deck":{"id":"week1","kind":"day","day":1,"label":"Week 1","title":"Vectors and similarity","prev":null,"next":"week2.html","md":"week1.md","alt":{}},"sessions":[{"n":1,"label":"Session 1","title":"Vectors, dot products and similarity","slide":"s1","outcomes":["Compute a dot product, a norm and a cosine by hand and in NumPy","Explain why cosine compares directions and ignores length","Describe how distances behave as the dimension grows"],"minutes":210,"lab":{"id":"1.1","title":"Cosine-similarity search over public sentence embeddings","minutes":105,"href":"../labs/W1_1.ipynb"}}],"slides":[{"id":"title","n":1,"title":"Vectors and similarity","kind":"title","session":0,"hash":"724c3d01","md":"#### [week1#title] Vectors and similarity\n\n*SDAIA Academy · Linear Algebra for Machine Learning*\n\nWeek 1: Data as vectors, and the angle between them as similarity\n\nData & AI Foundations Track · 8 weeks + capstone · 1 session · 1 lab · FND-MTH-101","notes":"Welcome the group and introduce yourself. Ask one calibrating question: who has multiplied two matrices by hand since school? The answers set the pace of block A.\n\nThe rhythm of every week: about 105 minutes of teaching in three blocks, each closing with a checkpoint, then a 105-minute lab. Each week ends with a 60-minute problem set, AI off for the first attempt.","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"Vectors and similarity","kind":"content","session":0,"hash":"d811ba1b","md":"#### [week1#agenda] Vectors and similarity\n\n*This week*\n\n- **Session 1 · Vectors, dot products and similarity**: Vectors as data points and directions, the dot product, norms and cosine similarity, and what distance means in high dimensions","notes":"","minutes":null,"lo":[]},{"id":"how-the-course-runs","n":3,"title":"Every idea is computed twice: by hand, then in code","kind":"content","session":0,"hash":"496aace0","md":"#### [week1#how-the-course-runs] Every idea is computed twice: by hand, then in code\n\n*Eight weeks*\n\n- **By hand.** A two- or three-dimensional case on paper, small enough to see the geometry.\n- **In code.** The same operation in NumPy, on data with thousands of numbers.\n- **Checked.** The two must agree within a tolerance. When they do not, one of them is wrong.\n\n| Assessed work | Weight |\n| --- | --- |\n| Weekly problem sets, auto-checked | 20% |\n| Two supervised AI-off tests, on paper and at the keyboard | 40% |\n| Capstone notebook, rubric-scored | 30% |\n| Oral check | 10% |","notes":"Passing needs 60% overall and at least 50% on each supervised test. AI policy: AI-off for first attempts at problem sets and in both tests; AI-tutor in labs, giving hints without answers; AI-full in the capstone, which is defended orally.\n\nSay why the hand work matters: the tests are on paper for half their time, and the oral check asks them to rework a step with new numbers.","minutes":null,"lo":["LO4"]},{"id":"setup-check","n":4,"title":"One command proves your setup","kind":"content","session":0,"hash":"3cf08c04","md":"#### [week1#setup-check] One command proves your setup\n\n*Setup check*\n\nFrom the course folder, in a terminal:\n\n```bash\n# file: terminal\ncd labs\nuv run python -c \"import numpy, scipy, sklearn; print(numpy.__version__)\"\n```\n\nA version number means you are ready. In a free hosted notebook, the first cell of each lab installs what it needs.\n\n- **What the course assumes.** Python with lists, loops and functions (FND-PRG-101 or equivalent), and school algebra. Nothing of FND-PRG-101 is taught again here.","notes":"Run the command on the projector first. Typical failures: uv not on the path (open a new terminal after installing), or a corporate proxy blocking the first download. The hosted notebook route needs only a browser.","minutes":null,"lo":["LO4"]},{"id":"s1","n":5,"title":"Vectors, dot products and similarity","kind":"section","session":1,"hash":"6fa170a8","md":"#### [week1#s1] Vectors, dot products and similarity\n\n*Session 1*\n\n- Compute a dot product, a norm and a cosine by hand and in NumPy\n- Explain why cosine compares directions and ignores length\n- Describe how distances behave as the dimension grows","notes":"","minutes":null,"lo":["LO1","LO4"]},{"id":"point-and-arrow","n":6,"title":"A vector is a point and an arrow at the same time","kind":"content","session":1,"hash":"58de7fa6","md":"#### [week1#point-and-arrow] A vector is a point and an arrow at the same time\n\n*Block A · vectors*\n\n- **A point: a data record.** A learner's week as (videos, quizzes, posts) = (1, 2, 2). Each coordinate is one measured quantity.\n- **An arrow: a direction.** The same numbers drawn from the origin. Its direction says the mix of activity; its length says how much.\n\n> **Order matters.** (1, 2, 2) and (2, 1, 2) hold the same numbers and are different vectors: the coordinates are named positions.","notes":"Draw the vector (1, 2) on the board as a point and as an arrow. Ask: what would a learner with (2, 4) look like? Same direction, twice as long: the same mix, twice the activity.","minutes":null,"lo":["LO1"]},{"id":"add-and-scale","n":7,"title":"Adding vectors adds coordinates; scaling stretches the arrow","kind":"content","session":1,"hash":"d07b239f","md":"#### [week1#add-and-scale] Adding vectors adds coordinates; scaling stretches the arrow\n\n*Two operations*\n\n| Operation | Example | Result | Geometry |\n| --- | --- | --- | --- |\n| Sum | (1, 2, 2) + (2, 1, 2) | (3, 3, 4) | Head to tail |\n| Scale | 3 × (1, 2, 2) | (3, 6, 6) | Same direction, three times as long |\n| Difference | (2, 1, 2) − (1, 2, 2) | (1, −1, 0) | The arrow from the first point to the second |\n\nIn NumPy each line is one expression on arrays: `x + y`, `3 * x`, `y - x`.","notes":"Work the three rows on the board before showing the result column. Stress the difference vector: it is what a distance is measured on, next slide.","minutes":null,"lo":["LO1","LO4"]},{"id":"norm-is-length","n":8,"title":"The norm is the length of the arrow","kind":"content","session":1,"hash":"d88ce9dd","md":"#### [week1#norm-is-length] The norm is the length of the arrow\n\n*The norm*\n\n**‖x‖ = √(x₁² + x₂² + x₃²)**, Pythagoras in three dimensions.\n\nFor x = (1, 2, 2): ‖x‖ = √(1 + 4 + 4) = √9 = **3**.\n\nThe distance between two points is the norm of their difference: ‖y − x‖ = ‖(1, −1, 0)‖ = √2 ≈ 1.41.\n\n- **Units.** A norm adds squares of coordinates. If one coordinate is minutes and another is counts, the minutes dominate. Scale before you measure.","notes":"Numbers from labs/_tools/slide_numbers.py, week 1. Ask the room for ‖3x‖ before revealing: 9, three times 3. Scaling a vector by c scales its norm by |c|.","minutes":null,"lo":["LO1","LO4"]},{"id":"check-norm-units","n":9,"title":"Which learner is nearest?","kind":"quiz","session":1,"hash":"5c11619e","md":"#### [week1#check-norm-units] Which learner is nearest?\n\n*Checkpoint*\n\n**Question:** Learners are vectors of (video minutes, quizzes). Learner K is (300, 2). Which is nearest to K by Euclidean distance: M (305, 9), N (330, 2) or P (290, 2)?\n\n- A. P, because it matches K exactly on quizzes\n- B. N, because its only difference is in one coordinate\n- C. M, at a distance of about 8.6\n- D. None: minutes and quizzes cannot be combined in one distance","notes":"Answer C. Then ask: should one quiz weigh as much as one minute? This is why features are scaled before distances are trusted; week 5 returns to scaling.","minutes":null,"lo":["LO1"]},{"id":"dot-product","n":10,"title":"The dot product multiplies matching coordinates and adds them","kind":"content","session":1,"hash":"b23d2326","md":"#### [week1#dot-product] The dot product multiplies matching coordinates and adds them\n\n*Block B · the dot product*\n\nx = (1, 2, 2), y = (2, 1, 2)\n\n**x · y = 1×2 + 2×1 + 2×2 = 8**\n\nAnd x · x = 1 + 4 + 4 = 9 = ‖x‖²: the norm is a dot product with itself.\n\n```python\n# file: numpy\nx = np.array([1, 2, 2])\ny = np.array([2, 1, 2])\nx @ y              # 8\nnp.sqrt(x @ x)     # 3.0\n```","notes":"Have everyone compute x · y on paper before the code appears. The `@` operator is NumPy's product; on two vectors it is the dot product.","minutes":null,"lo":["LO1","LO4"]},{"id":"dot-is-angle","n":11,"title":"x · y = ‖x‖ ‖y‖ cos θ: the dot product measures an angle","kind":"content","session":1,"hash":"661a24e3","md":"#### [week1#dot-is-angle] x · y = ‖x‖ ‖y‖ cos θ: the dot product measures an angle\n\n*Geometry*\n\nFor our pair: cos θ = 8 / (3 × 3) = **0.889**, so θ ≈ **27.3°**.\n\nThe **cosine similarity** is that cosine: the dot product of the two vectors after each is scaled to length 1.\n\n**0.889** cosine of (1, 2, 2) and (2, 1, 2)","notes":"Numbers from slide_numbers.py, week 1. The formula follows from the law of cosines on the triangle formed by x, y and y − x; derive it if the group is comfortable, otherwise state it and check it on the example.","minutes":null,"lo":["LO1"]},{"id":"sign-of-dot","n":12,"title":"The sign of a dot product says acute, right or obtuse","kind":"content","session":1,"hash":"5642dcdd","md":"#### [week1#sign-of-dot] The sign of a dot product says acute, right or obtuse\n\n*Reading the sign*\n\n| Pair | Dot product | Angle | Reading |\n| --- | --- | --- | --- |\n| (1, 0) and (1, 1) | 1 | 45° | Pointing the same way, partly |\n| (1, 0) and (0, 1) | 0 | 90° | Orthogonal: nothing in common |\n| (1, 0) and (−1, 1) | −1 | 135° | Pointing partly opposite |\n\n> **Orthogonal** means dot product zero. It comes back in every week from week 4 on.","notes":"Sketch the three pairs. Ask: if two learners' activity vectors are orthogonal, what do they share? Nothing: each does what the other does not.","minutes":null,"lo":["LO1"]},{"id":"cosine-ignores-length","n":13,"title":"Cosine ignores length; the dot product does not","kind":"content","session":1,"hash":"72242a28","md":"#### [week1#cosine-ignores-length] Cosine ignores length; the dot product does not\n\n*Length or direction*\n\n- **x and 3x.** x · 3x = 27, larger than x · y = 8. Yet cos(x, 3x) = 1: the same direction exactly.\n- **Why a search cares.** A long document has a long vector. Ranking by raw dot product would favour length over meaning. Cosine compares only direction.","notes":"From slide_numbers.py: x · 3x = 27, cosine 1. Ask which of the two a help-centre search should use, and why. Cosine, unless length itself carries meaning.","minutes":null,"lo":["LO1"]},{"id":"many-dots-at-once","n":14,"title":"A matrix times a vector is many dot products at once","kind":"content","session":1,"hash":"b505d36e","md":"#### [week1#many-dots-at-once] A matrix times a vector is many dot products at once\n\n*At scale*\n\n```python\n# file: numpy\nD = np.array([[1, 2, 2],\n              [2, 1, 2],\n              [3, 6, 6]], float)\nN = D / np.linalg.norm(D, axis=1, keepdims=True)\nq = np.array([1, 2, 2]) / 3\nN @ q      # [1.0, 0.889, 1.0]\n```\n\n- Each row of **D** is one item; normalise every row to length 1\n- **N @ q** gives the cosine of the question with every row\n- The best match is the largest entry: `np.argmax`","notes":"Run it live. Point out that rows 1 and 3 tie at 1.0: the same direction, different lengths. This is the search the lab builds, on 60 help articles instead of three rows.","minutes":null,"lo":["LO1","LO4"]},{"id":"check-dot-or-cosine","n":15,"title":"Dot product or cosine?","kind":"quiz","session":1,"hash":"bddeae96","md":"#### [week1#check-dot-or-cosine] Dot product or cosine?\n\n*Checkpoint*\n\n**Question:** A question vector q = (1, 1). Two help articles: A = (4, 4) and B = (1, 1.2). Which statement is right?\n\n- A. A is closer in direction, since q · A = 8 beats q · B = 2.2\n- B. A and q differ in direction, since A is four times longer\n- C. Both measures rank A first, so the choice never matters\n- D. A has cosine 1 with q and B a little less; the dot product also rewards A's length","notes":"Answer D. cos(q, B) = 2.2 / (1.414 × 1.562) ≈ 0.996. If the room picks C, give a counter-example: q = (1, 0), A = (5, 5), B = (1, 0.1). Dot product puts A first, cosine puts B first.","minutes":null,"lo":["LO1"]},{"id":"embeddings","n":16,"title":"An embedding places words so that related words point the same way","kind":"content","session":1,"hash":"b32040c5","md":"#### [week1#embeddings] An embedding places words so that related words point the same way\n\n*Block C · embeddings*\n\n- A model reads a large text collection and gives each word a vector\n- Words used in similar contexts get vectors at small angles\n- The course uses **GloVe**: 400,000 words, 50 numbers each, trained on 6 billion tokens of encyclopedia and news text\n\n- **Licence.** The pre-trained GloVe vectors are released under the Public Domain Dedication and License. The lab downloads them; nothing is copied into the course.","notes":"Sources: the GloVe repository README (licence) and the gensim-data listing (file, size, checksum). The vectors are from 2014 text: an old, small model, chosen because it is public, light and runs on a laptop. Modern sentence models are better, and the geometry is the same.","minutes":null,"lo":["LO1"]},{"id":"sentence-as-mean","n":17,"title":"Here a sentence vector is the mean of its word vectors","kind":"content","session":1,"hash":"c60c43e0","md":"#### [week1#sentence-as-mean] Here a sentence vector is the mean of its word vectors\n\n*From words to sentences*\n\n1. **1 · Split** \"video will not play\" into four words\n2. **2 · Look up** four GloVe vectors of 50 numbers\n3. **3 · Average** one vector of 50 numbers for the sentence\n\n> **A baseline, not a sentence model.** The mean ignores word order and is pulled by frequent words. It is the simplest public sentence embedding, and the lab measures how far it gets.","notes":"Be plain about this: the course does not call a sentence model, because that would mean downloading one or using a paid service. The mean of public word vectors is a documented baseline, and its weaknesses are part of the lesson.","minutes":null,"lo":["LO1","LO4"]},{"id":"the-cone","n":18,"title":"When every vector shares a big common part, every cosine looks high","kind":"content","session":1,"hash":"76d56bd8","md":"#### [week1#the-cone] When every vector shares a big common part, every cosine looks high\n\n*A shared direction*\n\n| Toy vectors | Pair cosines |\n| --- | --- |\n| (6, 4), (4, 6), (6, 6) | 0.923, 0.981, 0.981 |\n| After subtracting their mean | −0.800, −0.316, −0.316 |\n\n- The three share the part (5, 5); their differences are small\n- **Centring** subtracts the mean vector and leaves the differences\n- After centring, angles describe how the items differ","notes":"Toy numbers from slide_numbers.py, week 1. Predict with the room: if every help title contains \"my\" and \"the\", what does their mean vector share? The lab measures this on the real titles; do not give its numbers now.","minutes":null,"lo":["LO1"]},{"id":"high-dimensions","n":19,"title":"In many dimensions, the nearest and the farthest point come close","kind":"content","session":1,"hash":"846240e0","md":"#### [week1#high-dimensions] In many dimensions, the nearest and the farthest point come close\n\n*High dimensions*\n\n| Item | Value |\n| --- | --- |\n| 2 dimensions | 58.69 |\n| 10 dimensions | 3.49 |\n| 100 dimensions | 0.46 |\n| 1,000 dimensions | 0.13 |\n\nContrast = (farthest − nearest) / nearest, from one random point to 499 others with independent standard normal coordinates.","notes":"From slide_numbers.py, week 1 (seed 7; the lab uses another seed). Real embeddings are not random, so neighbours still mean something, but differences between scores are small and easy to over-read.","minutes":null,"lo":["LO1"]},{"id":"associations","n":20,"title":"Vectors learn the associations of the text they were trained on","kind":"content","session":1,"hash":"a4cc50fe","md":"#### [week1#associations] Vectors learn the associations of the text they were trained on\n\n*What the vectors learnt*\n\nThe **lean** of a word w between two word lists:\n\nlean(w) = mean of cos(w, female word) − cos(w, male word), over pairs such as she/he and woman/man.\n\nPositive: closer to the female words. Zero: no lean.\n\n- **Why it matters.** A search that matches a learner's free-text goal to courses through these vectors inherits their leans. The lab measures them; whether a search treats learners differently must be tested on the search.","notes":"Define the measure only; the lab computes it on 14 occupation words. Ask what a lean near zero would mean, and what it would not prove (it would not prove a search is fair: other words could carry the same association).","minutes":null,"lo":["LO1"]},{"id":"check-high-dim","n":21,"title":"Reading a search score","kind":"quiz","session":1,"hash":"ee2b3300","md":"#### [week1#check-high-dim] Reading a search score\n\n*Checkpoint*\n\n**Question:** A search over mean word vectors returns two articles with cosines 0.951 and 0.949 to a question. What is the soundest reading?\n\n- A. The scores barely differ; check whether a shared direction inflates every cosine before trusting the order\n- B. Both are excellent matches, since a cosine above 0.9 means near-identical meaning\n- C. The first article is clearly the better answer, since it scores higher\n- D. There is a 95% chance that either article answers the question","notes":"Answer A. Link back to the cone slide. This is exactly what the lab investigates in step 5.","minutes":null,"lo":["LO1"]},{"id":"lab-1-1","n":22,"title":"Cosine-similarity search over public sentence embeddings","kind":"lab","session":1,"hash":"c4eaeb5b","md":"#### [week1#lab-1-1] Cosine-similarity search over public sentence embeddings\n\nLab 1.1 · 105 min\n\nSearch 60 help articles by meaning with mean GloVe vectors, remove the shared direction, and measure how occupation words lean towards gendered words.\n\n[W1_1.ipynb](https://sdaiaacademy.github.io/fnd-mth-101/labs/W1_1.ipynb)\n\n- [ ] Set up and load the data (10 min)\n- [ ] By hand, then in code: dot product, norms and cosine (15 min)\n- [ ] Embed the 60 article titles (15 min)\n- [ ] Search with one matrix product and score ten questions (20 min)\n- [ ] Find the cone, centre it, search again (20 min)\n- [ ] Distances in high dimensions (10 min)\n- [ ] Measure occupation words against gendered words and record what it means (15 min)\n- [ ] ✱ Stretch: Show that Euclidean distance and cosine rank unit vectors in the same order","notes":"AI-tutor in this lab: hints, no answers (labs/tutor/TUTOR.md). Watch for: the first GloVe download (69 MB) on a slow network, so start it during step 1; participants who normalise columns instead of rows (axis=0); hand results typed as fractions in strings.\n\nFallback: every exercise cell has a safety net, so a participant who is stuck can run on and come back.","minutes":null,"lo":[]},{"id":"debrief-search","n":23,"title":"Centring and dropping frequent words more than doubled the questions answered first","kind":"content","session":1,"hash":"c214ed97","md":"#### [week1#debrief-search] Centring and dropping frequent words more than doubled the questions answered first\n\n*Debrief · lab 1.1*\n\n| Sentence vectors | Mean pair cosine | Best article first | In the top 3 |\n| --- | --- | --- | --- |\n| Mean of all word vectors | 0.853 | 2 of 10 | 3 of 10 |\n| Content words only, centred | −0.014 | 5 of 10 | 6 of 10 |\n\nFour questions still miss the top 3: a mean of word vectors cannot know that \"retake\" and \"take again\" mean the same.","notes":"Numbers from the solution run of lab 1.1 (full mode). Ask a participant to read out a question that failed and its best article. The honest conclusion for the search lead: this baseline is not good enough to ship; it is good enough to learn the geometry.","minutes":null,"lo":["LO1"]},{"id":"debrief-lean","n":24,"title":"Nurse, receptionist and housekeeper lean towards the female words","kind":"content","session":1,"hash":"2327583d","md":"#### [week1#debrief-lean] Nurse, receptionist and housekeeper lean towards the female words\n\n*Debrief · lab 1.1*\n\n| Item | Value |\n| --- | --- |\n| nurse | +0.130 |\n| receptionist | +0.128 |\n| housekeeper | +0.120 |\n| engineer | −0.066 |\n| secretary | −0.076 |\n\n\"Secretary\" leans male, perhaps because news text often uses it as a title of office. One small model, five word pairs, no error bars: the leans describe the texts' usage, not the jobs, and not yet the search.","notes":"From the solution run of lab 1.1. Bars are lengths of the lean, coral for female, cyan for male. Collect two or three of the participants' recorded notes. A good note says what could change for a learner who writes \"she\" in a goal, and names a test to run on the search before it goes live (the same goal with she and he, compared).","minutes":null,"lo":["LO1"]},{"id":"wrap-up","n":25,"title":"Three things to keep","kind":"content","session":1,"hash":"3b5a9687","md":"#### [week1#wrap-up] Three things to keep\n\n*Week 1 · wrap-up*\n\n- **Length and angle.** The norm is a length; the dot product divided by two lengths is the cosine of an angle.\n- **Centre first.** A direction every vector shares makes every cosine high. Subtract the mean before comparing.\n- **Vectors carry text.** Embeddings inherit the associations of their training text. Measure them before building on them.","notes":"Ask each participant to say which of the three they would explain to a colleague first, and how.","minutes":null,"lo":[]},{"id":"next","n":26,"title":"Week 2: Matrices as maps, and their cost","kind":"content","session":1,"hash":"6f1825fb","md":"#### [week1#next] Week 2: Matrices as maps, and their cost\n\n*Next*\n\nProblem set 1 (60 minutes, AI off for the first attempt): labs/problem-sets/PS1.ipynb, before the next session. Finish lab 1.1 at home if needed.","notes":"Show where the problem set lives and run its last cell once to show the score line. Remind the group that the checker never prints an answer: it compares their hand work with their own code.","minutes":null,"lo":[]}],"activities":[{"id":"check-norm-units-q1","slide":"check-norm-units","type":"single","prompt":"Learners are vectors of (video minutes, quizzes). Learner K is (300, 2). Which is nearest to K by Euclidean distance: M (305, 9), N (330, 2) or P (290, 2)?","options":[{"key":"A","text":"P, because it matches K exactly on quizzes"},{"key":"B","text":"N, because its only difference is in one coordinate"},{"key":"C","text":"M, at a distance of about 8.6"},{"key":"D","text":"None: minutes and quizzes cannot be combined in one distance"}],"correct":[2],"explanation":"M: √(5² + 7²) ≈ 8.6; P: 10; N: 30. M wins although it took seven more quizzes, because one quiz counts as much as one minute here. Whether that is sensible is a scaling decision.","misconceptions":["Takes a perfect match on one coordinate as closeness: P is still 10 minutes away, more than M's distance","Counts how many coordinates differ instead of how far: N's one difference is 30 minutes, the largest gap of the three","","Believes a distance cannot be computed across units: it can, but its meaning depends on the scales chosen"],"lo":["LO1"]},{"id":"check-dot-or-cosine-q1","slide":"check-dot-or-cosine","type":"single","prompt":"A question vector q = (1, 1). Two help articles: A = (4, 4) and B = (1, 1.2). Which statement is right?","options":[{"key":"A","text":"A is closer in direction, since q · A = 8 beats q · B = 2.2"},{"key":"B","text":"A and q differ in direction, since A is four times longer"},{"key":"C","text":"Both measures rank A first, so the choice never matters"},{"key":"D","text":"A has cosine 1 with q and B a little less; the dot product also rewards A's length"}],"correct":[3],"explanation":"A = 4q, so cos(q, A) = 1; B is slightly off q's direction. Both measures put A first here, for different reasons.","misconceptions":["Takes the larger dot product as the closer direction: A wins on dot product only because it is longer","Treats different lengths as different directions: A is exactly four times q","Assumes cosine and dot product always rank the same way: they agree only when all vectors have equal length",""],"lo":["LO1"]},{"id":"check-high-dim-q1","slide":"check-high-dim","type":"single","prompt":"A search over mean word vectors returns two articles with cosines 0.951 and 0.949 to a question. What is the soundest reading?","options":[{"key":"A","text":"The scores barely differ; check whether a shared direction inflates every cosine before trusting the order"},{"key":"B","text":"Both are excellent matches, since a cosine above 0.9 means near-identical meaning"},{"key":"C","text":"The first article is clearly the better answer, since it scores higher"},{"key":"D","text":"There is a 95% chance that either article answers the question"}],"correct":[0],"explanation":"High, nearly equal cosines are what a shared direction produces. Centring the vectors and comparing again shows whether the order means anything.","misconceptions":["","Reads a high cosine as a strong match: when all vectors share a direction, every cosine is high","Treats a small gap in a high-dimensional score as a clear ranking: distances concentrate","Confuses cosine with a probability: a cosine is an angle measure, not a chance"],"lo":["LO1"]}],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"week1.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>

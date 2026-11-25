@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="page" data-track="foundations">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linear Algebra for Machine Learning · SDAIA Academy</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<meta name="description" content="Compute vectors, projections, least squares and the SVD by hand and in array code, and judge when a numerical result can be trusted">
+<link rel="icon" href="_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="index.md">
+<link rel="describedby" href="llms.txt">
+<link rel="stylesheet" href="_engine/academy.css">
+</head>
+<body>
+<header>
+<div class="wrap">
+<div class="top"><div class="logo" id="logo"></div><nav><a href="slides/week1.html">Slides</a><a href="practice.html">Practice</a><a href="index.md" type="text/markdown">Markdown</a></nav></div>
+<div class="kicker">Data &amp; AI Foundations Track · SDAIA Academy · FND-MTH-101</div>
+<h1>Linear Algebra for Machine Learning<span class="sub ar" lang="ar" dir="rtl">الجبر الخطي لتعلم الآلة</span></h1>
+<p>Compute vectors, projections, least squares and the SVD by hand and in array code, and judge when a numerical result can be trusted</p>
+<div class="meta"><span class="track">Data &amp; AI Foundations Track</span><span>8 weeks + capstone</span><span>45 hours</span><span>Level 100</span></div>
+</div>
+</header>
+<main class="wrap">
+<h2>About the course</h2>
+<p>Participants compute each idea of linear algebra twice: by hand on small cases and in array code on real data. They treat data as vectors, matrices as transformations, least squares as projection, and eigen and singular value decompositions as ways to find structure. Labs use public embeddings and images and a synthetic link graph. The capstone is a low-rank analysis of a public dataset, defended orally.</p>
+<p><b>Who it is for:</b> Beginners. Career changers and non-computing graduates closing bridging gaps before advanced study, and computing graduates refreshing the mathematics behind models; a placement test lets participants skip any course whose content they already command.</p>
+<p><b>Format:</b> Extended: 8 weeks part-time, one session and one lab a week, weekly graded problem sets and a capstone</p>
+<h2>The case study</h2>
+<div class="note info"><b>The online learning platform (fictional).</b> An unnamed online platform of short courses wants better search, cheaper scoring, honest fits and a fair ranking of its help centre. Its synthetic data (60 help articles, 400 learners, 120 courses, a 40-page link graph, 3,596 ratings) is generated with a fixed seed. The labs also use public GloVe word vectors, downloaded at run time, and two datasets bundled with the libraries: the handwritten digits in scikit-learn and a CC0 test image in scikit-image. Nothing public is copied into the course.</div>
+<h2>The course</h2>
+<div class="day">
+<div class="day-head c-teal"><div><div class="t">Week 1 · 1 session · 1 lab</div><h3>Vectors and similarity</h3></div><a class="btn" href="slides/week1.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Vectors, dot products and similarity</b><br>Vectors as data points and directions, the dot product, norms and cosine similarity, and what distance means in high dimensions<ul><li>Compute a dot product, a norm and a cosine by hand and in NumPy</li><li>Explain why cosine compares directions and ignores length</li><li>Describe how distances behave as the dimension grows</li></ul></td><td><a href="labs/W1_1.ipynb">Lab 1.1 · Cosine-similarity search over public sentence embeddings</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W1_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-cyan"><div><div class="t">Week 2 · 1 session · 1 lab</div><h3>Matrices as maps, and their cost</h3></div><a class="btn" href="slides/week2.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Matrix products, attention scores and FLOPs</b><br>Attention scores as a matrix of dot products, matrix products as composition of maps, and counting floating-point operations and memory<ul><li>Compute a matrix product by hand and state the shape of every product</li><li>Explain a matrix product as one map followed by another</li><li>Count the FLOPs and bytes of a product and compare loop and vectorised code</li></ul></td><td><a href="labs/W2_1.ipynb">Lab 2.1 · Loop and vectorised matrix products, timed and costed in FLOPs</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W2_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-coral"><div><div class="t">Week 3 · 1 session · 1 lab</div><h3>Span, rank and linear systems</h3></div><a class="btn" href="slides/week3.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Span, rank and linear systems</b><br>Span, independence, basis and rank, and solving linear systems by elimination, with the inverse and its cost<ul><li>Decide whether a set of vectors is independent and state the rank of a matrix</li><li>Solve a three-by-three system by elimination by hand and with a solver</li><li>Explain what a rank-deficient feature table does to a solve</li></ul></td><td><a href="labs/W3_1.ipynb">Lab 3.1 · Rank and linear systems on a feature table</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W3_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-purple"><div><div class="t">Week 4 · 1 session · 1 lab</div><h3>Orthogonal projection and QR</h3></div><a class="btn" href="slides/week4.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Orthogonal projection and QR</b><br>Orthogonal projection onto a line and onto a subspace, projection matrices, and the QR factorisation by Gram-Schmidt<ul><li>Project a vector onto a line and onto a plane by hand and in code</li><li>Check the properties of a projection matrix</li><li>Build a QR factorisation by Gram-Schmidt and check it against the library</li></ul></td><td><a href="labs/W4_1.ipynb">Lab 4.1 · Projections and QR by Gram-Schmidt</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W4_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-green"><div><div class="t">Week 5 · 1 session · 1 lab</div><h3>Least squares and conditioning</h3></div><a class="btn" href="slides/week5.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Least squares and conditioning</b><br>Least squares as projection, the normal equations, the QR route, condition numbers and what nearly collinear features do to a fit<ul><li>Fit a line by the normal equations by hand</li><li>Fit by QR and compare residuals and coefficients with the normal equations</li><li>Diagnose an ill-conditioned or rank-deficient system from its numbers</li></ul></td><td><a href="labs/W5_1.ipynb">Lab 5.1 · Least squares by normal equations and by QR on nearly collinear data</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W5_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-teal"><div><div class="t">Week 6 · 1 session · 1 lab</div><h3>Eigenvectors and link ranking</h3></div><a class="btn" href="slides/week6.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Eigenvectors and link ranking</b><br>Eigenvectors of symmetric matrices, covariance and the idea of principal components, and power iteration for link ranking<ul><li>Find the eigenvalues and eigenvectors of a two-by-two symmetric matrix by hand</li><li>Explain what the leading eigenvector of a covariance matrix shows</li><li>Rank pages by power iteration with damping, and explain dangling pages and islands</li></ul></td><td><a href="labs/W6_1.ipynb">Lab 6.1 · Power iteration and link ranking on a synthetic web graph</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W6_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-cyan"><div><div class="t">Week 7 · 1 session · 1 lab</div><h3>Singular values and low rank</h3></div><a class="btn" href="slides/week7.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>The SVD and principal components</b><br>The singular value decomposition, low-rank approximation and its error, and principal component analysis through the SVD<ul><li>Read a singular value decomposition and state what each factor holds</li><li>Build a rank-k approximation and predict its error from the singular values</li><li>Compute principal components of centred data and interpret the leading ones</li></ul></td><td><a href="labs/W7_1.ipynb">Lab 7.1 · SVD image compression and PCA on public handwritten digits</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W7_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-coral"><div><div class="t">Week 8 · 1 session · 1 lab</div><h3>Low rank in practice, and working numerically</h3></div><a class="btn" href="slides/week8.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Low rank in practice</b><br>Low-rank structure in recommenders and in model adaptation, vectorisation and broadcasting, floating-point limits, and checking code against hand computation<ul><li>Predict held-out ratings with a truncated SVD and choose the rank</li><li>Count the parameters of a low-rank weight update</li><li>Find a broadcasting or rounding error by checking code against a hand case</li></ul></td><td><a href="labs/W8_1.ipynb">Lab 8.1 · Low-rank ratings and adapter updates, checked by hand</a> <span class="muted">(105 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W8_1.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-amber"><div><div class="t">Capstone</div><h3>Capstone oral checks</h3></div><a class="btn" href="slides/capstone.html">Open the slides</a></div>
+<div class="scroll"><table><tr><td>Ten minutes each: four to walk through the notebook, six to rework one step with new numbers</td></tr></table></div>
+</div>
+<h2>Capstone</h2>
+<div class="two">
+<div><p>A low-rank analysis of a public dataset of the participant's choice, submitted as a notebook and defended in a ten-minute oral check in which the participant reworks one step with new numbers</p><p><b>What you submit:</b> A link to a public GitHub repository with the capstone notebook, its data source and licence, and the notebook's outputs; then a ten-minute oral check in which the participant walks through the notebook and reworks one step with new numbers the assessor gives</p><p><b>Format:</b> 4 min talk and demo · 6 min Q&amp;A</p></div>
+<div><h3>Rubric</h3><div class="bar c-teal"><span>Data matrix stated: source, licence, shape, centring and scaling, each choice justified<i style="--w:60%"></i></span><b>15%</b></div><div class="bar c-cyan"><span>SVD computed and checked: a small case agrees with hand work; reconstruction error reported by rank<i style="--w:100%"></i></span><b>25%</b></div><div class="bar c-coral"><span>Rank chosen from the error curve and the singular values, with the trade-off stated<i style="--w:80%"></i></span><b>20%</b></div><div class="bar c-purple"><span>Leading components interpreted in the dataset's own terms, with their limits<i style="--w:100%"></i></span><b>25%</b></div><div class="bar c-amber"><span>Notebook runs from top to bottom; seed, data source and licence stated; outputs honest<i style="--w:60%"></i></span><b>15%</b></div></div>
+</div>
+<h2>Outcomes</h2>
+<p>By the end of the course, participants can:</p>
+<div class="day"><div class="scroll"><table>
+<tr><th></th><th>Outcomes</th><th>Level</th><th>Evidence</th></tr>
+<tr><td><b>LO1</b></td><td>Explain the geometric meaning of vectors, dot products, norms, projections and matrix products, given two- and three-dimensional examples</td><td>Awareness</td><td>supervised AI-off test, at least 70% correct</td></tr>
+<tr><td><b>LO2</b></td><td>Describe what rank, eigenvalues and singular values reveal about a matrix and name one machine learning use of each, given covariance and data matrices</td><td>Awareness</td><td>written answers marked against a rubric</td></tr>
+<tr><td><b>LO3</b></td><td>Identify ill-conditioned or rank-deficient systems and explain their effect on a least-squares fit, given five numerical cases</td><td>Awareness</td><td>a diagnosis sheet correct on four of five</td></tr>
+<tr><td><b>LO4</b></td><td>Compute products, inverses, projections and decompositions by hand for small matrices and in array code for large ones, given the weekly problem sets</td><td>Applied</td><td>notebooks in which hand and code results agree within tolerance</td></tr>
+<tr><td><b>LO5</b></td><td>Implement least squares through QR factorisation and compare it with the normal equations, given synthetic data with nearly collinear features</td><td>Applied</td><td>a notebook comparing residuals and condition numbers, with the difference explained</td></tr>
+<tr><td><b>LO6</b></td><td>Apply the singular value decomposition to build low-rank approximations and principal components, given a public image, ratings or embedding matrix</td><td>Applied</td><td>the capstone notebook with error by rank and an interpretation of the leading components</td></tr>
+</table></div></div>
+<h2>Tools</h2>
+<div class="grid">
+<div class="card c-teal"><h3>Array computing</h3><p>NumPy · SciPy · JAX</p></div>
+<div class="card c-cyan"><h3>Notebook environment</h3><p>JupyterLab · marimo · a free hosted notebook service</p></div>
+<div class="card c-coral"><h3>Problem-set checking</h3><p>nbgrader · pytest</p></div>
+<div class="card c-purple"><h3>Hint-only tutor</h3><p>an open-weight model in tutor mode · an approved assistant with a tutor instruction</p></div>
+</div>
+<h2>Before you start</h2>
+<h3>Prerequisites</h3>
+<ul><li>School algebra: solving equations and reading graphs of functions</li><li>Writes short Python programs with lists, loops and functions (FND-PRG-101 or equivalent)</li></ul>
+<div class="note tip">The labs are notebooks. Open each one in Google Colab from the table above, or clone the repository and run them locally.</div>
+<h2>Sources</h2>
+<h3>Data</h3>
+<ul><li><a href="https://github.com/stanfordnlp/GloVe">GloVe: Global Vectors for Word Representation (Stanford NLP), the 6B 50-dimensional vectors, Public Domain Dedication and License</a></li><li><a href="https://github.com/piskvorky/gensim-data">gensim-data: the release the labs download the GloVe vectors from</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html">scikit-learn: load_digits, the bundled handwritten digits</a></li><li><a href="https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits">UCI Machine Learning Repository: Optical Recognition of Handwritten Digits (CC BY 4.0)</a></li><li><a href="https://scikit-image.org/docs/stable/api/skimage.data.html">scikit-image: the bundled test images (skimage.data.brick, CC0)</a></li></ul>
+<h3>Methods and tools</h3>
+<ul><li><a href="https://numpy.org/doc/stable/reference/routines.linalg.html">NumPy: linear algebra (numpy.linalg)</a></li><li><a href="https://docs.scipy.org/doc/scipy/reference/linalg.html">SciPy: linear algebra (scipy.linalg)</a></li><li><a href="https://arxiv.org/abs/2106.09685">Hu et al. (2021), LoRA: Low-Rank Adaptation of Large Language Models</a></li></ul>
+<h2>Files and links</h2>
+<div class="files">
+<a href="practice.html"><b>practice.html</b><span>Practice questions with feedback</span></a>
+<a href="index.md"><b>index.md</b><span>This page as Markdown, for an AI assistant</span></a>
+<a href="llms.txt"><b>llms.txt</b><span>The course for AI assistants (llms.txt)</span></a>
+<a href="https://github.com/SDAIAAcademy/fnd-mth-101"><b>SDAIAAcademy/fnd-mth-101</b><span>The course repository</span></a>
+</div>
+</main>
+<footer><div class="wrap">SDAIA Academy · Data &amp; AI Foundations Track · Linear Algebra for Machine Learning<br><span class="muted">Course version 2027.1.0 · engine 1.0.0 · built 2026-11-25 · commit f5792fb</span></div></footer>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-25T06:33:42Z","version":"2027.1.0","commit":"f5792fb"},"course":{"id":"fnd-mth-101","code":"FND-MTH-101","title":"Linear Algebra for Machine Learning","track":"foundations","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/fnd-mth-101/","repo":"SDAIAAcademy/fnd-mth-101","home":"index.html"},"ai":{"context":{"course":"context/course.md","courseJs":"context/course.js","day":null,"llms":"llms.txt"},"tasks":[],"tools":[]},"features":{},"strings":{}}</script>
+<script src="_engine/academy.js"></script>
+</body>
+</html>

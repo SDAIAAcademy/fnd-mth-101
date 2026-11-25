@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="foundations">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 3 · Span, rank and linear systems · Linear Algebra for Machine Learning</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="week3.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Linear Algebra for Machine Learning" data-track="foundations" data-day="Week 3">
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Linear Algebra for Machine Learning</div>
+  <h1>Span, rank and linear systems</h1>
+  <p class="lead mt">Week 3: When columns repeat each other, and what that does to a system of equations</p>
+  <div class="meta"><span class="track">Data &amp; AI Foundations Track</span><span>8 weeks + capstone</span><span>1 session · 1 lab</span><span>FND-MTH-101</span></div>
+  <aside class="notes"><p>Collect PS2 difficulties first: usually the order in compose(second, first). This week moves from what a matrix does to what it cannot undo.</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-auto="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">This week</div>
+  <h2>Span, rank and linear systems</h2>
+  <div class="agenda"><div class="item"><div><b>Session 1 · Span, rank and linear systems</b><small>Span, independence, basis and rank, and solving linear systems by elimination, with the inverse and its cost</small></div></div></div>
+</section>
+
+<section class="slide" id="review-week2" data-lo="LO1 LO4" data-n="3">
+  <div class="kicker">Review · week 2</div>
+  <h2>Cheaper brackets</h2>
+  <div class="quiz" data-type="single" data-lo="LO4" data-id="review-week2-q1">
+    <p class="lead">A is 100 × 2,000, B is 2,000 × 2,000 and x is a vector of length 2,000. You need A B x. Which order costs fewer FLOPs?</p>
+    <div class="opts">
+      <div class="opt" data-why="Thinks the cost is fixed by the result: the result is the same, the work is not" data-k="A">Either: the answer is the same, so the cost is the same</div>
+      <div class="opt" data-why="Multiplies the matrices first by habit: (A B) costs 2·100·2,000·2,000 = 800 million FLOPs" data-k="B">(A B) x</div>
+      <div class="opt" data-ok data-k="C">A (B x)</div>
+      <div class="opt" data-why="Believes a library reorders the brackets for you: NumPy computes them in the order written" data-k="D">Whichever order NumPy chooses, since it optimises the brackets</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> B x costs 8 million FLOPs and A(Bx) 0.4 million more; (A B) alone costs 800 million.</div>
+  </div>
+  <aside class="notes"><p>Answer C. Work the two totals on the board: 8.4 million against 800.4 million.</p></aside>
+</section>
+
+<!-- Session 1 -->
+
+<section class="slide section" id="s1" data-auto="section" data-session="1" data-n="4">
+  <div class="kicker">Session 1</div>
+  <h1>Span, rank and linear systems</h1>
+  <ul class="bullets outcomes"><li>Decide whether a set of vectors is independent and state the rank of a matrix</li><li>Solve a three-by-three system by elimination by hand and with a solver</li><li>Explain what a rank-deficient feature table does to a solve</li></ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" id="span" data-lo="LO2" data-n="5" data-session="1">
+  <div class="kicker">Block A · span</div>
+  <h2>The span of some vectors is everything you can build from them</h2>
+  <ul class="bullets">
+    <li>A <b>combination</b> of u and v is a u + b v, for any numbers a and b</li>
+    <li>The <b>span</b> is the set of all combinations: a line, a plane, or more</li>
+    <li>(1, 2) and (2, 4) span only a line: the second is twice the first</li>
+    <li>(1, 0) and (0, 1) span the whole plane</li>
+  </ul>
+  <div class="callout note mt"><b>For data.</b> The columns of a feature table span the set of predictions any linear model on them can make.</div>
+  <aside class="notes"><p>Draw both cases. Ask: can a linear model on (1, 2) and (2, 4) as features predict anything a model on (1, 2) alone cannot? No: the second adds no direction.</p></aside>
+</section>
+
+<section class="slide" id="independence" data-lo="LO2" data-n="6" data-session="1">
+  <div class="kicker">Independence</div>
+  <h2>Vectors are independent when none is a combination of the others</h2>
+  <div class="cols cols-2">
+    <div class="card c-teal"><h4>Independent</h4><p class="small mb0">The only combination that gives zero is all coefficients zero. Each vector adds a new direction.</p></div>
+    <div class="card c-coral"><h4>Dependent</h4><p class="small mb0">Some combination with non-zero coefficients gives zero: 2(1, 2) − (2, 4) = (0, 0). One vector repeats the others.</p></div>
+  </div>
+  <div class="callout tip mt"><b>A basis</b> of a span is an independent set that spans it. Every basis of the same span has the same size: that size is the dimension.</div>
+  <aside class="notes"><p>The test: put the vectors in columns and look for a non-zero solution of M c = 0. That set of solutions is the null space; it comes back in the lab's stretch.</p></aside>
+</section>
+
+<section class="slide" id="rank" data-lo="LO2" data-n="7" data-session="1">
+  <div class="kicker">Rank</div>
+  <h2>The rank is the number of independent columns, and also of independent rows</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Course</th><th class="num">Hours</th><th class="num">Minutes</th><th class="num">Lessons</th></tr>
+      <tr><td>Course 1</td><td class="num">2</td><td class="num">120</td><td class="num">8</td></tr>
+      <tr><td>Course 2</td><td class="num">3</td><td class="num">180</td><td class="num">10</td></tr>
+      <tr><td>Course 3</td><td class="num">1</td><td class="num">60</td><td class="num">5</td></tr>
+      <tr><td>Course 4</td><td class="num">4</td><td class="num">240</td><td class="num">12</td></tr>
+    </table>
+    <ul class="bullets">
+      <li>Minutes = 60 × hours exactly</li>
+      <li>Three columns, <b>rank 2</b></li>
+      <li>Singular values 329.18, 2.51 and <b>0</b>: one direction is missing</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 3. Singular values are defined in week 7; here only say that a zero one means a direction the columns do not reach. Machine learning use: rank tells you how many features are really there.</p></aside>
+</section>
+
+<section class="slide" id="check-rank" data-lo="LO2" data-n="8" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>How many features are really there?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="check-rank-q1">
+    <p class="lead">A table has columns: price, tax (15% of price), price with tax, and a discount code that varies freely. What is its rank, if there are many rows?</p>
+    <div class="opts">
+      <div class="opt" data-why="Counts columns, not independent columns: tax and price with tax follow from price" data-k="A">4</div>
+      <div class="opt" data-ok data-k="B">2</div>
+      <div class="opt" data-why="Misses that tax depends on price: only price with tax repeats the others" data-k="C">3</div>
+      <div class="opt" data-why="Thinks a column computed from another removes both: price still carries its own direction" data-k="D">1</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Tax = 0.15 × price and price with tax = 1.15 × price: both lie on price's direction. Price and the discount code are independent.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Ask what a model would report as the effect of tax: nothing it can separate from price.</p></aside>
+</section>
+
+<section class="slide" id="systems-as-columns" data-lo="LO1 LO2" data-n="9" data-session="1">
+  <div class="kicker">Block B · linear systems</div>
+  <h2>Solving A x = b asks which combination of A's columns makes b</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>One solution</h4><p class="small mb0">b is in the span and the columns are independent.</p></div>
+    <div class="card c-amber"><h4>Infinitely many</h4><p class="small mb0">b is in the span and the columns are dependent: one solution plus any null-space vector.</p></div>
+    <div class="card c-coral"><h4>None</h4><p class="small mb0">b is outside the span. Week 5 finds the closest combination instead.</p></div>
+  </div>
+  <aside class="notes"><p>Read the column picture slowly: x holds the coefficients of a combination. The third case is the normal one in data fitting, with more rows than columns.</p></aside>
+</section>
+
+<section class="slide" id="elimination" data-lo="LO4" data-n="10" data-session="1">
+  <div class="kicker">Elimination</div>
+  <h2>Elimination subtracts rows until the system is a staircase</h2>
+  <table class="t small">
+    <tr><th>Step</th><th>Rows of [A | b]</th></tr>
+    <tr><td>Start</td><td>[2, 1, 1 | 4], [4, 3, 3 | 10], [8, 7, 9 | 24]</td></tr>
+    <tr><td>Row 2 − 2 × row 1; row 3 − 4 × row 1</td><td>[2, 1, 1 | 4], [0, 1, 1 | 2], [0, 3, 5 | 8]</td></tr>
+    <tr class="hl"><td>Row 3 − 3 × row 2</td><td>[2, 1, 1 | 4], [0, 1, 1 | 2], [0, 0, 2 | 2]</td></tr>
+  </table>
+  <p class="mt">Back substitution from the bottom: z = 1, then y = 1, then x = 1.</p>
+  <aside class="notes"><p>From slide_numbers.py, week 3. Do it live, a row at a time, and let the room call out the multipliers. Each step costs about 2n² operations per column: about (2/3)n³ in total for an n × n system.</p></aside>
+</section>
+
+<section class="slide" id="pivoting" data-lo="LO3 LO4" data-n="11" data-session="1">
+  <div class="kicker">Pivots</div>
+  <h2>A zero or tiny pivot breaks elimination; swapping rows fixes most cases</h2>
+  <ul class="bullets">
+    <li>The <b>pivot</b> is the number you divide by at each step</li>
+    <li>A zero pivot with nothing to swap in means a dependent column: the matrix is <b>singular</b></li>
+    <li>A tiny pivot magnifies rounding; <b>partial pivoting</b> swaps in the row with the largest entry</li>
+    <li>The number of non-zero pivots is the rank</li>
+  </ul>
+  <aside class="notes"><p>The lab's elimination uses partial pivoting. Library solvers do the same, with an LU factorisation underneath.</p></aside>
+</section>
+
+<section class="slide" id="check-systems" data-lo="LO2 LO3" data-n="12" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>What does a zero pivot tell you?</h2>
+  <div class="quiz" data-type="single" data-lo="LO3" data-id="check-systems-q1">
+    <p class="lead">Elimination on a 4 × 4 matrix finds no non-zero pivot in the third column, even after looking for a row to swap. What follows?</p>
+    <div class="opts">
+      <div class="opt" data-why="Believes a bigger computer fixes it: the zero is structural, not a rounding accident" data-k="A">The computation needs more precision</div>
+      <div class="opt" data-why="Assumes a solution exists and is unique: a dependent column removes uniqueness" data-k="B">The system has exactly one solution, found by skipping the column</div>
+      <div class="opt" data-ok data-k="C">The columns are dependent; the system has no solution or infinitely many</div>
+      <div class="opt" data-why="Confuses a zero pivot with a zero right-hand side: b plays no part in the pivots" data-k="D">The right-hand side b must be zero</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> A missing pivot means a column is a combination of earlier ones: rank below 4, a singular matrix.</div>
+  </div>
+  <aside class="notes"><p>Answer C. Which of the two cases depends on b: whether b lies in the span of the columns.</p></aside>
+</section>
+
+<section class="slide" id="inverse" data-lo="LO4" data-n="13" data-session="1">
+  <div class="kicker">Block C · the inverse</div>
+  <h2>The inverse undoes a map, and exists only when nothing was lost</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>[[4, 7], [2, 6]] has determinant 4 × 6 − 7 × 2 = 10, so</p>
+      <p><b>inverse = [[0.6, −0.7], [−0.2, 0.4]]</b></p>
+      <p class="small">Check: multiply them and get the identity.</p>
+    </div>
+    <div class="card c-coral"><h4>No inverse</h4><p class="small mb0">A singular matrix squashes some direction to zero. Nothing can bring it back: two inputs give the same output.</p></div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 3. The 2 × 2 formula is on the problem set; larger inverses are computed by elimination, never by a formula.</p></aside>
+</section>
+
+<section class="slide" id="solve-not-invert" data-lo="LO3 LO4" data-n="14" data-session="1">
+  <div class="kicker">In code</div>
+  <h2>To solve a system, call a solver; do not invert and multiply</h2>
+  <div class="cols cols-2">
+    <pre class="code" data-file="numpy"><code class="language-python">x = np.linalg.solve(A, b)      <span class="hljs-comment"># yes</span>
+x = np.linalg.inv(A) @ b       <span class="hljs-comment"># avoid</span></code></pre>
+    <ul class="bullets">
+      <li>Solving does less work than inverting</li>
+      <li>It rounds less, and the gap grows with the condition number</li>
+      <li>You rarely need the inverse itself</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>The lab measures both on a system with condition number 10¹⁰. Be ready for modest differences on a laptop: the point is that solving is never worse.</p></aside>
+</section>
+
+<section class="slide" id="floating-point-first" data-lo="LO3" data-n="15" data-session="1">
+  <div class="kicker">Rounding</div>
+  <h2>On a computer, "zero" means "small compared with rounding"</h2>
+  <ul class="bullets">
+    <li>A float64 number holds about 16 significant digits</li>
+    <li>Exact dependence shows as a singular value of rounding size, about 10⁻¹⁶ times the largest or less, not always exactly 0</li>
+    <li><code>np.linalg.matrix_rank</code> counts singular values above a tolerance set from the matrix's size and largest value</li>
+  </ul>
+  <div class="callout warn mt"><b>Near, not exact.</b> A column that almost repeats another keeps the rank full and still makes a solve unstable. Weeks 4 and 5 measure that.</div>
+  <aside class="notes"><p>Floating-point limits are taught in full in week 8; here only what the rank needs. Source: the NumPy documentation of matrix_rank.</p></aside>
+</section>
+
+<section class="slide" id="check-inverse" data-lo="LO2 LO4" data-n="16" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Can this table be inverted?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="check-inverse-q1">
+    <p class="lead">A 3 × 3 matrix has rows (1, 2, 3), (0, 1, 4) and (1, 3, 7). Does it have an inverse?</p>
+    <div class="opts">
+      <div class="opt" data-why="Thinks a matrix with no zero row is invertible: rows can depend on each other without being zero" data-k="A">Yes: no row is all zeros</div>
+      <div class="opt" data-why="Looks only for equal rows: dependence can be any combination" data-k="B">Yes: no two rows are equal</div>
+      <div class="opt" data-why="Thinks invertibility depends on the right-hand side: it is a property of the matrix alone" data-k="C">It depends on the vector b it is used with</div>
+      <div class="opt" data-ok data-k="D">No: the third row is the sum of the first two</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> (1, 2, 3) + (0, 1, 4) = (1, 3, 7). Rank 2: the map squashes a direction, so it cannot be undone.</div>
+  </div>
+  <aside class="notes"><p>Answer D. Ask the room to confirm with elimination: the third pivot vanishes.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-3-1" data-auto="lab" data-lab="3.1" data-label="Lab 3.1" data-n="17" data-session="1">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 3.1 · 105 min</div><h2>Rank and linear systems on a feature table</h2><p class="lead small">Solve a small system by elimination, find the repeated column of the learner table from its rank, and compare solving with inverting.</p><a class="nb" href="../labs/W3_1.ipynb">W3_1.ipynb</a></div><ul class="checklist"><li>Set up; elimination by hand, then a solver <span class="min">20 min</span></li><li>Span: is a vector a combination of two others? <span class="min">15 min</span></li><li>The rank of the table, and the column it repeats <span class="min">20 min</span></li><li>What the repeated column does to a solve <span class="min">15 min</span></li><li>A basis: drop the column, check the rank <span class="min">10 min</span></li><li>Solve against invert: residuals and time <span class="min">15 min</span></li><li>Record which columns to keep <span class="min">10 min</span></li><li class="stretch">✱ Stretch: Read the repeated column off the null space of the full table</li></ul></div>
+  <aside class="notes"><p>AI-tutor: hints only. Watch for: elimination code that forgets to swap the right-hand side with the row; the rank computed on the transposed table (same answer, so no harm); participants who expect solve to fail with a clear message on the five-column table. On some computers it fails, on others it returns numbers: both are lessons.</p></aside>
+</section>
+
+<section class="slide" id="debrief-rank" data-lo="LO2 LO3" data-n="18" data-session="1">
+  <div class="kicker">Debrief · lab 3.1</div>
+  <h2>Five columns, rank 4: total actions repeats the other counts</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Quantity</th><th class="num">Value</th></tr>
+      <tr><td>Singular values of the table</td><td class="num">2951.22, 89.61, 32.87, 6.02, 0</td></tr>
+      <tr><td>Condition number of XᵀX, five columns</td><td class="num">1.39 × 10¹⁷</td></tr>
+      <tr class="hl"><td>Condition number of XᵀX, four columns</td><td class="num">3.06 × 10⁵</td></tr>
+    </table>
+    <ul class="bullets">
+      <li>total_actions = videos + quizzes + posts, exactly</li>
+      <li>On the build laptop, solve and inverse both stopped: "Singular matrix"</li>
+      <li>Keep four columns; drop the sum</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>From the solution run of lab 3.1. The remaining 3 × 10⁵ comes from video_minutes, nearly 7.5 × videos: week 5 shows what that does to a fit. On the solve-against-invert step the build laptop gave residuals of 6.6 × 10⁻⁶ against 8.3 × 10⁻⁶ at n = 1,600, with mixed timings: honest, modest, and never in the inverse's favour on residuals.</p></aside>
+</section>
+
+<section class="slide" id="wrap-up" data-n="19" data-session="1">
+  <div class="kicker">Week 3 · wrap-up</div>
+  <h2>Three things to keep</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>Rank counts directions</h4><p class="small mb0">Columns that repeat others add no information, and a model cannot separate their effects.</p></div>
+    <div class="card c-coral"><h4>Solutions depend on the span</h4><p class="small mb0">One, none or infinitely many: decided by rank and by whether b is reachable.</p></div>
+    <div class="card c-purple"><h4>Solve, do not invert</h4><p class="small mb0">Call a solver. The inverse is a concept more than a step.</p></div>
+  </div>
+  <aside class="notes"><p>Ask for one feature pair from their own work that would make a table rank-deficient.</p></aside>
+</section>
+
+<section class="slide dark" id="next" data-label="Next" data-n="20" data-session="1">
+  <div class="kicker">Next</div>
+  <h2>Week 4: Orthogonal projection and QR</h2>
+  <p class="lead">Problem set 3 (60 minutes, AI off for the first attempt): labs/problem-sets/PS3.ipynb. The first supervised test follows week 4.</p>
+  <aside class="notes"><p>Announce the first supervised AI-off test after week 4: 90 minutes, half on paper and half at the keyboard, on weeks 1 to 4.</p></aside>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-25T06:33:42Z","version":"2027.1.0","commit":"f5792fb"},"course":{"id":"fnd-mth-101","code":"FND-MTH-101","title":"Linear Algebra for Machine Learning","track":"foundations","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/fnd-mth-101/","repo":"SDAIAAcademy/fnd-mth-101","home":"../index.html"},"deck":{"id":"week3","kind":"day","day":3,"label":"Week 3","title":"Span, rank and linear systems","prev":"week2.html","next":"week4.html","md":"week3.md","alt":{}},"sessions":[{"n":1,"label":"Session 1","title":"Span, rank and linear systems","slide":"s1","outcomes":["Decide whether a set of vectors is independent and state the rank of a matrix","Solve a three-by-three system by elimination by hand and with a solver","Explain what a rank-deficient feature table does to a solve"],"minutes":210,"lab":{"id":"3.1","title":"Rank and linear systems on a feature table","minutes":105,"href":"../labs/W3_1.ipynb"}}],"slides":[{"id":"title","n":1,"title":"Span, rank and linear systems","kind":"title","session":0,"hash":"8fd3b5f0","md":"#### [week3#title] Span, rank and linear systems\n\n*SDAIA Academy · Linear Algebra for Machine Learning*\n\nWeek 3: When columns repeat each other, and what that does to a system of equations\n\nData & AI Foundations Track · 8 weeks + capstone · 1 session · 1 lab · FND-MTH-101","notes":"Collect PS2 difficulties first: usually the order in compose(second, first). This week moves from what a matrix does to what it cannot undo.","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"Span, rank and linear systems","kind":"content","session":0,"hash":"6ea5168b","md":"#### [week3#agenda] Span, rank and linear systems\n\n*This week*\n\n- **Session 1 · Span, rank and linear systems**: Span, independence, basis and rank, and solving linear systems by elimination, with the inverse and its cost","notes":"","minutes":null,"lo":[]},{"id":"review-week2","n":3,"title":"Cheaper brackets","kind":"quiz","session":0,"hash":"112d8004","md":"#### [week3#review-week2] Cheaper brackets\n\n*Review · week 2*\n\n**Question:** A is 100 × 2,000, B is 2,000 × 2,000 and x is a vector of length 2,000. You need A B x. Which order costs fewer FLOPs?\n\n- A. Either: the answer is the same, so the cost is the same\n- B. (A B) x\n- C. A (B x)\n- D. Whichever order NumPy chooses, since it optimises the brackets","notes":"Answer C. Work the two totals on the board: 8.4 million against 800.4 million.","minutes":null,"lo":["LO1","LO4"]},{"id":"s1","n":4,"title":"Span, rank and linear systems","kind":"section","session":1,"hash":"7c0f46ff","md":"#### [week3#s1] Span, rank and linear systems\n\n*Session 1*\n\n- Decide whether a set of vectors is independent and state the rank of a matrix\n- Solve a three-by-three system by elimination by hand and with a solver\n- Explain what a rank-deficient feature table does to a solve","notes":"","minutes":null,"lo":["LO2","LO3","LO4"]},{"id":"span","n":5,"title":"The span of some vectors is everything you can build from them","kind":"content","session":1,"hash":"25161223","md":"#### [week3#span] The span of some vectors is everything you can build from them\n\n*Block A · span*\n\n- A **combination** of u and v is a u + b v, for any numbers a and b\n- The **span** is the set of all combinations: a line, a plane, or more\n- (1, 2) and (2, 4) span only a line: the second is twice the first\n- (1, 0) and (0, 1) span the whole plane\n\n> **For data.** The columns of a feature table span the set of predictions any linear model on them can make.","notes":"Draw both cases. Ask: can a linear model on (1, 2) and (2, 4) as features predict anything a model on (1, 2) alone cannot? No: the second adds no direction.","minutes":null,"lo":["LO2"]},{"id":"independence","n":6,"title":"Vectors are independent when none is a combination of the others","kind":"content","session":1,"hash":"567b5d97","md":"#### [week3#independence] Vectors are independent when none is a combination of the others\n\n*Independence*\n\n- **Independent.** The only combination that gives zero is all coefficients zero. Each vector adds a new direction.\n- **Dependent.** Some combination with non-zero coefficients gives zero: 2(1, 2) − (2, 4) = (0, 0). One vector repeats the others.\n\n> **A basis** of a span is an independent set that spans it. Every basis of the same span has the same size: that size is the dimension.","notes":"The test: put the vectors in columns and look for a non-zero solution of M c = 0. That set of solutions is the null space; it comes back in the lab's stretch.","minutes":null,"lo":["LO2"]},{"id":"rank","n":7,"title":"The rank is the number of independent columns, and also of independent rows","kind":"content","session":1,"hash":"0f7211fc","md":"#### [week3#rank] The rank is the number of independent columns, and also of independent rows\n\n*Rank*\n\n| Course | Hours | Minutes | Lessons |\n| --- | --- | --- | --- |\n| Course 1 | 2 | 120 | 8 |\n| Course 2 | 3 | 180 | 10 |\n| Course 3 | 1 | 60 | 5 |\n| Course 4 | 4 | 240 | 12 |\n\n- Minutes = 60 × hours exactly\n- Three columns, **rank 2**\n- Singular values 329.18, 2.51 and **0**: one direction is missing","notes":"Numbers from slide_numbers.py, week 3. Singular values are defined in week 7; here only say that a zero one means a direction the columns do not reach. Machine learning use: rank tells you how many features are really there.","minutes":null,"lo":["LO2"]},{"id":"check-rank","n":8,"title":"How many features are really there?","kind":"quiz","session":1,"hash":"a9a24e9b","md":"#### [week3#check-rank] How many features are really there?\n\n*Checkpoint*\n\n**Question:** A table has columns: price, tax (15% of price), price with tax, and a discount code that varies freely. What is its rank, if there are many rows?\n\n- A. 4\n- B. 2\n- C. 3\n- D. 1","notes":"Answer B. Ask what a model would report as the effect of tax: nothing it can separate from price.","minutes":null,"lo":["LO2"]},{"id":"systems-as-columns","n":9,"title":"Solving A x = b asks which combination of A's columns makes b","kind":"content","session":1,"hash":"0ea97204","md":"#### [week3#systems-as-columns] Solving A x = b asks which combination of A's columns makes b\n\n*Block B · linear systems*\n\n- **One solution.** b is in the span and the columns are independent.\n- **Infinitely many.** b is in the span and the columns are dependent: one solution plus any null-space vector.\n- **None.** b is outside the span. Week 5 finds the closest combination instead.","notes":"Read the column picture slowly: x holds the coefficients of a combination. The third case is the normal one in data fitting, with more rows than columns.","minutes":null,"lo":["LO1","LO2"]},{"id":"elimination","n":10,"title":"Elimination subtracts rows until the system is a staircase","kind":"content","session":1,"hash":"e7b53281","md":"#### [week3#elimination] Elimination subtracts rows until the system is a staircase\n\n*Elimination*\n\n| Step | Rows of [A \\| b] |\n| --- | --- |\n| Start | [2, 1, 1 \\| 4], [4, 3, 3 \\| 10], [8, 7, 9 \\| 24] |\n| Row 2 − 2 × row 1; row 3 − 4 × row 1 | [2, 1, 1 \\| 4], [0, 1, 1 \\| 2], [0, 3, 5 \\| 8] |\n| Row 3 − 3 × row 2 | [2, 1, 1 \\| 4], [0, 1, 1 \\| 2], [0, 0, 2 \\| 2] |\n\nBack substitution from the bottom: z = 1, then y = 1, then x = 1.","notes":"From slide_numbers.py, week 3. Do it live, a row at a time, and let the room call out the multipliers. Each step costs about 2n² operations per column: about (2/3)n³ in total for an n × n system.","minutes":null,"lo":["LO4"]},{"id":"pivoting","n":11,"title":"A zero or tiny pivot breaks elimination; swapping rows fixes most cases","kind":"content","session":1,"hash":"cb99b1e9","md":"#### [week3#pivoting] A zero or tiny pivot breaks elimination; swapping rows fixes most cases\n\n*Pivots*\n\n- The **pivot** is the number you divide by at each step\n- A zero pivot with nothing to swap in means a dependent column: the matrix is **singular**\n- A tiny pivot magnifies rounding; **partial pivoting** swaps in the row with the largest entry\n- The number of non-zero pivots is the rank","notes":"The lab's elimination uses partial pivoting. Library solvers do the same, with an LU factorisation underneath.","minutes":null,"lo":["LO3","LO4"]},{"id":"check-systems","n":12,"title":"What does a zero pivot tell you?","kind":"quiz","session":1,"hash":"80ddbcf6","md":"#### [week3#check-systems] What does a zero pivot tell you?\n\n*Checkpoint*\n\n**Question:** Elimination on a 4 × 4 matrix finds no non-zero pivot in the third column, even after looking for a row to swap. What follows?\n\n- A. The computation needs more precision\n- B. The system has exactly one solution, found by skipping the column\n- C. The columns are dependent; the system has no solution or infinitely many\n- D. The right-hand side b must be zero","notes":"Answer C. Which of the two cases depends on b: whether b lies in the span of the columns.","minutes":null,"lo":["LO2","LO3"]},{"id":"inverse","n":13,"title":"The inverse undoes a map, and exists only when nothing was lost","kind":"content","session":1,"hash":"c6a01c3d","md":"#### [week3#inverse] The inverse undoes a map, and exists only when nothing was lost\n\n*Block C · the inverse*\n\n[[4, 7], [2, 6]] has determinant 4 × 6 − 7 × 2 = 10, so\n\n**inverse = [[0.6, −0.7], [−0.2, 0.4]]**\n\nCheck: multiply them and get the identity.\n\n- **No inverse.** A singular matrix squashes some direction to zero. Nothing can bring it back: two inputs give the same output.","notes":"From slide_numbers.py, week 3. The 2 × 2 formula is on the problem set; larger inverses are computed by elimination, never by a formula.","minutes":null,"lo":["LO4"]},{"id":"solve-not-invert","n":14,"title":"To solve a system, call a solver; do not invert and multiply","kind":"content","session":1,"hash":"6292c40f","md":"#### [week3#solve-not-invert] To solve a system, call a solver; do not invert and multiply\n\n*In code*\n\n```python\n# file: numpy\nx = np.linalg.solve(A, b)      # yes\nx = np.linalg.inv(A) @ b       # avoid\n```\n\n- Solving does less work than inverting\n- It rounds less, and the gap grows with the condition number\n- You rarely need the inverse itself","notes":"The lab measures both on a system with condition number 10¹⁰. Be ready for modest differences on a laptop: the point is that solving is never worse.","minutes":null,"lo":["LO3","LO4"]},{"id":"floating-point-first","n":15,"title":"On a computer, \"zero\" means \"small compared with rounding\"","kind":"content","session":1,"hash":"62511618","md":"#### [week3#floating-point-first] On a computer, \"zero\" means \"small compared with rounding\"\n\n*Rounding*\n\n- A float64 number holds about 16 significant digits\n- Exact dependence shows as a singular value of rounding size, about 10⁻¹⁶ times the largest or less, not always exactly 0\n- `np.linalg.matrix_rank` counts singular values above a tolerance set from the matrix's size and largest value\n\n> **Near, not exact.** A column that almost repeats another keeps the rank full and still makes a solve unstable. Weeks 4 and 5 measure that.","notes":"Floating-point limits are taught in full in week 8; here only what the rank needs. Source: the NumPy documentation of matrix_rank.","minutes":null,"lo":["LO3"]},{"id":"check-inverse","n":16,"title":"Can this table be inverted?","kind":"quiz","session":1,"hash":"9ecefe96","md":"#### [week3#check-inverse] Can this table be inverted?\n\n*Checkpoint*\n\n**Question:** A 3 × 3 matrix has rows (1, 2, 3), (0, 1, 4) and (1, 3, 7). Does it have an inverse?\n\n- A. Yes: no row is all zeros\n- B. Yes: no two rows are equal\n- C. It depends on the vector b it is used with\n- D. No: the third row is the sum of the first two","notes":"Answer D. Ask the room to confirm with elimination: the third pivot vanishes.","minutes":null,"lo":["LO2","LO4"]},{"id":"lab-3-1","n":17,"title":"Rank and linear systems on a feature table","kind":"lab","session":1,"hash":"e7c1f696","md":"#### [week3#lab-3-1] Rank and linear systems on a feature table\n\nLab 3.1 · 105 min\n\nSolve a small system by elimination, find the repeated column of the learner table from its rank, and compare solving with inverting.\n\n[W3_1.ipynb](https://sdaiaacademy.github.io/fnd-mth-101/labs/W3_1.ipynb)\n\n- [ ] Set up; elimination by hand, then a solver (20 min)\n- [ ] Span: is a vector a combination of two others? (15 min)\n- [ ] The rank of the table, and the column it repeats (20 min)\n- [ ] What the repeated column does to a solve (15 min)\n- [ ] A basis: drop the column, check the rank (10 min)\n- [ ] Solve against invert: residuals and time (15 min)\n- [ ] Record which columns to keep (10 min)\n- [ ] ✱ Stretch: Read the repeated column off the null space of the full table","notes":"AI-tutor: hints only. Watch for: elimination code that forgets to swap the right-hand side with the row; the rank computed on the transposed table (same answer, so no harm); participants who expect solve to fail with a clear message on the five-column table. On some computers it fails, on others it returns numbers: both are lessons.","minutes":null,"lo":[]},{"id":"debrief-rank","n":18,"title":"Five columns, rank 4: total actions repeats the other counts","kind":"content","session":1,"hash":"a4b58b73","md":"#### [week3#debrief-rank] Five columns, rank 4: total actions repeats the other counts\n\n*Debrief · lab 3.1*\n\n| Quantity | Value |\n| --- | --- |\n| Singular values of the table | 2951.22, 89.61, 32.87, 6.02, 0 |\n| Condition number of XᵀX, five columns | 1.39 × 10¹⁷ |\n| Condition number of XᵀX, four columns | 3.06 × 10⁵ |\n\n- total_actions = videos + quizzes + posts, exactly\n- On the build laptop, solve and inverse both stopped: \"Singular matrix\"\n- Keep four columns; drop the sum","notes":"From the solution run of lab 3.1. The remaining 3 × 10⁵ comes from video_minutes, nearly 7.5 × videos: week 5 shows what that does to a fit. On the solve-against-invert step the build laptop gave residuals of 6.6 × 10⁻⁶ against 8.3 × 10⁻⁶ at n = 1,600, with mixed timings: honest, modest, and never in the inverse's favour on residuals.","minutes":null,"lo":["LO2","LO3"]},{"id":"wrap-up","n":19,"title":"Three things to keep","kind":"content","session":1,"hash":"b61bd2c9","md":"#### [week3#wrap-up] Three things to keep\n\n*Week 3 · wrap-up*\n\n- **Rank counts directions.** Columns that repeat others add no information, and a model cannot separate their effects.\n- **Solutions depend on the span.** One, none or infinitely many: decided by rank and by whether b is reachable.\n- **Solve, do not invert.** Call a solver. The inverse is a concept more than a step.","notes":"Ask for one feature pair from their own work that would make a table rank-deficient.","minutes":null,"lo":[]},{"id":"next","n":20,"title":"Week 4: Orthogonal projection and QR","kind":"content","session":1,"hash":"af9732da","md":"#### [week3#next] Week 4: Orthogonal projection and QR\n\n*Next*\n\nProblem set 3 (60 minutes, AI off for the first attempt): labs/problem-sets/PS3.ipynb. The first supervised test follows week 4.","notes":"Announce the first supervised AI-off test after week 4: 90 minutes, half on paper and half at the keyboard, on weeks 1 to 4.","minutes":null,"lo":[]}],"activities":[{"id":"review-week2-q1","slide":"review-week2","type":"single","prompt":"A is 100 × 2,000, B is 2,000 × 2,000 and x is a vector of length 2,000. You need A B x. Which order costs fewer FLOPs?","options":[{"key":"A","text":"Either: the answer is the same, so the cost is the same"},{"key":"B","text":"(A B) x"},{"key":"C","text":"A (B x)"},{"key":"D","text":"Whichever order NumPy chooses, since it optimises the brackets"}],"correct":[2],"explanation":"B x costs 8 million FLOPs and A(Bx) 0.4 million more; (A B) alone costs 800 million.","misconceptions":["Thinks the cost is fixed by the result: the result is the same, the work is not","Multiplies the matrices first by habit: (A B) costs 2·100·2,000·2,000 = 800 million FLOPs","","Believes a library reorders the brackets for you: NumPy computes them in the order written"],"lo":["LO4"]},{"id":"check-rank-q1","slide":"check-rank","type":"single","prompt":"A table has columns: price, tax (15% of price), price with tax, and a discount code that varies freely. What is its rank, if there are many rows?","options":[{"key":"A","text":"4"},{"key":"B","text":"2"},{"key":"C","text":"3"},{"key":"D","text":"1"}],"correct":[1],"explanation":"Tax = 0.15 × price and price with tax = 1.15 × price: both lie on price's direction. Price and the discount code are independent.","misconceptions":["Counts columns, not independent columns: tax and price with tax follow from price","","Misses that tax depends on price: only price with tax repeats the others","Thinks a column computed from another removes both: price still carries its own direction"],"lo":["LO2"]},{"id":"check-systems-q1","slide":"check-systems","type":"single","prompt":"Elimination on a 4 × 4 matrix finds no non-zero pivot in the third column, even after looking for a row to swap. What follows?","options":[{"key":"A","text":"The computation needs more precision"},{"key":"B","text":"The system has exactly one solution, found by skipping the column"},{"key":"C","text":"The columns are dependent; the system has no solution or infinitely many"},{"key":"D","text":"The right-hand side b must be zero"}],"correct":[2],"explanation":"A missing pivot means a column is a combination of earlier ones: rank below 4, a singular matrix.","misconceptions":["Believes a bigger computer fixes it: the zero is structural, not a rounding accident","Assumes a solution exists and is unique: a dependent column removes uniqueness","","Confuses a zero pivot with a zero right-hand side: b plays no part in the pivots"],"lo":["LO3"]},{"id":"check-inverse-q1","slide":"check-inverse","type":"single","prompt":"A 3 × 3 matrix has rows (1, 2, 3), (0, 1, 4) and (1, 3, 7). Does it have an inverse?","options":[{"key":"A","text":"Yes: no row is all zeros"},{"key":"B","text":"Yes: no two rows are equal"},{"key":"C","text":"It depends on the vector b it is used with"},{"key":"D","text":"No: the third row is the sum of the first two"}],"correct":[3],"explanation":"(1, 2, 3) + (0, 1, 4) = (1, 3, 7). Rank 2: the map squashes a direction, so it cannot be undone.","misconceptions":["Thinks a matrix with no zero row is invertible: rows can depend on each other without being zero","Looks only for equal rows: dependence can be any combination","Thinks invertibility depends on the right-hand side: it is a property of the matrix alone",""],"lo":["LO2"]}],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"week3.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>

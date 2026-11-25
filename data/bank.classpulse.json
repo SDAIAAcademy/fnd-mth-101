@@ -1,0 +1,2010 @@
+{
+  "format": "classpulse-bank",
+  "version": 1,
+  "course": {
+    "name": "Linear Algebra for Machine Learning",
+    "los": [
+      {
+        "code": "LO1",
+        "description": "Explain the geometric meaning of vectors, dot products, norms, projections and matrix products, given two- and three-dimensional examples"
+      },
+      {
+        "code": "LO2",
+        "description": "Describe what rank, eigenvalues and singular values reveal about a matrix and name one machine learning use of each, given covariance and data matrices"
+      },
+      {
+        "code": "LO3",
+        "description": "Identify ill-conditioned or rank-deficient systems and explain their effect on a least-squares fit, given five numerical cases"
+      },
+      {
+        "code": "LO4",
+        "description": "Compute products, inverses, projections and decompositions by hand for small matrices and in array code for large ones, given the weekly problem sets"
+      },
+      {
+        "code": "LO5",
+        "description": "Implement least squares through QR factorisation and compare it with the normal equations, given synthetic data with nearly collinear features"
+      },
+      {
+        "code": "LO6",
+        "description": "Apply the singular value decomposition to build low-rank approximations and principal components, given a public image, ratings or embedding matrix"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "check-norm-units-q1",
+      "type": "single",
+      "prompt": "Learners are vectors of (video minutes, quizzes). Learner K is (300, 2). Which is nearest to K by Euclidean distance: M (305, 9), N (330, 2) or P (290, 2)?",
+      "options": [
+        "P, because it matches K exactly on quizzes",
+        "N, because its only difference is in one coordinate",
+        "M, at a distance of about 8.6",
+        "None: minutes and quizzes cannot be combined in one distance"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "M: √(5² + 7²) ≈ 8.6; P: 10; N: 30. M wins although it took seven more quizzes, because one quiz counts as much as one minute here. Whether that is sensible is a scaling decision.",
+      "misconceptions": [
+        "Takes a perfect match on one coordinate as closeness: P is still 10 minutes away, more than M's distance",
+        "Counts how many coordinates differ instead of how far: N's one difference is 30 minutes, the largest gap of the three",
+        "",
+        "Believes a distance cannot be computed across units: it can, but its meaning depends on the scales chosen"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 9
+    },
+    {
+      "id": "check-dot-or-cosine-q1",
+      "type": "single",
+      "prompt": "A question vector q = (1, 1). Two help articles: A = (4, 4) and B = (1, 1.2). Which statement is right?",
+      "options": [
+        "A is closer in direction, since q · A = 8 beats q · B = 2.2",
+        "A and q differ in direction, since A is four times longer",
+        "Both measures rank A first, so the choice never matters",
+        "A has cosine 1 with q and B a little less; the dot product also rewards A's length"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "A = 4q, so cos(q, A) = 1; B is slightly off q's direction. Both measures put A first here, for different reasons.",
+      "misconceptions": [
+        "Takes the larger dot product as the closer direction: A wins on dot product only because it is longer",
+        "Treats different lengths as different directions: A is exactly four times q",
+        "Assumes cosine and dot product always rank the same way: they agree only when all vectors have equal length",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 15
+    },
+    {
+      "id": "check-high-dim-q1",
+      "type": "single",
+      "prompt": "A search over mean word vectors returns two articles with cosines 0.951 and 0.949 to a question. What is the soundest reading?",
+      "options": [
+        "The scores barely differ; check whether a shared direction inflates every cosine before trusting the order",
+        "Both are excellent matches, since a cosine above 0.9 means near-identical meaning",
+        "The first article is clearly the better answer, since it scores higher",
+        "There is a 95% chance that either article answers the question"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "High, nearly equal cosines are what a shared direction produces. Centring the vectors and comparing again shows whether the order means anything.",
+      "misconceptions": [
+        "",
+        "Reads a high cosine as a strong match: when all vectors share a direction, every cosine is high",
+        "Treats a small gap in a high-dimensional score as a clear ranking: distances concentrate",
+        "Confuses cosine with a probability: a cosine is an angle measure, not a chance"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 21
+    },
+    {
+      "id": "review-week1-q1",
+      "type": "single",
+      "prompt": "Three vectors: a = (2, 0), b = (10, 1), c = (1, 1). Which pair has the largest cosine similarity?",
+      "options": [
+        "a and b, because their dot product, 20, is the largest",
+        "a and b, at a cosine of about 0.995",
+        "a and c, because they have similar lengths",
+        "b and c, because both have a second coordinate of 1"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "cos(a, b) = 20 / (2 × 10.05) ≈ 0.995; cos(a, c) ≈ 0.707; cos(b, c) = 11 / (10.05 × 1.414) ≈ 0.774.",
+      "misconceptions": [
+        "Ranks by dot product, which rewards b's length: a · b = 20 is large only because b is long",
+        "",
+        "Assumes vectors of similar length are similar in direction: c is at 45° from a",
+        "Reads the shared second coordinate as shared direction: b points mostly along the first axis"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 3
+    },
+    {
+      "id": "check-attention-shape-q1",
+      "type": "single",
+      "prompt": "A layer compares 12 queries with 30 keys, each vector of length 64. What is the shape of S = Q Kᵀ?",
+      "options": [
+        "30 × 12",
+        "12 × 64",
+        "12 × 30",
+        "64 × 64"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Q is 12 × 64 and Kᵀ is 64 × 30; the inner 64 is summed in each dot product, leaving one score per query and key.",
+      "misconceptions": [
+        "Multiplies in the wrong order: K Qᵀ would be 30 × 12",
+        "Keeps the vector length as a dimension: the dot product sums it away",
+        "",
+        "Thinks a product keeps the inner size: in (12 × 64)(64 × 30) the 64 disappears"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 8
+    },
+    {
+      "id": "check-composition-q1",
+      "type": "single",
+      "prompt": "S doubles every vector's first coordinate; T turns the plane a quarter turn. You want one matrix that scales first, then turns. Which is it?",
+      "options": [
+        "T S",
+        "S T",
+        "S + T",
+        "S T or T S, which are equal"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "(T S) x = T (S x): S acts on x first, then T acts on the result.",
+      "misconceptions": [
+        "",
+        "Reads a product left to right like a sentence: the right-hand matrix acts first",
+        "Adds maps instead of composing them: S + T is neither map",
+        "Thinks the order of matrices never changes the result: here S T and T S differ"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 12
+    },
+    {
+      "id": "check-flops-q1",
+      "type": "single",
+      "prompt": "Multiplying two 500 × 500 matrices takes 0.25 GFLOPs. About how many FLOPs does a 1,000 × 1,000 product take?",
+      "options": [
+        "0.5 GFLOPs",
+        "1 GFLOP",
+        "4 GFLOPs",
+        "2 GFLOPs"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "2n³: doubling n multiplies n³ by 8, and 8 × 0.25 = 2.",
+      "misconceptions": [
+        "Scales the cost with n: the cost grows with n³",
+        "Scales the cost with the number of entries, n²: each entry also grows longer",
+        "Scales with n⁴, counting the entries twice",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 16
+    },
+    {
+      "id": "review-week2-q1",
+      "type": "single",
+      "prompt": "A is 100 × 2,000, B is 2,000 × 2,000 and x is a vector of length 2,000. You need A B x. Which order costs fewer FLOPs?",
+      "options": [
+        "Either: the answer is the same, so the cost is the same",
+        "(A B) x",
+        "A (B x)",
+        "Whichever order NumPy chooses, since it optimises the brackets"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "B x costs 8 million FLOPs and A(Bx) 0.4 million more; (A B) alone costs 800 million.",
+      "misconceptions": [
+        "Thinks the cost is fixed by the result: the result is the same, the work is not",
+        "Multiplies the matrices first by habit: (A B) costs 2·100·2,000·2,000 = 800 million FLOPs",
+        "",
+        "Believes a library reorders the brackets for you: NumPy computes them in the order written"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 3
+    },
+    {
+      "id": "check-rank-q1",
+      "type": "single",
+      "prompt": "A table has columns: price, tax (15% of price), price with tax, and a discount code that varies freely. What is its rank, if there are many rows?",
+      "options": [
+        "4",
+        "2",
+        "3",
+        "1"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Tax = 0.15 × price and price with tax = 1.15 × price: both lie on price's direction. Price and the discount code are independent.",
+      "misconceptions": [
+        "Counts columns, not independent columns: tax and price with tax follow from price",
+        "",
+        "Misses that tax depends on price: only price with tax repeats the others",
+        "Thinks a column computed from another removes both: price still carries its own direction"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 8
+    },
+    {
+      "id": "check-systems-q1",
+      "type": "single",
+      "prompt": "Elimination on a 4 × 4 matrix finds no non-zero pivot in the third column, even after looking for a row to swap. What follows?",
+      "options": [
+        "The computation needs more precision",
+        "The system has exactly one solution, found by skipping the column",
+        "The columns are dependent; the system has no solution or infinitely many",
+        "The right-hand side b must be zero"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO3"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "A missing pivot means a column is a combination of earlier ones: rank below 4, a singular matrix.",
+      "misconceptions": [
+        "Believes a bigger computer fixes it: the zero is structural, not a rounding accident",
+        "Assumes a solution exists and is unique: a dependent column removes uniqueness",
+        "",
+        "Confuses a zero pivot with a zero right-hand side: b plays no part in the pivots"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 12
+    },
+    {
+      "id": "check-inverse-q1",
+      "type": "single",
+      "prompt": "A 3 × 3 matrix has rows (1, 2, 3), (0, 1, 4) and (1, 3, 7). Does it have an inverse?",
+      "options": [
+        "Yes: no row is all zeros",
+        "Yes: no two rows are equal",
+        "It depends on the vector b it is used with",
+        "No: the third row is the sum of the first two"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "(1, 2, 3) + (0, 1, 4) = (1, 3, 7). Rank 2: the map squashes a direction, so it cannot be undone.",
+      "misconceptions": [
+        "Thinks a matrix with no zero row is invertible: rows can depend on each other without being zero",
+        "Looks only for equal rows: dependence can be any combination",
+        "Thinks invertibility depends on the right-hand side: it is a property of the matrix alone",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 16
+    },
+    {
+      "id": "review-week3-q1",
+      "type": "single",
+      "prompt": "A 1,000 × 6 table of features has rank 5. What can you conclude?",
+      "options": [
+        "Five of the 1,000 rows are independent, the rest repeat them",
+        "One column has missing values",
+        "One column is a combination of the others; a model cannot separate all six effects",
+        "The sixth column must be deleted"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Six columns but only five independent directions: some non-zero combination of columns is zero.",
+      "misconceptions": [
+        "Thinks rank counts rows: it is at most the smaller of rows and columns, here 6",
+        "Thinks a lower rank means a missing value: rank is about combinations, not gaps",
+        "",
+        "Thinks the last column is the culprit: any one of the dependent columns could be removed"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 3
+    },
+    {
+      "id": "check-projection-q1",
+      "type": "single",
+      "prompt": "Project b = (4, 2) onto the line through a = (1, 0). Which is the projection, and why?",
+      "options": [
+        "(0, 2), the part along the second axis",
+        "(4, 0), since b · a / a · a = 4",
+        "(4), the number b · a",
+        "(0.894, 0), the unit vector of b on the axis"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "b · a = 4 and a · a = 1, so p = 4a = (4, 0); the residual (0, 2) is orthogonal to the line.",
+      "misconceptions": [
+        "Projects onto the other axis: the line through (1, 0) is the first axis",
+        "",
+        "Returns the coefficient as if it were the point: 4 is a length along a, the point is 4a",
+        "Normalises b instead of projecting it: the projection keeps the shadow's length"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 8
+    },
+    {
+      "id": "check-qr-q1",
+      "type": "single",
+      "prompt": "Your function returns Q (5 × 3) and R (3 × 3) for a 5 × 3 matrix A. Which set of checks is enough?",
+      "options": [
+        "QᵀQ = I",
+        "Q R = A",
+        "Q equals np.linalg.qr(A)[0] entry by entry",
+        "QᵀQ = I, Q R = A and R upper triangular"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Together they define a QR factorisation; each alone admits wrong answers.",
+      "misconceptions": [
+        "Checks only one of the two properties: an orthonormal Q of the wrong span passes",
+        "Checks the product only: Q R = A also holds for Q = A and R = I",
+        "Compares with the library entry by entry: correct factorisations can differ in sign",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 12
+    },
+    {
+      "id": "check-rounding-q1",
+      "type": "single",
+      "prompt": "For a QR of a feature matrix you measure max |QᵀQ − I| = 0.02. What is the soundest next step?",
+      "options": [
+        "Suspect nearly dependent columns, check the condition number, and use a Householder QR",
+        "Accept it: 0.02 is a small number",
+        "Use fewer rows so the factorisation is faster and more accurate",
+        "Normalise each column of Q again to length 1"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO3"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "A loss of 0.02 is about 10¹⁴ times rounding level: the columns are nearly dependent, and the method in use (typically classical Gram-Schmidt) does not keep Q orthonormal.",
+      "misconceptions": [
+        "",
+        "Treats 0.02 as negligible: in float64 a sound Q is within about 1e-15",
+        "Blames the size of the data: orthogonality loss comes from the angles between columns",
+        "Thinks normalising fixes orthogonality: unit length says nothing about the angles between columns"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 15
+    },
+    {
+      "id": "review-week4-q1",
+      "type": "single",
+      "prompt": "P projects onto the span of the columns of A, and r = v − P v. Which statement always holds?",
+      "options": [
+        "‖r‖ = ‖P v‖",
+        "P has an inverse",
+        "P r = r",
+        "Aᵀ r = 0"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "The residual of an orthogonal projection is orthogonal to every column; in fact P r = 0.",
+      "misconceptions": [
+        "Confuses orthogonal with equal length: the residual can be any length",
+        "Thinks a projection matrix is invertible: it squashes the orthogonal directions to zero",
+        "Applies P to the residual and expects r back: the residual has no part in the subspace",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 3
+    },
+    {
+      "id": "check-least-squares-q1",
+      "type": "single",
+      "prompt": "Two candidate fits for the same data. Fit F has residual (1, −2, 1) and fit G has residual (2, −1, −1). The columns of X are (1, 1, 1) and (−1, 0, 1). Which can be the least-squares fit?",
+      "options": [
+        "G, because its residual is more even",
+        "F, because its residual is orthogonal to both columns",
+        "Both, since their residuals have the same length",
+        "Neither, because neither residual is zero"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO5"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "F: sums to 0 and (1, −2, 1) · (−1, 0, 1) = 0. G: (2, −1, −1) · (−1, 0, 1) = −3, not orthogonal.",
+      "misconceptions": [
+        "Judges a residual by how even its entries look: what decides is orthogonality to the columns",
+        "",
+        "Thinks equal norms mean both are optimal: the least-squares residual is unique",
+        "Believes a non-zero residual means no fit is least squares: least squares rarely reaches zero"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 8
+    },
+    {
+      "id": "check-conditioning-q1",
+      "type": "single",
+      "prompt": "A fit has cond(X) = 10⁷. Refitting after rounding the data to four decimals changes two coefficients by 30% and the fitted values by 0.01%. What is the diagnosis?",
+      "options": [
+        "The rounding was too coarse; the model is fine",
+        "The model is stable, since its predictions hardly moved",
+        "Ill-conditioned: nearly collinear columns; trust the fit, not those two coefficients",
+        "Rank-deficient: one column must be removed before any fit"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO3"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Full rank, high condition number, stable predictions, unstable coefficients: the pattern of near-collinearity.",
+      "misconceptions": [
+        "Blames the rounding: rounding only revealed a sensitivity that was already there",
+        "Reads stable predictions as stable coefficients: the two can differ",
+        "",
+        "Calls any large condition number rank-deficient: the rank is still full"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 12
+    },
+    {
+      "id": "check-route-q1",
+      "type": "single",
+      "prompt": "A feature matrix has cond(X) = 10⁶ in float64. You need coefficients accurate to at least six digits. Which route?",
+      "options": [
+        "The normal equations: they are fastest",
+        "QR, which puts about 6 digits at risk and leaves about 10",
+        "The normal equations in float32 to save memory",
+        "Invert XᵀX and multiply by Xᵀy"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO5"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "QR works with cond(X) = 10⁶: about 16 − 6 = 10 digits remain.",
+      "misconceptions": [
+        "Ignores the squaring: cond(XᵀX) = 10¹² leaves about 4 digits",
+        "",
+        "Thinks float32 speeds things up harmlessly: it carries only about 7 digits",
+        "Inverts XᵀX instead of solving: the conditioning is the same or worse"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 15
+    },
+    {
+      "id": "review-week5-q1",
+      "type": "single",
+      "prompt": "A model fitted by the normal equations and by QR gives coefficients that differ in the third significant digit. The residual norms agree to eight digits. What is the most likely cause?",
+      "options": [
+        "Nearly collinear columns: cond(X) is high and the normal equations square it",
+        "A bug in the QR routine of the library",
+        "Nothing: equal residuals mean the coefficients must be equal too",
+        "Too few rows; more data would make the methods agree"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO5"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Stable residuals with unstable coefficients is the signature of near-collinearity, amplified by forming XᵀX.",
+      "misconceptions": [
+        "",
+        "Blames the solver for a bug: two correct methods disagree exactly where the problem is ill-conditioned",
+        "Thinks equal residuals prove equal coefficients: many β give nearly the same fit",
+        "Takes the sample size as the cause: conditioning is about the columns' angles"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 3
+    },
+    {
+      "id": "check-eigen-q1",
+      "type": "single",
+      "prompt": "A symmetric 3 × 3 matrix has eigenvalues 9, 4 and 0. Which statement is right?",
+      "options": [
+        "Its diagonal entries are 9, 4 and 0",
+        "It is invertible, because two eigenvalues are positive",
+        "It has rank 2 and squashes one direction to zero",
+        "Its eigenvectors have lengths 9, 4 and 0"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "A v = 0 for the eigenvector of 0: that direction is lost, so the rank is 2 and there is no inverse.",
+      "misconceptions": [
+        "Thinks eigenvalues are diagonal entries: they are only for a diagonal matrix",
+        "Believes a zero eigenvalue only means a small entry: it means a direction sent to zero",
+        "",
+        "Confuses symmetric with orthogonal: an orthogonal matrix keeps lengths, eigenvalues of size 1"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 8
+    },
+    {
+      "id": "check-pca-q1",
+      "type": "single",
+      "prompt": "Four features of course pages have a covariance matrix with eigenvalues 30, 5, 1 and 0.5. What can you say?",
+      "options": [
+        "All four features carry about the same information",
+        "About 82% of the variance lies along one direction, a combination of the features",
+        "The first feature explains 82% of the variance",
+        "The fourth feature is an error and must be removed"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "30 / (30 + 5 + 1 + 0.5) ≈ 0.82, along the leading eigenvector, which mixes the features.",
+      "misconceptions": [
+        "Equates the number of eigenvalues with the number of useful features: the spread is uneven",
+        "",
+        "Thinks a component is one of the original features: it is a combination of all four",
+        "Reads the smallest eigenvalue as an error: a small variance is still variance"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 11
+    },
+    {
+      "id": "check-power-q1",
+      "type": "single",
+      "prompt": "With damping d = 0.85, power iteration converges in about a hundred steps; at d = 0.99 it takes many more. Why?",
+      "options": [
+        "A larger d removes pages from the graph",
+        "A larger d makes the leading eigenvalue larger than 1",
+        "A larger d needs a better starting vector",
+        "The second-largest eigenvalue is at most d, so the error shrinks more slowly when d is near 1"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "The error shrinks by about |λ₂| per step, and |λ₂| ≤ d: 0.99 shrinks it by only 1% a step.",
+      "misconceptions": [
+        "Thinks larger d means fewer pages: the graph is the same",
+        "Thinks the leading eigenvalue changes: it stays exactly 1",
+        "Thinks convergence depends on the starting vector only: the eigenvalue gap governs it",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 15
+    },
+    {
+      "id": "review-week6-q1",
+      "type": "single",
+      "prompt": "You repeat x ← A x / ‖A x‖ for a symmetric A with eigenvalues 7, 3 and −2, from a random start. What does x approach?",
+      "options": [
+        "The eigenvector of −2",
+        "The eigenvector of 7, up to sign",
+        "An average of the three eigenvectors",
+        "Nothing: dividing by the norm each step prevents convergence"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "The part along the eigenvector of 7 grows by 7 each step, the others by at most 3: the ratio 3/7 shrinks them away.",
+      "misconceptions": [
+        "Picks the eigenvalue with the largest index: power iteration picks the largest size",
+        "",
+        "Thinks the iteration averages the eigenvectors: the largest one outgrows the rest",
+        "Thinks normalising stops convergence: it only keeps the numbers in range"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 3
+    },
+    {
+      "id": "check-svd-q1",
+      "type": "single",
+      "prompt": "A 500 × 40 feature matrix has singular values 310, 52, 9, … , 0.004, 0.000002. What does that tell you?",
+      "options": [
+        "All 40 directions are equally informative",
+        "The condition number is 310",
+        "Full rank but nearly rank-deficient: cond ≈ 1.6 × 10⁸, unsafe for the normal equations",
+        "The rank is 3"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "310 / 0.000002 = 1.55 × 10⁸; squared, it reaches the limit of float64.",
+      "misconceptions": [
+        "Treats every non-zero σ as equally important: tiny ones are close to dependence",
+        "Reads the largest σ as the condition number: it is the ratio of largest to smallest",
+        "",
+        "Counts only σ above 1 as the rank: rank counts all non-zero values"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 8
+    },
+    {
+      "id": "check-low-rank-q1",
+      "type": "single",
+      "prompt": "A matrix has singular values 10, 6, 3 and 1. What is ‖A − A₂‖_F, the error of its best rank-2 approximation?",
+      "options": [
+        "3",
+        "4",
+        "√136 ≈ 11.66",
+        "√10 ≈ 3.16"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "√(3² + 1²) = √10: the square root of the sum of the squares of the dropped singular values.",
+      "misconceptions": [
+        "Takes the next singular value alone: the Frobenius error includes every dropped one",
+        "Adds the dropped values without squaring: the Frobenius norm adds squares",
+        "Uses the kept values instead of the dropped ones",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 12
+    },
+    {
+      "id": "check-pca-svd-q1",
+      "type": "single",
+      "prompt": "A colleague takes the SVD of a ratings matrix without centring it. The first singular value is huge and the first right singular vector has nearly equal entries. What happened?",
+      "options": [
+        "The first layer captures the average rating, not a pattern of variation",
+        "Every item is rated the same by every person",
+        "The matrix has rank 1",
+        "The SVD routine has failed"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Without centring, the mean is the largest common direction; PCA needs the spread around the mean.",
+      "misconceptions": [
+        "",
+        "Thinks equal entries mean the items are identical: they share a mean, not a pattern",
+        "Thinks a large σ₁ means the matrix has rank 1: other σ can still be large",
+        "Blames the library: the SVD of an uncentred matrix is correct, just answering another question"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 15
+    },
+    {
+      "id": "review-week7-q1",
+      "type": "single",
+      "prompt": "A 600 × 400 image has singular values that fall slowly: rank 300 still leaves 5% relative error. What should you conclude?",
+      "options": [
+        "A rank-300 copy is a good way to save space",
+        "The SVD was computed wrongly",
+        "This image has little low-rank structure; truncation is a poor compressor for it",
+        "Centring the image would make rank 10 enough"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Storage k(m + n + 1) exceeds m n from k = 240, and the error is still 5%: the singular values decide.",
+      "misconceptions": [
+        "Assumes any truncation saves space: a rank-300 copy stores 300 × 1,001 numbers, more than 240,000",
+        "Thinks the SVD failed: slow decay is a property of the image",
+        "",
+        "Thinks centring always makes a matrix low-rank: it removes one layer at most"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 3
+    },
+    {
+      "id": "check-rank-choice-q1",
+      "type": "single",
+      "prompt": "Held-out errors for ranks 1 to 6 of a film-ratings model: 0.91, 0.86, 0.84, 0.85, 0.87, 0.90. Training errors fall from 0.88 to 0.61. Which rank?",
+      "options": [
+        "6, with the lowest training error",
+        "3, with the lowest held-out error",
+        "1, the simplest model",
+        "4, the middle of the range"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Held-out error is lowest at rank 3 and rises after: later layers fit noise.",
+      "misconceptions": [
+        "Chooses by training error, which always favours the largest rank",
+        "",
+        "Picks the smallest model by habit: rank 1 is clearly worse on held-out data",
+        "Averages ranks instead of comparing errors: the average has no meaning here"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 8
+    },
+    {
+      "id": "check-broadcast-q1",
+      "type": "single",
+      "prompt": "X has shape (100, 5). What does X - X.mean(axis=0) do?",
+      "options": [
+        "Subtracts each row's mean from that row",
+        "Raises a shape error",
+        "Subtracts one overall mean from every entry",
+        "Subtracts each column's mean from that column"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "X.mean(axis=0) has shape (5,); it lines up with the last dimension and stretches over the 100 rows.",
+      "misconceptions": [
+        "Confuses axis 0 with rows: axis=0 averages down the rows, one mean per column",
+        "Expects an error: shapes (100, 5) and (5,) line up from the right",
+        "Thinks the mean is a single number: axis=0 gives one per column",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 11
+    },
+    {
+      "id": "check-float-q1",
+      "type": "single",
+      "prompt": "A test asserts Q.T @ Q == np.eye(3) for a correct QR and fails. What is wrong?",
+      "options": [
+        "Exact equality on floats: compare with a tolerance instead",
+        "The QR routine has a bug",
+        "The product should be Q @ Q.T",
+        "Convert Q to float32 first"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Entries differ from 0 and 1 by about 10⁻¹⁶: correct, but not exactly equal.",
+      "misconceptions": [
+        "",
+        "Blames the factorisation: a correct Q is orthonormal only up to rounding",
+        "Thinks Q.T @ Q needs a different order: Q Qᵀ is not the identity for a tall Q",
+        "Believes float32 would fix it: fewer digits make the gap larger"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000,
+      "slide": 14
+    },
+    {
+      "id": "mth101-p01",
+      "type": "single",
+      "prompt": "Two help articles are represented by the vectors a = (3, 4) and b = (4, 3). What is their cosine similarity?",
+      "options": [
+        "0.96",
+        "24",
+        "0.48",
+        "0.75"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "a · b = 24 and ‖a‖ = ‖b‖ = 5, so the cosine is 24 / 25 = 0.96.",
+      "misconceptions": [
+        "",
+        "Takes the raw dot product as the similarity, ignoring the vectors' lengths",
+        "Divides by ‖a‖² + ‖b‖² instead of by ‖a‖ · ‖b‖",
+        "Compares one pair of components (3 / 4) instead of the whole vectors"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p02",
+      "type": "single",
+      "prompt": "Every article vector in a search index has a large shared component, and almost every pair of articles has a cosine near 0.85. What does subtracting the mean vector before comparing do?",
+      "options": [
+        "It makes every vector length 1, so cosines become dot products",
+        "It removes the direction every vector shares, so the cosine compares how articles differ",
+        "It leaves the cosines unchanged, because cosine already ignores length",
+        "It makes every cosine exactly 0"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Cosine ignores length but not a shared offset; centring removes the common direction, so similarities reflect differences between articles.",
+      "misconceptions": [
+        "Confuses centring with normalising to unit length",
+        "",
+        "Thinks cosine ignores a shared offset; it ignores scale, not translation",
+        "Expects centring to make all vectors orthogonal; it only removes their mean"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p03",
+      "type": "single",
+      "prompt": "Attention scores are the product Q Kᵀ, where Q and K are both 1,024 × 64. Counting a multiply and an add as two operations, about how many floating-point operations does it take?",
+      "options": [
+        "About 67 million",
+        "About 8.4 million",
+        "About 134 million (2 × 1,024 × 1,024 × 64)",
+        "About 1 million"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "The result has 1,024 × 1,024 entries and each is a 64-term dot product: 64 multiplies and 64 adds.",
+      "misconceptions": [
+        "Counts only the multiplications, not the additions",
+        "Computes the 64 × 64 product Kᵀ Q, a different matrix (2 × 64 × 64 × 1,024)",
+        "",
+        "Counts the entries of the result, not the work for each entry"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p04",
+      "type": "single",
+      "prompt": "Project y = (2, 3) onto the line through u = (1, 1). What is the projection?",
+      "options": [
+        "(5, 5)",
+        "(−0.5, 0.5)",
+        "(2, 3)",
+        "(2.5, 2.5)"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO1"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "p = (y · u / u · u) u = (5 / 2)(1, 1) = (2.5, 2.5).",
+      "misconceptions": [
+        "Multiplies u by y · u without dividing by u · u",
+        "Gives the residual y − p, the part left after projecting",
+        "Thinks a vector projects onto any line unchanged",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p05",
+      "type": "single",
+      "prompt": "A data analyst's feature matrix has five columns. Its singular values are 2951, 89.6, 32.9, 6.0 and 0. What does the zero tell her?",
+      "options": [
+        "One column is an exact combination of the others, so the matrix has rank 4",
+        "The fifth column is all zeros",
+        "The fifth feature is unimportant for prediction",
+        "The matrix has only four rows"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "A zero singular value means a direction the columns cannot reach: one column is a linear combination of the others.",
+      "misconceptions": [
+        "",
+        "Reads a zero singular value as a zero column; it marks a dependent direction",
+        "Confuses a zero singular value with a weak predictor",
+        "Reads rank as the number of rows rather than independent directions"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p06",
+      "type": "single",
+      "prompt": "A covariance matrix of three features has eigenvalues 4.0, 0.9 and 0.1. What share of the variance lies along the first principal component?",
+      "options": [
+        "4.0%",
+        "80%",
+        "33%",
+        "98%"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Variance shares are eigenvalue / sum of eigenvalues: 4.0 / 5.0 = 0.80.",
+      "misconceptions": [
+        "Reads the eigenvalue itself as a percentage",
+        "",
+        "Assumes each of the three components holds an equal share",
+        "Adds the shares of the first two components"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p07",
+      "type": "tf",
+      "prompt": "In link ranking with damping, the second-largest eigenvalue has size 0.85. The error of power iteration therefore shrinks by about 0.85 at each step.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Power iteration's error falls by the ratio |λ₂| / |λ₁| each step, and λ₁ = 1 here.",
+      "misconceptions": [
+        "",
+        "Thinks the speed of power iteration depends on the largest eigenvalue alone"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p08",
+      "type": "single",
+      "prompt": "The search lead wants to store a ratings matrix at low rank and asks how much error each rank would leave. Which quantity answers that directly?",
+      "options": [
+        "The rank of the matrix",
+        "The determinant of the matrix",
+        "The singular values after the k-th: their squares sum to the squared error of the best rank-k copy",
+        "The largest eigenvalue of the covariance matrix"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO2"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "By Eckart-Young, ‖A − A_k‖²_F = σ²ₖ₊₁ + … + σ²ₙ, so the tail of the singular values gives the error.",
+      "misconceptions": [
+        "Thinks the rank alone says how much a rank-k copy loses",
+        "Expects one number to describe the error at every rank; it is not even defined for a non-square matrix",
+        "",
+        "Uses only the first component, which says nothing about the tail that is dropped"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p09",
+      "type": "single",
+      "prompt": "A least-squares fit fails with 'Singular matrix'. One column is total actions, which is the exact sum of three other columns. What fixes it?",
+      "options": [
+        "Rescale every column to unit variance",
+        "Add more rows of the same kind",
+        "Switch to 32-bit floats",
+        "Drop one of the dependent columns, so the remaining columns are independent"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO3"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "The columns are exactly dependent, so XᵀX is singular whatever the scale or number of rows; removing the redundant column restores full rank.",
+      "misconceptions": [
+        "Thinks scaling breaks an exact linear dependency; it does not",
+        "Expects more data to help; every new row keeps the same dependency",
+        "Thinks the failure is about precision rather than an exact dependency",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p10",
+      "type": "tf",
+      "prompt": "If cond(X) is 2,213, then cond(XᵀX) is about 4.9 million.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO3"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Forming XᵀX squares the condition number: 2,213² ≈ 4.9 × 10⁶.",
+      "misconceptions": [
+        "",
+        "Thinks XᵀX has the same condition number as X"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p11",
+      "type": "single",
+      "prompt": "Two features are nearly collinear. Refitting on a slightly different sample swings their coefficients from +0.4 to −1.3, yet the predictions barely change. What is happening?",
+      "options": [
+        "The system is ill-conditioned: the data fix the sum of the two effects, not each one separately",
+        "The solver has a bug",
+        "The model needs more features",
+        "The predictions must be wrong too"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO3"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Near-collinear columns leave a direction the data barely constrain: coefficients move along it while the fitted values hardly change.",
+      "misconceptions": [
+        "",
+        "Expects a correct solver to give stable coefficients on any data",
+        "Thinks adding columns helps; near-collinear columns make it worse",
+        "Assumes unstable coefficients imply unstable predictions"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p12",
+      "type": "single",
+      "prompt": "In 64-bit arithmetic both QR and the normal equations give a coefficient of 0.4228. In 32-bit arithmetic the normal equations give 0.4308. What is the most likely cause?",
+      "options": [
+        "The true coefficient is 0.4308 and 64-bit arithmetic hides it",
+        "Rounding error amplified by the squared condition number of XᵀX",
+        "A different random seed",
+        "QR is only an approximation"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO3"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "In 32-bit floats the relative error is about 10⁻⁷ times cond(XᵀX) ≈ 5 × 10⁶, enough to change the second decimal.",
+      "misconceptions": [
+        "Trusts the less precise result over the more precise one",
+        "",
+        "Looks for randomness in a deterministic computation",
+        "Thinks QR is approximate; it is exact in exact arithmetic"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p13",
+      "type": "single",
+      "prompt": "Compute A B for A = [[1, 2], [3, 4]] and B = [[0, 1], [1, 0]].",
+      "options": [
+        "[[3, 4], [1, 2]]",
+        "[[0, 2], [3, 0]]",
+        "[[2, 1], [4, 3]]",
+        "[[1, 3], [2, 4]]"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Multiplying on the right by this B swaps the columns of A.",
+      "misconceptions": [
+        "Computes B A, which swaps the rows; matrix products do not commute",
+        "Multiplies entry by entry instead of rows by columns",
+        "",
+        "Gives the transpose of A"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p14",
+      "type": "single",
+      "prompt": "What is the inverse of [[2, 1], [1, 1]]?",
+      "options": [
+        "[[0.5, 1], [1, 1]]",
+        "[[1, 1], [1, 2]]",
+        "[[−1, 1], [1, −2]]",
+        "[[1, −1], [−1, 2]]"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "The determinant is 1, so the inverse is [[d, −b], [−c, a]] = [[1, −1], [−1, 2]]; check: the product is I.",
+      "misconceptions": [
+        "Inverts each entry separately",
+        "Swaps the diagonal but forgets to negate the off-diagonal entries",
+        "Gets the sign of the whole matrix wrong",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p15",
+      "type": "single",
+      "prompt": "What are the singular values of the diagonal matrix [[3, 0], [0, −4]]?",
+      "options": [
+        "4 and 3",
+        "3 and −4",
+        "−4 and 3",
+        "7 and 1"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Singular values are the square roots of the eigenvalues of AᵀA = diag(9, 16), listed largest first: 4 and 3.",
+      "misconceptions": [
+        "",
+        "Thinks singular values can be negative and keep the diagonal's order",
+        "Sorts by value but keeps the sign",
+        "Adds and subtracts the diagonal entries"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p16",
+      "type": "single",
+      "prompt": "A and B are NumPy arrays of shape (3, 4). Which expression gives the 3 × 3 matrix of dot products between the rows of A and the rows of B?",
+      "options": [
+        "A @ B",
+        "A @ B.T",
+        "A * B",
+        "A.T @ B"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO4"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Row i of A times column j of Bᵀ (row j of B) is entry (i, j): (3, 4) @ (4, 3) gives (3, 3).",
+      "misconceptions": [
+        "Forgets that inner dimensions must match: (3, 4) @ (3, 4) fails",
+        "",
+        "Uses the element-wise product, which keeps the shape (3, 4)",
+        "Takes dot products between columns, giving a 4 × 4 matrix"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p17",
+      "type": "single",
+      "prompt": "With X = Q R (Q has orthonormal columns, R is upper triangular), which system gives the least-squares coefficients β?",
+      "options": [
+        "β = Qᵀ y",
+        "Rᵀ β = Q y",
+        "R β = Qᵀ y",
+        "XᵀX β = Qᵀ y"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO5"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Xᵀ X β = Xᵀ y becomes Rᵀ R β = Rᵀ Qᵀ y, and R is invertible, so R β = Qᵀ y, solved by back substitution.",
+      "misconceptions": [
+        "Forgets the triangular factor R",
+        "Transposes the wrong factors",
+        "",
+        "Mixes the normal equations with the QR right-hand side"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p18",
+      "type": "tf",
+      "prompt": "On nearly dependent columns, modified Gram-Schmidt keeps Q as orthogonal as Householder QR does.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO5"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Modified Gram-Schmidt loses orthogonality in proportion to the condition number; Householder stays near machine precision.",
+      "misconceptions": [
+        "Thinks every QR algorithm is equally accurate because they agree in exact arithmetic",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p19",
+      "type": "single",
+      "prompt": "As two features become more collinear, the gap between the normal-equation and QR coefficients grows from 10⁻¹¹ to 10⁻⁶. Which explanation fits?",
+      "options": [
+        "QR becomes less accurate than the normal equations",
+        "It is random noise unrelated to the data",
+        "Both methods are exact, so the gap is a printing artefact",
+        "The normal equations' error grows with cond(X)², QR's only with cond(X)"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO5"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Forming XᵀX squares the condition number, so its rounding error grows much faster as the columns align.",
+      "misconceptions": [
+        "Reverses which method is more stable",
+        "Ignores that the gap tracks the condition number",
+        "Forgets rounding in floating-point arithmetic",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p20",
+      "type": "single",
+      "prompt": "Which NumPy and SciPy code solves least squares through QR?",
+      "options": [
+        "Q, R = np.linalg.qr(X); beta = scipy.linalg.solve_triangular(R, Q.T @ y)",
+        "beta = np.linalg.solve(X.T @ X, X.T @ y)",
+        "beta = np.linalg.inv(X) @ y",
+        "Q, R = np.linalg.qr(X); beta = R @ Q.T @ y"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO5"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "QR least squares solves the triangular system R β = Qᵀ y.",
+      "misconceptions": [
+        "",
+        "Calls this QR; it is the normal equations",
+        "Inverts a non-square matrix, which has no inverse",
+        "Multiplies by R instead of solving with it"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p21",
+      "type": "single",
+      "prompt": "A matrix has singular values 10, 6, 3 and 1. What is the relative error ‖A − A₂‖_F / ‖A‖_F of its best rank-2 copy?",
+      "options": [
+        "About 0.07",
+        "About 0.26",
+        "0.20",
+        "0.30"
+      ],
+      "key": {
+        "indices": [
+          1
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "√((3² + 1²) / (10² + 6² + 3² + 1²)) = √(10 / 146) ≈ 0.26.",
+      "misconceptions": [
+        "Forgets the square root of the ratio of squared sums",
+        "",
+        "Sums the singular values instead of their squares",
+        "Uses only the first dropped singular value over the largest one"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p22",
+      "type": "single",
+      "prompt": "A rank-k copy of a 512 × 512 image stores k (512 + 512 + 1) numbers. From which rank does it stop saving space?",
+      "options": [
+        "512",
+        "128",
+        "256",
+        "262"
+      ],
+      "key": {
+        "indices": [
+          2
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "k × 1,025 ≥ 262,144 first holds at k = 256.",
+      "misconceptions": [
+        "Thinks a copy saves space until it reaches full rank",
+        "Halves the size twice without solving the inequality",
+        "",
+        "Divides 262,144 by 1,000 instead of 1,025"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p23",
+      "type": "tf",
+      "prompt": "The first two principal components of the 8 × 8 handwritten digits hold about 28% of the variance, so a two-dimensional scatter of the digits leaves most of their spread out.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "In the lab the first two components hold 14.9% and 13.6%; 13 components are needed for 80%.",
+      "misconceptions": [
+        "",
+        "Assumes two components always capture most of the variance"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p24",
+      "type": "single",
+      "prompt": "On held-out ratings, the error of a low-rank model is lowest at rank 3 and rises at higher ranks. Why?",
+      "options": [
+        "The SVD becomes inaccurate at high rank",
+        "Higher ranks are always better, so the code has a bug",
+        "The baseline was computed wrongly",
+        "Higher ranks fit the noise in the observed ratings, which does not carry over to new ones"
+      ],
+      "key": {
+        "indices": [
+          3
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "Extra layers capture noise particular to the observed entries; held-out error measures generalisation.",
+      "misconceptions": [
+        "Blames the algorithm for a modelling effect",
+        "Assumes a closer fit to training data always predicts better",
+        "Looks at the reference rather than the model",
+        ""
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    },
+    {
+      "id": "mth101-p25",
+      "type": "single",
+      "prompt": "A low-rank adapter replaces a full update of a 768 × 768 weight matrix by two factors of rank 8. What share of the full update's parameters does it train?",
+      "options": [
+        "About 2.1%",
+        "About 1.0%",
+        "About 8%",
+        "100%"
+      ],
+      "key": {
+        "indices": [
+          0
+        ]
+      },
+      "lo": [
+        "LO6"
+      ],
+      "weight": 1,
+      "scored": true,
+      "timer": 30,
+      "displayMode": "full",
+      "explanation": "2 × 768 × 8 = 12,288 parameters against 768² = 589,824, which is 2.08%.",
+      "misconceptions": [
+        "",
+        "Counts only one of the two factors",
+        "Reads the rank as a percentage",
+        "Thinks the adapter still trains every weight"
+      ],
+      "liveContext": false,
+      "basis": "best",
+      "confidence": true,
+      "createdAt": 1795588422000,
+      "updatedAt": 1795588422000
+    }
+  ]
+}

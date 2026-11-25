@@ -1,0 +1,61 @@
+article,topic,title
+A001,account,reset my password
+A002,account,change the email on my account
+A003,account,delete my account for good
+A004,account,sign in on a new phone
+A005,account,my account is locked after many tries
+A006,account,change my display name
+A007,account,turn on two step sign in
+A008,account,i forgot which email i used
+A009,account,merge two accounts into one
+A010,account,update my date of birth
+A011,certificates,download my course certificate
+A012,certificates,my certificate shows the wrong name
+A013,certificates,when will my certificate arrive
+A014,certificates,share a certificate with an employer
+A015,certificates,print a certificate on paper
+A016,certificates,certificate missing after i passed
+A017,certificates,check that a certificate is genuine
+A018,certificates,certificate for a course i finished last year
+A019,certificates,the date on my certificate is wrong
+A020,certificates,get a certificate in arabic
+A021,video,video will not play
+A022,video,video keeps stopping to load
+A023,video,turn on subtitles for a video
+A024,video,change the speed of a video
+A025,video,download a video to watch later
+A026,video,the sound is out of step with the picture
+A027,video,video is too dark to see
+A028,video,watch videos on a slow connection
+A029,video,video quality is low
+A030,video,the video player shows an error
+A031,quizzes,retake a quiz i failed
+A032,quizzes,my quiz answers were not saved
+A033,quizzes,how many tries do i get on a quiz
+A034,quizzes,the quiz timer ran out early
+A035,quizzes,see the correct answers after a quiz
+A036,quizzes,a quiz question looks wrong
+A037,quizzes,quiz score is missing from my grades
+A038,quizzes,start a quiz again from the beginning
+A039,quizzes,the quiz will not submit
+A040,quizzes,what score do i need to pass
+A041,progress,my progress was reset
+A042,progress,mark a lesson as complete
+A043,progress,progress bar is stuck
+A044,progress,see how much of the course is left
+A045,progress,progress not saved on my phone
+A046,progress,move back to an earlier lesson
+A047,progress,my finished lessons show as new
+A048,progress,set a weekly study goal
+A049,progress,see my study time this week
+A050,progress,pick up where i stopped
+A051,enrolment,join a course
+A052,enrolment,leave a course i joined
+A053,enrolment,the course is full
+A054,enrolment,join a course that has started
+A055,enrolment,find courses for beginners
+A056,enrolment,a course i joined has disappeared
+A057,enrolment,change to another group of the same course
+A058,enrolment,when does the next course start
+A059,enrolment,join a course with my team
+A060,enrolment,courses that need no experience

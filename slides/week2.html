@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="foundations">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 2 · Matrices as maps, and their cost · Linear Algebra for Machine Learning</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="week2.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Linear Algebra for Machine Learning" data-track="foundations" data-day="Week 2">
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Linear Algebra for Machine Learning</div>
+  <h1>Matrices as maps, and their cost</h1>
+  <p class="lead mt">Week 2: A matrix product is a map, a table of dot products and a bill for arithmetic</p>
+  <div class="meta"><span class="track">Data &amp; AI Foundations Track</span><span>8 weeks + capstone</span><span>1 session · 1 lab</span><span>FND-MTH-101</span></div>
+  <aside class="notes"><p>Open with the problem set: ask who reached full marks on PS1, and which item was hardest. Collect one hand-work error to discuss (usually a sign in a dot product).</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-auto="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">This week</div>
+  <h2>Matrices as maps, and their cost</h2>
+  <div class="agenda"><div class="item"><div><b>Session 1 · Matrix products, attention scores and FLOPs</b><small>Attention scores as a matrix of dot products, matrix products as composition of maps, and counting floating-point operations and memory</small></div></div></div>
+</section>
+
+<section class="slide" id="review-week1" data-lo="LO1" data-n="3">
+  <div class="kicker">Review · week 1</div>
+  <h2>Which pair is most similar by cosine?</h2>
+  <div class="quiz" data-type="single" data-lo="LO1" data-id="review-week1-q1">
+    <p class="lead">Three vectors: a = (2, 0), b = (10, 1), c = (1, 1). Which pair has the largest cosine similarity?</p>
+    <div class="opts">
+      <div class="opt" data-why="Ranks by dot product, which rewards b's length: a · b = 20 is large only because b is long" data-k="A">a and b, because their dot product, 20, is the largest</div>
+      <div class="opt" data-ok data-k="B">a and b, at a cosine of about 0.995</div>
+      <div class="opt" data-why="Assumes vectors of similar length are similar in direction: c is at 45° from a" data-k="C">a and c, because they have similar lengths</div>
+      <div class="opt" data-why="Reads the shared second coordinate as shared direction: b points mostly along the first axis" data-k="D">b and c, because both have a second coordinate of 1</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> cos(a, b) = 20 / (2 × 10.05) ≈ 0.995; cos(a, c) ≈ 0.707; cos(b, c) = 11 / (10.05 × 1.414) ≈ 0.774.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Options A and B name the same pair: only B gives the right reason. Ask a participant who chose A to compute cos(a, b) and see that the conclusion holds for another reason.</p></aside>
+</section>
+
+<!-- Session 1 -->
+
+<section class="slide section" id="s1" data-auto="section" data-session="1" data-n="4">
+  <div class="kicker">Session 1</div>
+  <h1>Matrix products, attention scores and FLOPs</h1>
+  <ul class="bullets outcomes"><li>Compute a matrix product by hand and state the shape of every product</li><li>Explain a matrix product as one map followed by another</li><li>Count the FLOPs and bytes of a product and compare loop and vectorised code</li></ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" id="product-rule" data-lo="LO1 LO4" data-n="5" data-session="1">
+  <div class="kicker">Block A · the product</div>
+  <h2>Entry (i, j) of AB is row i of A dotted with column j of B</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>P = [[2, 1], [1, 3]] (2 × 2), G = [[1, 0, 1], [2, 1, 0]] (2 × 3)</p>
+      <p>Entry (1, 1): (2, 1) · (1, 2) = 4</p>
+      <p><b>P G = [[4, 1, 2], [7, 3, 1]]</b>, a 2 × 3 matrix</p>
+    </div>
+    <div class="card c-amber"><h4>Shapes first</h4><p class="small mb0">(n × k)(k × m) gives n × m. The inner sizes must match. G P does not exist here: 3 does not match 2.</p></div>
+  </div>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 2. Work entry (2, 1) with the room: (1, 3) · (1, 2) = 7. Then ask for the shape before any arithmetic: that habit catches most errors.</p></aside>
+</section>
+
+<section class="slide" id="scores-as-product" data-lo="LO1" data-n="6" data-session="1">
+  <div class="kicker">Many dot products</div>
+  <h2>Stacking vectors as rows turns all their dot products into one product</h2>
+  <ul class="bullets">
+    <li>Questions as rows of <b>Q</b> (q × d), articles as rows of <b>A</b> (a × d)</li>
+    <li><b>Q Aᵀ</b> is q × a: entry (i, j) is question i dotted with article j</li>
+    <li>Week 1's search for one question was one row of this matrix</li>
+  </ul>
+  <div class="callout tip mt"><b>Why it matters.</b> One product call replaces q × a separate dot products, and the computer runs it far faster.</div>
+  <aside class="notes"><p>Draw Q with q rows and Aᵀ with a columns; point at one entry and say which row and column made it. This is the bridge from week 1 to attention.</p></aside>
+</section>
+
+<section class="slide" id="attention-scores" data-lo="LO1 LO4" data-n="7" data-session="1">
+  <div class="kicker">Attention</div>
+  <h2>Attention scores are a matrix of dot products, scaled and softened</h2>
+  <div class="flow">
+    <div class="step c-teal"><b>1 · Scores</b>S = Q Kᵀ / √d</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>2 · Softmax</b>each row to positive weights adding to 1</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>3 · Mix</b>weights times the value vectors</div>
+  </div>
+  <p class="mt">One query q = (1, 0) against keys (1, 0), (0, 1), (1, 1) with d = 2: scores 0.707, 0, 0.707; weights <b>0.401, 0.198, 0.401</b>.</p>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 2. The division by √d keeps scores from growing with the dimension, so the softmax does not saturate. This course stops at the scores and weights; how a transformer uses them is for the engineering courses.</p></aside>
+</section>
+
+<section class="slide" id="check-attention-shape" data-lo="LO1" data-n="8" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>The shape of the scores</h2>
+  <div class="quiz" data-type="single" data-lo="LO1" data-id="check-attention-shape-q1">
+    <p class="lead">A layer compares 12 queries with 30 keys, each vector of length 64. What is the shape of S = Q Kᵀ?</p>
+    <div class="opts">
+      <div class="opt" data-why="Multiplies in the wrong order: K Qᵀ would be 30 × 12" data-k="A">30 × 12</div>
+      <div class="opt" data-why="Keeps the vector length as a dimension: the dot product sums it away" data-k="B">12 × 64</div>
+      <div class="opt" data-ok data-k="C">12 × 30</div>
+      <div class="opt" data-why="Thinks a product keeps the inner size: in (12 × 64)(64 × 30) the 64 disappears" data-k="D">64 × 64</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Q is 12 × 64 and Kᵀ is 64 × 30; the inner 64 is summed in each dot product, leaving one score per query and key.</div>
+  </div>
+  <aside class="notes"><p>Answer C. Ask for the number of dot products: 360, each of 64 multiplications.</p></aside>
+</section>
+
+<section class="slide" id="matrix-is-a-map" data-lo="LO1" data-n="9" data-session="1">
+  <div class="kicker">Block B · maps</div>
+  <h2>A matrix is a map: it sends each vector to a new vector</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>Its columns are where the axis vectors land</li>
+      <li>Rot = [[0, −1], [1, 0]] sends (1, 0) to (0, 1): a quarter turn</li>
+      <li>Ref = [[1, 0], [0, −1]] flips the second coordinate: a mirror</li>
+    </ul>
+    <div class="card c-teal"><h4>Read the columns</h4><p class="small mb0">To know what a 2 × 2 matrix does, draw where (1, 0) and (0, 1) go. Every other vector follows by adding and scaling.</p></div>
+  </div>
+  <aside class="notes"><p>Sketch the unit square and its image under Rot and under Ref. Ask: what does [[2, 0], [0, 2]] do? It doubles every vector.</p></aside>
+</section>
+
+<section class="slide" id="composition" data-lo="LO1 LO4" data-n="10" data-session="1">
+  <div class="kicker">Composition</div>
+  <h2>A product of matrices is one map applied after another, read right to left</h2>
+  <table class="t">
+    <tr><th>Matrix</th><th>Means</th><th>Sends (1, 1) to</th></tr>
+    <tr><td>Ref Rot</td><td>turn first, then mirror</td><td>(−1, −1)</td></tr>
+    <tr class="hl"><td>Rot Ref</td><td>mirror first, then turn</td><td>(1, 1)</td></tr>
+  </table>
+  <div class="callout warn mt"><b>Order matters.</b> Ref Rot ≠ Rot Ref. Matrix products are not commutative, because doing two things in another order is another map.</div>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 2. Act it out with a sheet of paper: turn then flip, flip then turn. Then show that the product matrix gives the same answer as applying the two in turn.</p></aside>
+</section>
+
+<section class="slide" id="layers-compose" data-lo="LO1" data-n="11" data-session="1">
+  <div class="kicker">In machine learning</div>
+  <h2>Stacked linear layers compose into one matrix</h2>
+  <ul class="bullets">
+    <li>Two linear layers W₂(W₁ x) equal one layer (W₂ W₁) x</li>
+    <li>Without a non-linear step between them, depth adds nothing</li>
+    <li>Shapes chain: (m × h)(h × d) maps d inputs to m outputs</li>
+  </ul>
+  <div class="callout note mt"><b>Cost still counts.</b> W₂(W₁ x) and (W₂ W₁) x give the same result with different numbers of operations. Block C counts them.</div>
+  <aside class="notes"><p>This is why networks put a non-linear function between layers. Keep it to the linear fact; the non-linear part belongs to later courses.</p></aside>
+</section>
+
+<section class="slide" id="check-composition" data-lo="LO1" data-n="12" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which matrix does "scale, then turn"?</h2>
+  <div class="quiz" data-type="single" data-lo="LO1" data-id="check-composition-q1">
+    <p class="lead">S doubles every vector's first coordinate; T turns the plane a quarter turn. You want one matrix that scales first, then turns. Which is it?</p>
+    <div class="opts">
+      <div class="opt" data-ok data-k="A">T S</div>
+      <div class="opt" data-why="Reads a product left to right like a sentence: the right-hand matrix acts first" data-k="B">S T</div>
+      <div class="opt" data-why="Adds maps instead of composing them: S + T is neither map" data-k="C">S + T</div>
+      <div class="opt" data-why="Thinks the order of matrices never changes the result: here S T and T S differ" data-k="D">S T or T S, which are equal</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> (T S) x = T (S x): S acts on x first, then T acts on the result.</div>
+  </div>
+  <aside class="notes"><p>Answer A. If many pick B, write T(S(x)) on the board and drop the brackets.</p></aside>
+</section>
+
+<section class="slide" id="count-flops" data-lo="LO4" data-n="13" data-session="1">
+  <div class="kicker">Block C · cost</div>
+  <h2>An (n × k)(k × m) product costs 2·n·k·m floating-point operations</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>n·m entries, each a dot product of length k: k multiplications and k additions.</p>
+      <p>(3 × 4)(4 × 2): 2 × 3 × 4 × 2 = <b>48 FLOPs</b>.</p>
+    </div>
+    <table class="t small">
+      <tr><th class="num">n</th><th class="num">FLOPs of n × n times n × n</th><th class="num">MB per matrix</th></tr>
+      <tr><td class="num">100</td><td class="num">0.002 G</td><td class="num">0.08</td></tr>
+      <tr><td class="num">1,000</td><td class="num">2 G</td><td class="num">8</td></tr>
+      <tr class="hl"><td class="num">10,000</td><td class="num">2,000 G</td><td class="num">800</td></tr>
+    </table>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 2; memory in float64, 8 bytes a number. Point at the growth: ten times the size, a thousand times the FLOPs, a hundred times the memory.</p></aside>
+</section>
+
+<section class="slide" id="bracket-order" data-lo="LO4" data-n="14" data-session="1">
+  <div class="kicker">Same result, different bill</div>
+  <h2>Where you put the brackets changes the cost, not the answer</h2>
+  <table class="t">
+    <tr><th>Order</th><th class="num">FLOPs</th></tr>
+    <tr><td>(W₂ W₁) x, with W₂ 10 × 1,000, W₁ 1,000 × 1,000, x of length 1,000</td><td class="num">20,020,000</td></tr>
+    <tr class="hl"><td>W₂ (W₁ x)</td><td class="num">2,020,000</td></tr>
+  </table>
+  <p class="small mt">2·10·1,000·1,000 + 2·10·1,000 against 2·1,000·1,000 + 2·10·1,000.</p>
+  <aside class="notes"><p>Work the two sums on the board. The rule of thumb: multiply by the vector first when you can. Libraries do not reorder your brackets for you.</p></aside>
+</section>
+
+<section class="slide" id="vectorise-first-look" data-lo="LO4" data-n="15" data-session="1">
+  <div class="kicker">A first look at vectorisation</div>
+  <h2>A Python loop pays for every number; a vectorised call pays once</h2>
+  <div class="cols cols-2">
+    <pre class="code" data-file="numpy"><code class="language-python"><span class="hljs-comment"># loop: one Python step per multiply</span>
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m):
+        C[i][j] = <span class="hljs-built_in">sum</span>(A[i][t] * B[t][j]
+                      <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(k))
+
+<span class="hljs-comment"># vectorised: one call</span>
+C = A @ B</code></pre>
+    <ul class="bullets">
+      <li>Same arithmetic, same FLOP count</li>
+      <li>The call runs compiled code over whole blocks of memory</li>
+      <li>Week 8 returns to vectorisation and broadcasting in full</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Do not give the lab's speed-up now: the lab measures it. Ask the room to guess the factor on their laptop and write the guess down; compare at the debrief.</p></aside>
+</section>
+
+<section class="slide" id="check-flops" data-lo="LO4" data-n="16" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>How much does doubling the size cost?</h2>
+  <div class="quiz" data-type="single" data-lo="LO4" data-id="check-flops-q1">
+    <p class="lead">Multiplying two 500 × 500 matrices takes 0.25 GFLOPs. About how many FLOPs does a 1,000 × 1,000 product take?</p>
+    <div class="opts">
+      <div class="opt" data-why="Scales the cost with n: the cost grows with n³" data-k="A">0.5 GFLOPs</div>
+      <div class="opt" data-why="Scales the cost with the number of entries, n²: each entry also grows longer" data-k="B">1 GFLOP</div>
+      <div class="opt" data-why="Scales with n⁴, counting the entries twice" data-k="C">4 GFLOPs</div>
+      <div class="opt" data-ok data-k="D">2 GFLOPs</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> 2n³: doubling n multiplies n³ by 8, and 8 × 0.25 = 2.</div>
+  </div>
+  <aside class="notes"><p>Answer D. Check with the formula: 2 × 1,000³ = 2 × 10⁹.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-2-1" data-auto="lab" data-lab="2.1" data-label="Lab 2.1" data-n="17" data-session="1">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 2.1 · 105 min</div><h2>Loop and vectorised matrix products, timed and costed in FLOPs</h2><p class="lead small">Time triple-loop, row-loop and vectorised matrix products on growing sizes, count their FLOPs and memory, and cost the platform's daily scoring.</p><a class="nb" href="../labs/W2_1.ipynb">W2_1.ipynb</a></div><ul class="checklist"><li>Set up; a product by hand, then in code <span class="min">15 min</span></li><li>Attention scores as one product, with a row softmax <span class="min">15 min</span></li><li>Composition: two maps, one matrix, and why order matters <span class="min">10 min</span></li><li>Time a triple-loop product on growing sizes <span class="min">15 min</span></li><li>Count FLOPs and bytes, and compute the rate achieved <span class="min">15 min</span></li><li>Time the row-loop and vectorised products <span class="min">20 min</span></li><li>Cost the platform's daily scoring <span class="min">15 min</span></li><li class="stretch">✱ Stretch: Repeat the timing in 32-bit floats and compare time and memory</li></ul></div>
+  <aside class="notes"><p>AI-tutor: hints only. Timings differ by laptop and by load; ask participants to close heavy programs. Common errors: an index swapped in the triple loop (B[j][t]), and timing the first call only, which includes warm-up. In quick mode the sizes are smaller.</p></aside>
+</section>
+
+<section class="slide" id="debrief-rates" data-lo="LO4" data-n="18" data-session="1">
+  <div class="kicker">Debrief · lab 2.1</div>
+  <h2>Same FLOPs, rates a thousand times apart</h2>
+  <table class="t">
+    <tr><th>Version</th><th>Size</th><th class="num">Rate</th></tr>
+    <tr><td>Triple Python loop</td><td>32 to 128</td><td class="num">52 to 56 million FLOPs per second</td></tr>
+    <tr><td>Row loop with NumPy rows</td><td>1,024</td><td class="num">0.33 s for 2.1 GFLOPs</td></tr>
+    <tr class="hl"><td>One vectorised call</td><td>1,024</td><td class="num">about 128 GFLOP/s</td></tr>
+  </table>
+  <p class="small mt">One run of the lab's solution on the build laptop; your numbers will differ. At n = 128 the vectorised call was about 595 times faster than the triple loop.</p>
+  <aside class="notes"><p>From the solution run of lab 2.1 (full mode, one laptop processor). Compare with the room's guesses from block C. Collect two or three of the participants' rates to show the spread.</p></aside>
+</section>
+
+<section class="slide" id="debrief-daily-cost" data-lo="LO4" data-n="19" data-session="1">
+  <div class="kicker">Debrief · lab 2.1</div>
+  <h2>The planned search costs 640 times today's, and still fits in seconds a day</h2>
+  <div class="cols cols-2">
+    <div class="stat center"><div class="big">0.30 G</div><div class="lbl">FLOPs a day today: 50,000 questions × 60 articles × 50 numbers</div></div>
+    <div class="stat center"><div class="big">192 G</div><div class="lbl">FLOPs a day planned: 5,000 articles × 384 numbers</div></div>
+  </div>
+  <div class="callout note mt"><b>For the search lead.</b> About 1.5 seconds a day at the rate measured on the build laptop; the article matrix grows to 15.36 MB. Cost is not the obstacle; search quality is.</div>
+  <aside class="notes"><p>From the solution run of lab 2.1. The factor 640 is exact: (5,000 × 384) / (60 × 50). The time depends on the machine.</p></aside>
+</section>
+
+<section class="slide" id="wrap-up" data-n="20" data-session="1">
+  <div class="kicker">Week 2 · wrap-up</div>
+  <h2>Three things to keep</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>Shapes first</h4><p class="small mb0">(n × k)(k × m) is n × m. Check shapes before arithmetic.</p></div>
+    <div class="card c-coral"><h4>Right to left</h4><p class="small mb0">A product of matrices applies the right-hand map first. Order changes the map.</p></div>
+    <div class="card c-purple"><h4>Count, then time</h4><p class="small mb0">2·n·k·m FLOPs is fixed by the maths; the rate is set by how the code runs.</p></div>
+  </div>
+  <aside class="notes"><p>Ask for one example of each from the lab.</p></aside>
+</section>
+
+<section class="slide dark" id="next" data-label="Next" data-n="21" data-session="1">
+  <div class="kicker">Next</div>
+  <h2>Week 3: Span, rank and linear systems</h2>
+  <p class="lead">Problem set 2 (60 minutes, AI off for the first attempt): labs/problem-sets/PS2.ipynb.</p>
+  <aside class="notes"><p>Ask participants to revise solving two equations in two unknowns by substitution; week 3 starts from elimination.</p></aside>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-25T06:33:42Z","version":"2027.1.0","commit":"f5792fb"},"course":{"id":"fnd-mth-101","code":"FND-MTH-101","title":"Linear Algebra for Machine Learning","track":"foundations","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/fnd-mth-101/","repo":"SDAIAAcademy/fnd-mth-101","home":"../index.html"},"deck":{"id":"week2","kind":"day","day":2,"label":"Week 2","title":"Matrices as maps, and their cost","prev":"week1.html","next":"week3.html","md":"week2.md","alt":{}},"sessions":[{"n":1,"label":"Session 1","title":"Matrix products, attention scores and FLOPs","slide":"s1","outcomes":["Compute a matrix product by hand and state the shape of every product","Explain a matrix product as one map followed by another","Count the FLOPs and bytes of a product and compare loop and vectorised code"],"minutes":210,"lab":{"id":"2.1","title":"Loop and vectorised matrix products, timed and costed in FLOPs","minutes":105,"href":"../labs/W2_1.ipynb"}}],"slides":[{"id":"title","n":1,"title":"Matrices as maps, and their cost","kind":"title","session":0,"hash":"2e26a340","md":"#### [week2#title] Matrices as maps, and their cost\n\n*SDAIA Academy · Linear Algebra for Machine Learning*\n\nWeek 2: A matrix product is a map, a table of dot products and a bill for arithmetic\n\nData & AI Foundations Track · 8 weeks + capstone · 1 session · 1 lab · FND-MTH-101","notes":"Open with the problem set: ask who reached full marks on PS1, and which item was hardest. Collect one hand-work error to discuss (usually a sign in a dot product).","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"Matrices as maps, and their cost","kind":"content","session":0,"hash":"6c7a41c2","md":"#### [week2#agenda] Matrices as maps, and their cost\n\n*This week*\n\n- **Session 1 · Matrix products, attention scores and FLOPs**: Attention scores as a matrix of dot products, matrix products as composition of maps, and counting floating-point operations and memory","notes":"","minutes":null,"lo":[]},{"id":"review-week1","n":3,"title":"Which pair is most similar by cosine?","kind":"quiz","session":0,"hash":"82159be1","md":"#### [week2#review-week1] Which pair is most similar by cosine?\n\n*Review · week 1*\n\n**Question:** Three vectors: a = (2, 0), b = (10, 1), c = (1, 1). Which pair has the largest cosine similarity?\n\n- A. a and b, because their dot product, 20, is the largest\n- B. a and b, at a cosine of about 0.995\n- C. a and c, because they have similar lengths\n- D. b and c, because both have a second coordinate of 1","notes":"Answer B. Options A and B name the same pair: only B gives the right reason. Ask a participant who chose A to compute cos(a, b) and see that the conclusion holds for another reason.","minutes":null,"lo":["LO1"]},{"id":"s1","n":4,"title":"Matrix products, attention scores and FLOPs","kind":"section","session":1,"hash":"dcb0cb3a","md":"#### [week2#s1] Matrix products, attention scores and FLOPs\n\n*Session 1*\n\n- Compute a matrix product by hand and state the shape of every product\n- Explain a matrix product as one map followed by another\n- Count the FLOPs and bytes of a product and compare loop and vectorised code","notes":"","minutes":null,"lo":["LO1","LO4"]},{"id":"product-rule","n":5,"title":"Entry (i, j) of AB is row i of A dotted with column j of B","kind":"content","session":1,"hash":"80acf32f","md":"#### [week2#product-rule] Entry (i, j) of AB is row i of A dotted with column j of B\n\n*Block A · the product*\n\nP = [[2, 1], [1, 3]] (2 × 2), G = [[1, 0, 1], [2, 1, 0]] (2 × 3)\n\nEntry (1, 1): (2, 1) · (1, 2) = 4\n\n**P G = [[4, 1, 2], [7, 3, 1]]**, a 2 × 3 matrix\n\n- **Shapes first.** (n × k)(k × m) gives n × m. The inner sizes must match. G P does not exist here: 3 does not match 2.","notes":"Numbers from slide_numbers.py, week 2. Work entry (2, 1) with the room: (1, 3) · (1, 2) = 7. Then ask for the shape before any arithmetic: that habit catches most errors.","minutes":null,"lo":["LO1","LO4"]},{"id":"scores-as-product","n":6,"title":"Stacking vectors as rows turns all their dot products into one product","kind":"content","session":1,"hash":"2b6484c8","md":"#### [week2#scores-as-product] Stacking vectors as rows turns all their dot products into one product\n\n*Many dot products*\n\n- Questions as rows of **Q** (q × d), articles as rows of **A** (a × d)\n- **Q Aᵀ** is q × a: entry (i, j) is question i dotted with article j\n- Week 1's search for one question was one row of this matrix\n\n> **Why it matters.** One product call replaces q × a separate dot products, and the computer runs it far faster.","notes":"Draw Q with q rows and Aᵀ with a columns; point at one entry and say which row and column made it. This is the bridge from week 1 to attention.","minutes":null,"lo":["LO1"]},{"id":"attention-scores","n":7,"title":"Attention scores are a matrix of dot products, scaled and softened","kind":"content","session":1,"hash":"27743b3e","md":"#### [week2#attention-scores] Attention scores are a matrix of dot products, scaled and softened\n\n*Attention*\n\n1. **1 · Scores** S = Q Kᵀ / √d\n2. **2 · Softmax** each row to positive weights adding to 1\n3. **3 · Mix** weights times the value vectors\n\nOne query q = (1, 0) against keys (1, 0), (0, 1), (1, 1) with d = 2: scores 0.707, 0, 0.707; weights **0.401, 0.198, 0.401**.","notes":"Numbers from slide_numbers.py, week 2. The division by √d keeps scores from growing with the dimension, so the softmax does not saturate. This course stops at the scores and weights; how a transformer uses them is for the engineering courses.","minutes":null,"lo":["LO1","LO4"]},{"id":"check-attention-shape","n":8,"title":"The shape of the scores","kind":"quiz","session":1,"hash":"c24da9fb","md":"#### [week2#check-attention-shape] The shape of the scores\n\n*Checkpoint*\n\n**Question:** A layer compares 12 queries with 30 keys, each vector of length 64. What is the shape of S = Q Kᵀ?\n\n- A. 30 × 12\n- B. 12 × 64\n- C. 12 × 30\n- D. 64 × 64","notes":"Answer C. Ask for the number of dot products: 360, each of 64 multiplications.","minutes":null,"lo":["LO1"]},{"id":"matrix-is-a-map","n":9,"title":"A matrix is a map: it sends each vector to a new vector","kind":"content","session":1,"hash":"d198572a","md":"#### [week2#matrix-is-a-map] A matrix is a map: it sends each vector to a new vector\n\n*Block B · maps*\n\n- Its columns are where the axis vectors land\n- Rot = [[0, −1], [1, 0]] sends (1, 0) to (0, 1): a quarter turn\n- Ref = [[1, 0], [0, −1]] flips the second coordinate: a mirror\n\n- **Read the columns.** To know what a 2 × 2 matrix does, draw where (1, 0) and (0, 1) go. Every other vector follows by adding and scaling.","notes":"Sketch the unit square and its image under Rot and under Ref. Ask: what does [[2, 0], [0, 2]] do? It doubles every vector.","minutes":null,"lo":["LO1"]},{"id":"composition","n":10,"title":"A product of matrices is one map applied after another, read right to left","kind":"content","session":1,"hash":"ebf79697","md":"#### [week2#composition] A product of matrices is one map applied after another, read right to left\n\n*Composition*\n\n| Matrix | Means | Sends (1, 1) to |\n| --- | --- | --- |\n| Ref Rot | turn first, then mirror | (−1, −1) |\n| Rot Ref | mirror first, then turn | (1, 1) |\n\n> **Order matters.** Ref Rot ≠ Rot Ref. Matrix products are not commutative, because doing two things in another order is another map.","notes":"Numbers from slide_numbers.py, week 2. Act it out with a sheet of paper: turn then flip, flip then turn. Then show that the product matrix gives the same answer as applying the two in turn.","minutes":null,"lo":["LO1","LO4"]},{"id":"layers-compose","n":11,"title":"Stacked linear layers compose into one matrix","kind":"content","session":1,"hash":"982cfc7b","md":"#### [week2#layers-compose] Stacked linear layers compose into one matrix\n\n*In machine learning*\n\n- Two linear layers W₂(W₁ x) equal one layer (W₂ W₁) x\n- Without a non-linear step between them, depth adds nothing\n- Shapes chain: (m × h)(h × d) maps d inputs to m outputs\n\n> **Cost still counts.** W₂(W₁ x) and (W₂ W₁) x give the same result with different numbers of operations. Block C counts them.","notes":"This is why networks put a non-linear function between layers. Keep it to the linear fact; the non-linear part belongs to later courses.","minutes":null,"lo":["LO1"]},{"id":"check-composition","n":12,"title":"Which matrix does \"scale, then turn\"?","kind":"quiz","session":1,"hash":"7122143b","md":"#### [week2#check-composition] Which matrix does \"scale, then turn\"?\n\n*Checkpoint*\n\n**Question:** S doubles every vector's first coordinate; T turns the plane a quarter turn. You want one matrix that scales first, then turns. Which is it?\n\n- A. T S\n- B. S T\n- C. S + T\n- D. S T or T S, which are equal","notes":"Answer A. If many pick B, write T(S(x)) on the board and drop the brackets.","minutes":null,"lo":["LO1"]},{"id":"count-flops","n":13,"title":"An (n × k)(k × m) product costs 2·n·k·m floating-point operations","kind":"content","session":1,"hash":"08ea0a4b","md":"#### [week2#count-flops] An (n × k)(k × m) product costs 2·n·k·m floating-point operations\n\n*Block C · cost*\n\nn·m entries, each a dot product of length k: k multiplications and k additions.\n\n(3 × 4)(4 × 2): 2 × 3 × 4 × 2 = **48 FLOPs**.\n\n| n | FLOPs of n × n times n × n | MB per matrix |\n| --- | --- | --- |\n| 100 | 0.002 G | 0.08 |\n| 1,000 | 2 G | 8 |\n| 10,000 | 2,000 G | 800 |","notes":"From slide_numbers.py, week 2; memory in float64, 8 bytes a number. Point at the growth: ten times the size, a thousand times the FLOPs, a hundred times the memory.","minutes":null,"lo":["LO4"]},{"id":"bracket-order","n":14,"title":"Where you put the brackets changes the cost, not the answer","kind":"content","session":1,"hash":"ea3ce2b2","md":"#### [week2#bracket-order] Where you put the brackets changes the cost, not the answer\n\n*Same result, different bill*\n\n| Order | FLOPs |\n| --- | --- |\n| (W₂ W₁) x, with W₂ 10 × 1,000, W₁ 1,000 × 1,000, x of length 1,000 | 20,020,000 |\n| W₂ (W₁ x) | 2,020,000 |\n\n2·10·1,000·1,000 + 2·10·1,000 against 2·1,000·1,000 + 2·10·1,000.","notes":"Work the two sums on the board. The rule of thumb: multiply by the vector first when you can. Libraries do not reorder your brackets for you.","minutes":null,"lo":["LO4"]},{"id":"vectorise-first-look","n":15,"title":"A Python loop pays for every number; a vectorised call pays once","kind":"content","session":1,"hash":"16b58731","md":"#### [week2#vectorise-first-look] A Python loop pays for every number; a vectorised call pays once\n\n*A first look at vectorisation*\n\n```python\n# file: numpy\n# loop: one Python step per multiply\nfor i in range(n):\n    for j in range(m):\n        C[i][j] = sum(A[i][t] * B[t][j]\n                      for t in range(k))\n\n# vectorised: one call\nC = A @ B\n```\n\n- Same arithmetic, same FLOP count\n- The call runs compiled code over whole blocks of memory\n- Week 8 returns to vectorisation and broadcasting in full","notes":"Do not give the lab's speed-up now: the lab measures it. Ask the room to guess the factor on their laptop and write the guess down; compare at the debrief.","minutes":null,"lo":["LO4"]},{"id":"check-flops","n":16,"title":"How much does doubling the size cost?","kind":"quiz","session":1,"hash":"781ee182","md":"#### [week2#check-flops] How much does doubling the size cost?\n\n*Checkpoint*\n\n**Question:** Multiplying two 500 × 500 matrices takes 0.25 GFLOPs. About how many FLOPs does a 1,000 × 1,000 product take?\n\n- A. 0.5 GFLOPs\n- B. 1 GFLOP\n- C. 4 GFLOPs\n- D. 2 GFLOPs","notes":"Answer D. Check with the formula: 2 × 1,000³ = 2 × 10⁹.","minutes":null,"lo":["LO4"]},{"id":"lab-2-1","n":17,"title":"Loop and vectorised matrix products, timed and costed in FLOPs","kind":"lab","session":1,"hash":"10fc4bbc","md":"#### [week2#lab-2-1] Loop and vectorised matrix products, timed and costed in FLOPs\n\nLab 2.1 · 105 min\n\nTime triple-loop, row-loop and vectorised matrix products on growing sizes, count their FLOPs and memory, and cost the platform's daily scoring.\n\n[W2_1.ipynb](https://sdaiaacademy.github.io/fnd-mth-101/labs/W2_1.ipynb)\n\n- [ ] Set up; a product by hand, then in code (15 min)\n- [ ] Attention scores as one product, with a row softmax (15 min)\n- [ ] Composition: two maps, one matrix, and why order matters (10 min)\n- [ ] Time a triple-loop product on growing sizes (15 min)\n- [ ] Count FLOPs and bytes, and compute the rate achieved (15 min)\n- [ ] Time the row-loop and vectorised products (20 min)\n- [ ] Cost the platform's daily scoring (15 min)\n- [ ] ✱ Stretch: Repeat the timing in 32-bit floats and compare time and memory","notes":"AI-tutor: hints only. Timings differ by laptop and by load; ask participants to close heavy programs. Common errors: an index swapped in the triple loop (B[j][t]), and timing the first call only, which includes warm-up. In quick mode the sizes are smaller.","minutes":null,"lo":[]},{"id":"debrief-rates","n":18,"title":"Same FLOPs, rates a thousand times apart","kind":"content","session":1,"hash":"37d2f4e0","md":"#### [week2#debrief-rates] Same FLOPs, rates a thousand times apart\n\n*Debrief · lab 2.1*\n\n| Version | Size | Rate |\n| --- | --- | --- |\n| Triple Python loop | 32 to 128 | 52 to 56 million FLOPs per second |\n| Row loop with NumPy rows | 1,024 | 0.33 s for 2.1 GFLOPs |\n| One vectorised call | 1,024 | about 128 GFLOP/s |\n\nOne run of the lab's solution on the build laptop; your numbers will differ. At n = 128 the vectorised call was about 595 times faster than the triple loop.","notes":"From the solution run of lab 2.1 (full mode, one laptop processor). Compare with the room's guesses from block C. Collect two or three of the participants' rates to show the spread.","minutes":null,"lo":["LO4"]},{"id":"debrief-daily-cost","n":19,"title":"The planned search costs 640 times today's, and still fits in seconds a day","kind":"content","session":1,"hash":"42fe1dba","md":"#### [week2#debrief-daily-cost] The planned search costs 640 times today's, and still fits in seconds a day\n\n*Debrief · lab 2.1*\n\n- **0.30 G** FLOPs a day today: 50,000 questions × 60 articles × 50 numbers\n- **192 G** FLOPs a day planned: 5,000 articles × 384 numbers\n\n> **For the search lead.** About 1.5 seconds a day at the rate measured on the build laptop; the article matrix grows to 15.36 MB. Cost is not the obstacle; search quality is.","notes":"From the solution run of lab 2.1. The factor 640 is exact: (5,000 × 384) / (60 × 50). The time depends on the machine.","minutes":null,"lo":["LO4"]},{"id":"wrap-up","n":20,"title":"Three things to keep","kind":"content","session":1,"hash":"523da607","md":"#### [week2#wrap-up] Three things to keep\n\n*Week 2 · wrap-up*\n\n- **Shapes first.** (n × k)(k × m) is n × m. Check shapes before arithmetic.\n- **Right to left.** A product of matrices applies the right-hand map first. Order changes the map.\n- **Count, then time.** 2·n·k·m FLOPs is fixed by the maths; the rate is set by how the code runs.","notes":"Ask for one example of each from the lab.","minutes":null,"lo":[]},{"id":"next","n":21,"title":"Week 3: Span, rank and linear systems","kind":"content","session":1,"hash":"00ddfbb2","md":"#### [week2#next] Week 3: Span, rank and linear systems\n\n*Next*\n\nProblem set 2 (60 minutes, AI off for the first attempt): labs/problem-sets/PS2.ipynb.","notes":"Ask participants to revise solving two equations in two unknowns by substitution; week 3 starts from elimination.","minutes":null,"lo":[]}],"activities":[{"id":"review-week1-q1","slide":"review-week1","type":"single","prompt":"Three vectors: a = (2, 0), b = (10, 1), c = (1, 1). Which pair has the largest cosine similarity?","options":[{"key":"A","text":"a and b, because their dot product, 20, is the largest"},{"key":"B","text":"a and b, at a cosine of about 0.995"},{"key":"C","text":"a and c, because they have similar lengths"},{"key":"D","text":"b and c, because both have a second coordinate of 1"}],"correct":[1],"explanation":"cos(a, b) = 20 / (2 × 10.05) ≈ 0.995; cos(a, c) ≈ 0.707; cos(b, c) = 11 / (10.05 × 1.414) ≈ 0.774.","misconceptions":["Ranks by dot product, which rewards b's length: a · b = 20 is large only because b is long","","Assumes vectors of similar length are similar in direction: c is at 45° from a","Reads the shared second coordinate as shared direction: b points mostly along the first axis"],"lo":["LO1"]},{"id":"check-attention-shape-q1","slide":"check-attention-shape","type":"single","prompt":"A layer compares 12 queries with 30 keys, each vector of length 64. What is the shape of S = Q Kᵀ?","options":[{"key":"A","text":"30 × 12"},{"key":"B","text":"12 × 64"},{"key":"C","text":"12 × 30"},{"key":"D","text":"64 × 64"}],"correct":[2],"explanation":"Q is 12 × 64 and Kᵀ is 64 × 30; the inner 64 is summed in each dot product, leaving one score per query and key.","misconceptions":["Multiplies in the wrong order: K Qᵀ would be 30 × 12","Keeps the vector length as a dimension: the dot product sums it away","","Thinks a product keeps the inner size: in (12 × 64)(64 × 30) the 64 disappears"],"lo":["LO1"]},{"id":"check-composition-q1","slide":"check-composition","type":"single","prompt":"S doubles every vector's first coordinate; T turns the plane a quarter turn. You want one matrix that scales first, then turns. Which is it?","options":[{"key":"A","text":"T S"},{"key":"B","text":"S T"},{"key":"C","text":"S + T"},{"key":"D","text":"S T or T S, which are equal"}],"correct":[0],"explanation":"(T S) x = T (S x): S acts on x first, then T acts on the result.","misconceptions":["","Reads a product left to right like a sentence: the right-hand matrix acts first","Adds maps instead of composing them: S + T is neither map","Thinks the order of matrices never changes the result: here S T and T S differ"],"lo":["LO1"]},{"id":"check-flops-q1","slide":"check-flops","type":"single","prompt":"Multiplying two 500 × 500 matrices takes 0.25 GFLOPs. About how many FLOPs does a 1,000 × 1,000 product take?","options":[{"key":"A","text":"0.5 GFLOPs"},{"key":"B","text":"1 GFLOP"},{"key":"C","text":"4 GFLOPs"},{"key":"D","text":"2 GFLOPs"}],"correct":[3],"explanation":"2n³: doubling n multiplies n³ by 8, and 8 × 0.25 = 2.","misconceptions":["Scales the cost with n: the cost grows with n³","Scales the cost with the number of entries, n²: each entry also grows longer","Scales with n⁴, counting the entries twice",""],"lo":["LO4"]}],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"week2.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>
