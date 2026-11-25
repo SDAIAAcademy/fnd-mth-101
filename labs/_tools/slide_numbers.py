@@ -132,7 +132,18 @@ def week6():
     print("damped steps to 1e-10 for d=0.85 roughly", round(np.log(1e-10) / np.log(0.85), 1))
 
 
-WEEKS = {1: week1, 2: week2, 3: week3, 4: week4, 5: week5, 6: week6}
+def week7():
+    A = np.array([[2.0, 2], [-1, 1]])
+    print("AtA", (A.T @ A).tolist(), "sigma", np.linalg.svd(A, compute_uv=False).round(4))
+    M = np.array([[5.0, 4, 1], [4, 5, 1], [1, 1, 3], [5, 5, 1]])
+    s = np.linalg.svd(M, compute_uv=False)
+    tot = np.sqrt((s ** 2).sum())
+    print("M sigma", s.round(3), "rank1 rel err", round(np.sqrt((s[1:] ** 2).sum()) / tot, 4), "rank2 rel err", round(np.sqrt((s[2:] ** 2).sum()) / tot, 4))
+    print("storage 1000x800 rank 20", 20 * (1000 + 800 + 1), "of", 1000 * 800, round(20 * 1801 / 800000, 4))
+    print("break-even k for 512x512", 512 * 512 / (512 + 512 + 1))
+
+
+WEEKS = {1: week1, 2: week2, 3: week3, 4: week4, 5: week5, 6: week6, 7: week7}
 
 if __name__ == "__main__":
     for w in ([int(a) for a in sys.argv[1:]] or sorted(WEEKS)):

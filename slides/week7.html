@@ -1,56 +1,247 @@
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">REPLACE: welcome; introduce yourself; one question to the room that calibrates the pace; the rhythm of the day</aside>
+  <aside class="notes"><p>Collect PS6 difficulties: usually the n − 1 in the covariance. This week's decomposition works for every matrix, square or not: it is the one the capstone uses.</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-auto="agenda"></section>
+
+<section class="slide" id="review-week6" data-lo="LO2">
+  <div class="kicker">Review · week 6</div>
+  <h2>What does power iteration converge to?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2">
+    <p class="lead">You repeat x ← A x / ‖A x‖ for a symmetric A with eigenvalues 7, 3 and −2, from a random start. What does x approach?</p>
+    <div class="opts">
+      <div class="opt" data-why="Picks the eigenvalue with the largest index: power iteration picks the largest size">The eigenvector of −2</div>
+      <div class="opt" data-ok>The eigenvector of 7, up to sign</div>
+      <div class="opt" data-why="Thinks the iteration averages the eigenvectors: the largest one outgrows the rest">An average of the three eigenvectors</div>
+      <div class="opt" data-why="Thinks normalising stops convergence: it only keeps the numbers in range">Nothing: dividing by the norm each step prevents convergence</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The part along the eigenvector of 7 grows by 7 each step, the others by at most 3: the ratio 3/7 shrinks them away.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Ask how fast: the error shrinks by about 3/7 per step.</p></aside>
+</section>
 
 <!-- Session 1 -->
 
 <section class="slide section" id="s1" data-auto="section" data-session="1"></section>
 
-<section class="slide" id="s1-idea">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+<section class="slide" id="svd-idea" data-lo="LO2">
+  <div class="kicker">Block A · the SVD</div>
+  <h2>Every matrix is a rotation, a stretch along the axes, and another rotation</h2>
+  <div class="flow">
+    <div class="step c-teal"><b>1 · Vᵀ</b>turn the input onto the axes</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>2 · Σ</b>stretch each axis by σᵢ ≥ 0</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>3 · U</b>turn onto the output directions</div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <p class="mt"><b>A = U Σ Vᵀ</b>, for any m × n matrix. U and V have orthonormal columns; the singular values σ₁ ≥ σ₂ ≥ … ≥ 0.</p>
+  <aside class="notes"><p>Contrast with week 6: eigenvectors need a square matrix and may not be orthogonal; the SVD needs nothing. For a symmetric matrix with non-negative eigenvalues the two coincide.</p></aside>
 </section>
 
-<section class="slide" id="s1-steps">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" id="svd-by-hand" data-lo="LO2 LO4">
+  <div class="kicker">By hand</div>
+  <h2>The singular values are the square roots of the eigenvalues of AᵀA</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>A = [[2, 2], [−1, 1]]</p>
+      <p>AᵀA = [[5, 3], [3, 5]], eigenvalues 8 and 2</p>
+      <p><b>σ₁ = √8 ≈ 2.828, σ₂ = √2 ≈ 1.414</b></p>
+    </div>
+    <pre class="code" data-file="numpy"><code class="language-python">U, s, Vt = np.linalg.svd(A)
+s                     # [2.8284, 1.4142]
+np.allclose(U @ np.diag(s) @ Vt, A)</code></pre>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <aside class="notes"><p>From slide_numbers.py, week 7. AᵀA = V Σ² Vᵀ: week 6's eigen-decomposition of a symmetric matrix. Never compute an SVD this way on real data: forming AᵀA squares the condition number, as in week 5.</p></aside>
+</section>
+
+<section class="slide" id="what-svd-reveals" data-lo="LO2">
+  <div class="kicker">What it reveals</div>
+  <h2>The singular values give rank, size and conditioning at a glance</h2>
+  <table class="t">
+    <tr><th>Read off Σ</th><th>Meaning</th><th>Week</th></tr>
+    <tr><td>Number of non-zero σ</td><td>The rank</td><td>3</td></tr>
+    <tr><td>σ₁</td><td>The largest stretch: the matrix's 2-norm</td><td>7</td></tr>
+    <tr><td>σ₁ / σₙ</td><td>The condition number</td><td>5</td></tr>
+    <tr class="hl"><td>How fast σ falls</td><td>How well a few layers summarise the matrix</td><td>7, 8</td></tr>
+  </table>
+  <aside class="notes"><p>This slide joins the course together. Ask a participant to say which earlier lab number each row explains (week 3's zero singular value, week 5's condition numbers).</p></aside>
+</section>
+
+<section class="slide" id="check-svd" data-lo="LO2">
+  <div class="kicker">Checkpoint</div>
+  <h2>Reading singular values</h2>
+  <div class="quiz" data-type="single" data-lo="LO2">
+    <p class="lead">A 500 × 40 feature matrix has singular values 310, 52, 9, … , 0.004, 0.000002. What does that tell you?</p>
+    <div class="opts">
+      <div class="opt" data-why="Treats every non-zero σ as equally important: tiny ones are close to dependence">All 40 directions are equally informative</div>
+      <div class="opt" data-why="Reads the largest σ as the condition number: it is the ratio of largest to smallest">The condition number is 310</div>
+      <div class="opt" data-ok>Full rank but nearly rank-deficient: cond ≈ 1.6 × 10⁸, unsafe for the normal equations</div>
+      <div class="opt" data-why="Counts only σ above 1 as the rank: rank counts all non-zero values">The rank is 3</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> 310 / 0.000002 = 1.55 × 10⁸; squared, it reaches the limit of float64.</div>
+  </div>
+  <aside class="notes"><p>Answer C. A numerical rank with a tolerance would drop the last value; that choice is the analyst's, and lstsq makes it with its rcond.</p></aside>
+</section>
+
+<section class="slide" id="layers" data-lo="LO6">
+  <div class="kicker">Block B · low rank</div>
+  <h2>A is a sum of rank-one layers, largest first: keep the first k</h2>
+  <div class="cols cols-2">
+    <div>
+      <p><b>A = σ₁ u₁v₁ᵀ + σ₂ u₂v₂ᵀ + …</b></p>
+      <p><b>A_k</b> keeps the first k layers.</p>
+      <p class="small">Each layer is an outer product: one column pattern times one row pattern.</p>
+    </div>
+    <div class="card c-teal"><h4>Eckart-Young</h4><p class="small mb0">No rank-k matrix is closer to A than A_k, and ‖A − A_k‖²_F = σ²ₖ₊₁ + … + σ²ₙ. The error is known before you build A_k.</p></div>
+  </div>
+  <aside class="notes"><p>The theorem is stated, not proved. The lab checks it numerically on an image.</p></aside>
+</section>
+
+<section class="slide" id="low-rank-example" data-lo="LO6 LO4">
+  <div class="kicker">A small case</div>
+  <h2>Two layers rebuild this 4 × 3 matrix to within 8%</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Rows of M</th></tr>
+      <tr><td>(5, 4, 1)</td></tr>
+      <tr><td>(4, 5, 1)</td></tr>
+      <tr><td>(1, 1, 3)</td></tr>
+      <tr><td>(5, 5, 1)</td></tr>
+    </table>
+    <table class="t small">
+      <tr><th class="num">k</th><th class="num">Relative error ‖M − M_k‖ / ‖M‖</th></tr>
+      <tr><td class="num">1</td><td class="num">0.2398</td></tr>
+      <tr class="hl"><td class="num">2</td><td class="num">0.0828</td></tr>
+      <tr><td class="num">3</td><td class="num">0</td></tr>
+    </table>
+  </div>
+  <p class="small mt">Singular values 11.73, 2.72 and 1.00: the error of each row is the tail of that list.</p>
+  <aside class="notes"><p>From slide_numbers.py, week 7. Check k = 1 by hand from the singular values: √(2.72² + 1²) / √(11.73² + 2.72² + 1²) ≈ 0.24.</p></aside>
+</section>
+
+<section class="slide" id="storage" data-lo="LO6">
+  <div class="kicker">The trade</div>
+  <h2>A rank-k copy stores k(m + n + 1) numbers instead of m × n</h2>
+  <div class="cols cols-2">
+    <div class="stat center"><div class="big">4.5%</div><div class="lbl">storage of a rank-20 copy of a 1,000 × 800 matrix: 36,020 numbers of 800,000</div></div>
+    <ul class="bullets">
+      <li>Small k saves space only when the σ fall fast</li>
+      <li>Past some k, the copy is larger than the matrix</li>
+      <li>Choose k from the error curve, not by habit</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 7. The lab asks for the break-even k of its own image: let participants find it.</p></aside>
+</section>
+
+<section class="slide" id="check-low-rank" data-lo="LO6">
+  <div class="kicker">Checkpoint</div>
+  <h2>Predict the error before computing it</h2>
+  <div class="quiz" data-type="single" data-lo="LO6">
+    <p class="lead">A matrix has singular values 10, 6, 3 and 1. What is ‖A − A₂‖_F, the error of its best rank-2 approximation?</p>
+    <div class="opts">
+      <div class="opt" data-why="Takes the next singular value alone: the Frobenius error includes every dropped one">3</div>
+      <div class="opt" data-why="Adds the dropped values without squaring: the Frobenius norm adds squares">4</div>
+      <div class="opt" data-why="Uses the kept values instead of the dropped ones">√136 ≈ 11.66</div>
+      <div class="opt" data-ok>√10 ≈ 3.16</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> √(3² + 1²) = √10: the square root of the sum of the squares of the dropped singular values.</div>
+  </div>
+  <aside class="notes"><p>Answer D. The 2-norm error would be 3, the largest dropped value: worth mentioning, not testing.</p></aside>
+</section>
+
+<section class="slide" id="pca-through-svd" data-lo="LO6 LO2">
+  <div class="kicker">Block C · PCA through the SVD</div>
+  <h2>Centre the data, take its SVD: the rows of Vᵀ are the principal components</h2>
+  <div class="cols cols-2">
+    <pre class="code" data-file="numpy"><code class="language-python">Xc = X - X.mean(axis=0)
+U, s, Vt = np.linalg.svd(Xc, full_matrices=False)
+components = Vt                 # one per row
+share = s**2 / np.sum(s**2)     # variance share
+scores = Xc @ Vt[:2].T          # 2-D view</code></pre>
+    <ul class="bullets">
+      <li>Same as week 6's eigenvectors of the covariance</li>
+      <li>Without forming the covariance, so better rounding</li>
+      <li>σ² / (n − 1) are the variances along each component</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Show the identity Xcᵀ Xc = V Σ² Vᵀ in one line. Libraries such as scikit-learn's PCA do exactly this.</p></aside>
+</section>
+
+<section class="slide" id="reading-components" data-lo="LO6">
+  <div class="kicker">Interpreting</div>
+  <h2>A component is a pattern of weights over the original features</h2>
+  <ul class="bullets">
+    <li>For images: each component is itself an image; large weights mark pixels that vary together</li>
+    <li>The sign is arbitrary: flip a component and its scores flip with it</li>
+    <li>Look at which items score highest and lowest on it, then name what separates them</li>
+    <li>A component explains variance, not meaning: interpretation is a claim to check</li>
+  </ul>
+  <aside class="notes"><p>The capstone rubric gives a quarter of the marks to interpretation "in the dataset's own terms, with their limits". Say what that means: name the pattern, show the evidence, and say what it does not show.</p></aside>
+</section>
+
+<section class="slide" id="check-pca-svd" data-lo="LO6">
+  <div class="kicker">Checkpoint</div>
+  <h2>A component that points at the mean</h2>
+  <div class="quiz" data-type="single" data-lo="LO6">
+    <p class="lead">A colleague takes the SVD of a ratings matrix without centring it. The first singular value is huge and the first right singular vector has nearly equal entries. What happened?</p>
+    <div class="opts">
+      <div class="opt" data-ok>The first layer captures the average rating, not a pattern of variation</div>
+      <div class="opt" data-why="Thinks equal entries mean the items are identical: they share a mean, not a pattern">Every item is rated the same by every person</div>
+      <div class="opt" data-why="Thinks a large σ₁ means the matrix has rank 1: other σ can still be large">The matrix has rank 1</div>
+      <div class="opt" data-why="Blames the library: the SVD of an uncentred matrix is correct, just answering another question">The SVD routine has failed</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Without centring, the mean is the largest common direction; PCA needs the spread around the mean.</div>
+  </div>
+  <aside class="notes"><p>Answer A. The lab's image is not centred either: its first layer is the average brightness. That is fine for compression and wrong for PCA.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-7-1" data-auto="lab" data-lab="7.1">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>AI-tutor: hints only. The image and the digits are installed with scikit-image and scikit-learn: no download. Watch for: rank_k written with np.diag(s) on the full 512 × 512 (slow but correct); PCA without centring (the check against the covariance fails); components read as columns of Vt instead of rows.</p></aside>
+</section>
+
+<section class="slide" id="debrief-image" data-lo="LO6">
+  <div class="kicker">Debrief · lab 7.1</div>
+  <h2>Rank 50 kept the image to within 3% at a fifth of the storage</h2>
+  <table class="t">
+    <tr><th class="num">k</th><th class="num">Relative error</th><th class="num">Storage</th></tr>
+    <tr><td class="num">1</td><td class="num">0.2113</td><td class="num">0.4%</td></tr>
+    <tr><td class="num">10</td><td class="num">0.1332</td><td class="num">3.9%</td></tr>
+    <tr><td class="num">20</td><td class="num">0.0871</td><td class="num">7.8%</td></tr>
+    <tr class="hl"><td class="num">50</td><td class="num">0.0313</td><td class="num">19.6%</td></tr>
+    <tr><td class="num">100</td><td class="num">0.0137</td><td class="num">39.1%</td></tr>
+  </table>
+  <p class="small mt">The measured errors matched the tail of the singular values to four decimals. σ₁ = 57,279.5: the average brightness.</p>
+  <aside class="notes"><p>From the solution run of lab 7.1 (the brick-wall image, CC0, from scikit-image). Break-even: k(512 + 512 + 1) &lt; 512², k ≤ 255.</p></aside>
+</section>
+
+<section class="slide" id="debrief-digits" data-lo="LO6 LO2">
+  <div class="kicker">Debrief · lab 7.1</div>
+  <h2>Two components hold 28.5% of the digits' variance; 21 hold 90%</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>Shares: 14.9%, 13.6%, 11.8%, 8.4%, 5.8%</li>
+      <li>13 components for 80%, 21 for 90%, of 64</li>
+      <li>First component: 4 (−22.3) and 6 (−16.2) at one end, 3 (+18.7) and 9 (+13.1) at the other</li>
+    </ul>
+    <div class="card c-amber"><h4>A careful reading</h4><p class="small mb0">The first component weighs ink on the left of the middle rows against ink higher up and to the right: it sorts digits by where ink falls, not by which digit they are.</p></div>
+  </div>
+  <aside class="notes"><p>From the solution run of lab 7.1 (all 1,797 digits; the UCI handwritten digits bundled with scikit-learn, CC BY 4.0). Read two or three participants' interpretations and test each against the 8 × 8 grid.</p></aside>
 </section>
 
 <section class="slide" id="wrap-up">
   <div class="kicker">Week 7 · wrap-up</div>
   <h2>Three things to keep</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-coral"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-purple"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
+    <div class="card c-teal"><h4>Every matrix has an SVD</h4><p class="small mb0">Rotate, stretch, rotate. Σ gives rank, norm and condition number.</p></div>
+    <div class="card c-coral"><h4>Truncate with a known error</h4><p class="small mb0">The error of A_k is the tail of the singular values, and no rank-k matrix does better.</p></div>
+    <div class="card c-purple"><h4>PCA is a centred SVD</h4><p class="small mb0">Centre, decompose, read the components as patterns; interpret with care.</p></div>
   </div>
+  <aside class="notes"><p>Preview the capstone: participants choose a public image, ratings or embedding matrix and do this week's analysis on it, defended orally.</p></aside>
 </section>
 
 <section class="slide dark" id="next" data-label="Next">
   <div class="kicker">Next</div>
-  <h2>Week 8: REPLACE: the theme of this unit, in a few words</h2>
-  <p class="lead">REPLACE: what participants prepare before then; unfinished labs can be finished at home</p>
-  <aside class="notes">REPLACE: accounts, installs or reading participants need before the next unit</aside>
+  <h2>Week 8: Low rank in practice, and working numerically</h2>
+  <p class="lead">Problem set 7 (60 minutes, AI off for the first attempt): labs/problem-sets/PS7.ipynb. Shortlist two public datasets for the capstone.</p>
+  <aside class="notes"><p>Dataset shortlist rules: a public image, ratings or embedding matrix; a licence that allows sharing the notebook's outputs; no personal data. Week 8's lab ends with the choice and the plan.</p></aside>
 </section>

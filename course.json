@@ -62,7 +62,7 @@
   ],
   "case_study": {
     "name": "The online learning platform (fictional)",
-    "summary": "An unnamed online platform of short courses wants better search, cheaper scoring, honest fits and a fair ranking of its help centre. Its synthetic data (60 help articles, 400 learners, 120 courses, a 40-page link graph, 3,596 ratings) is generated with a fixed seed; the labs also use public GloVe word vectors, the handwritten digits bundled with scikit-learn and a public-domain test image, downloaded at run time."
+    "summary": "An unnamed online platform of short courses wants better search, cheaper scoring, honest fits and a fair ranking of its help centre. Its synthetic data (60 help articles, 400 learners, 120 courses, a 40-page link graph, 3,596 ratings) is generated with a fixed seed; the labs also use public GloVe word vectors, the handwritten digits bundled with scikit-learn, a CC0 test image bundled with scikit-image: the word vectors are downloaded at run time and nothing public is copied into the course."
   },
   "format": "extended",
   "format_note": "Extended: 8 weeks part-time, one session and one lab a week, weekly graded problem sets and a capstone",
@@ -454,7 +454,7 @@
       "deck": "slides/week7.html",
       "sessions": [
         {
-          "title": "The singular value decomposition and PCA",
+          "title": "The SVD and principal components",
           "outcomes": [
             "Read a singular value decomposition and state what each factor holds",
             "Build a rank-k approximation and predict its error from the singular values",
@@ -469,32 +469,32 @@
           "lab": {
             "id": "7.1",
             "title": "SVD image compression and PCA on public handwritten digits",
-            "summary": "Compress a public-domain image by truncated SVD and report error and storage by rank, then find the principal components of the public handwritten digits.",
+            "summary": "Compress a public CC0 test image by truncated SVD with error and storage by rank, then find the principal components of the public handwritten digits.",
             "minutes": 105,
             "href": "W7_1.ipynb",
             "steps": [
               {
-                "text": "Set up; check an SVD of a two-by-two by hand",
+                "text": "Set up; an SVD of a two-by-two by hand",
                 "minutes": 15
               },
               {
-                "text": "Load the image; its SVD and singular values",
+                "text": "The image and its singular values",
                 "minutes": 10
               },
               {
-                "text": "Rank-k approximations: error and storage by rank",
+                "text": "Rank-k approximations: error and storage",
                 "minutes": 20
               },
               {
-                "text": "Check the error against the tail of the singular values",
+                "text": "The error is the tail of the singular values",
                 "minutes": 10
               },
               {
-                "text": "Digits: centre, then principal components through the SVD",
+                "text": "Principal components of the digits",
                 "minutes": 20
               },
               {
-                "text": "Explained variance and the two leading components",
+                "text": "Explained variance and the leading components",
                 "minutes": 20
               },
               {

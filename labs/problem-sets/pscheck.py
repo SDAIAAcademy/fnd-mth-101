@@ -195,7 +195,29 @@ def _ps6(ns):
     yield "5 dominant(B, steps) finds the largest eigenvalue and its vector", _code(ns, "dominant", pi_ok)
 
 
-CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4, 5: _ps5, 6: _ps6}
+# ---------------------------------------------------------------- PS7 singular values and low rank
+def _ps7(ns):
+    A, D = ns["A"], ns["D"]
+    yield "1 hand singular values of A agree with singular_values(A)", _agree(ns, "sigma_A", "singular_values", A)
+    yield "2 hand rank-1 error of D agrees with low_rank_error(singular values of D, 1)", _agree(
+        ns, "err1_D", "low_rank_error", np.linalg.svd(D, compute_uv=False), 1)
+    def sv_ok(f):
+        B = RNG.standard_normal((6, 4))
+        return _close(f(B), np.linalg.svd(B, compute_uv=False))
+    yield "3 singular_values from the eigenvalues of AᵀA matches the library", _code(ns, "singular_values", sv_ok)
+    def rk_ok(f):
+        B = RNG.standard_normal((8, 5))
+        Ub, sb, Vb = np.linalg.svd(B, full_matrices=False)
+        Bk = np.asarray(f(B, 2))
+        return np.linalg.matrix_rank(Bk) == 2 and _close(np.linalg.norm(B - Bk), np.sqrt(np.sum(sb[2:] ** 2)))
+    yield "4 best_rank_k(B, k) has rank k and the smallest possible error", _code(ns, "best_rank_k", rk_ok)
+    def err_ok(f):
+        s = np.array([9.0, 4.0, 2.0, 1.0])
+        return _close(f(s, 1), np.sqrt(21)) and _close(f(s, 3), 1.0)
+    yield "5 low_rank_error follows the tail of the singular values", _code(ns, "low_rank_error", err_ok)
+
+
+CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4, 5: _ps5, 6: _ps6, 7: _ps7}
 
 
 def check(n: int, ns: dict) -> int:
