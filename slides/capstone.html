@@ -1,94 +1,142 @@
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">Today is theirs: keep your own talking to the opening and the closing. Confirm the running order and the demo setup (screen sharing, accounts, a recorded backup) first.</aside>
+  <aside class="notes"><p>Today is theirs: keep your own talking to the opening and the closing. Before the first check, confirm the running order, that every notebook link opens, and that you have the private set of new-number items for the rework (the trainer pack; never project them before a participant's turn).</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-label="Agenda">
   <div class="kicker">Capstone</div>
-  <h2>How the presentations run</h2>
+  <h2>How the oral checks run</h2>
   <div class="agenda">
-    <div class="item now"><div><b>Expectations and final prep</b><small>the rubric, a last rehearsal, then the first presentations</small></div></div>
-    <div class="item"><div><b>Presentations</b><small>each one timed, with questions after it</small></div></div>
+    <div class="item now"><div><b>Expectations and final preparation</b><small>the rubric, the format, a last rehearsal</small></div></div>
+    <div class="item"><div><b>Oral checks</b><small>ten minutes each: a walkthrough, then a step reworked with new numbers</small></div></div>
     <div class="item"><div><b>Review and closing</b><small>peer feedback, the trainer's review, what next</small></div></div>
   </div>
+  <aside class="notes"><p>Capstone time in the plan: a 30-minute dataset clinic (in week 8), about 280 minutes of independent work, a 25-minute peer dry run of the oral check, the 10-minute check, 5 minutes of changeover and 10 of written feedback from the assessor.</p></aside>
+</section>
+
+<section class="slide" id="what-you-submit" data-lo="LO6" data-label="What you submit">
+  <div class="kicker">The submission</div>
+  <h2>A notebook in a public repository, then ten minutes with the assessor</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>A public image, ratings or embedding matrix, with its address and licence</li>
+      <li>The matrix stated: rows, columns, shape, centring and scaling</li>
+      <li>The SVD, checked on a small case by hand</li>
+      <li>Relative error by rank, the rank chosen, the leading components interpreted</li>
+    </ul>
+    <div class="card c-navy tint"><h4>Submission</h4><p class="small mb0">The link to a public GitHub repository holding the notebook, its outputs and the data source. Nothing personal, nothing whose licence forbids sharing.</p></div>
+  </div>
+  <aside class="notes"><p>The capstone is AI-full: an assistant may help with any step. The oral check is where authenticity is tested: the participant must explain and redo a step without it.</p></aside>
 </section>
 
 <section class="slide" id="rubric" data-label="The rubric">
-  <div class="kicker">How presentations are scored</div>
+  <div class="kicker">How the notebook is scored</div>
   <h2>The rubric</h2>
   <div class="bars">
-    <div class="row"><span>REPLACE: rubric criterion 1 and its weight (the weights add up to 100)</span><div class="bar c-teal" style="--w:100%"></div><span class="val">25%</span></div>
-    <div class="row"><span>REPLACE: rubric criterion 2 and its weight (the weights add up to 100)</span><div class="bar c-cyan" style="--w:100%"></div><span class="val">25%</span></div>
-    <div class="row"><span>REPLACE: rubric criterion 3 and its weight (the weights add up to 100)</span><div class="bar c-coral" style="--w:80%"></div><span class="val">20%</span></div>
-    <div class="row"><span>REPLACE: rubric criterion 4 and its weight (the weights add up to 100)</span><div class="bar c-purple" style="--w:80%"></div><span class="val">20%</span></div>
-    <div class="row"><span>REPLACE: rubric criterion 5 and its weight (the weights add up to 100)</span><div class="bar c-amber" style="--w:40%"></div><span class="val">10%</span></div>
+    <div class="row"><span>Data matrix stated: source, licence, shape, centring and scaling, each choice justified</span><div class="bar c-teal" style="--w:60%"></div><span class="val">15%</span></div>
+    <div class="row"><span>SVD computed and checked: a small case agrees with hand work; reconstruction error reported by rank</span><div class="bar c-cyan" style="--w:100%"></div><span class="val">25%</span></div>
+    <div class="row"><span>Rank chosen from the error curve and the singular values, with the trade-off stated</span><div class="bar c-coral" style="--w:80%"></div><span class="val">20%</span></div>
+    <div class="row"><span>Leading components interpreted in the dataset's own terms, with their limits</span><div class="bar c-purple" style="--w:100%"></div><span class="val">25%</span></div>
+    <div class="row"><span>Notebook runs from top to bottom; seed, data source and licence stated; outputs honest</span><div class="bar c-amber" style="--w:60%"></div><span class="val">15%</span></div>
   </div>
-  <div class="callout tip mt"><b>Show results from at least two measured runs.</b> A claim without a number is a plan, not a result.</div>
-  <aside class="notes">Walk through each criterion with one example of what full marks look like.</aside>
+  <div class="callout tip mt"><b>Measured beats claimed.</b> An error by rank you computed is worth more than a rank you asserted.</div>
+  <aside class="notes"><p>Walk through each criterion with one example of full marks. The notebook is 30% of the course; the oral check is scored separately (10%), so nothing in this table is counted twice.</p></aside>
+</section>
+
+<section class="slide" id="assessment-overall" data-label="The whole course">
+  <div class="kicker">The whole course</div>
+  <h2>How the course is assessed</h2>
+  <table class="t">
+    <tr><th>Assessed work</th><th class="num">Weight</th></tr>
+    <tr><td>Weekly problem sets, auto-checked</td><td class="num">20%</td></tr>
+    <tr><td>Two supervised AI-off tests, on paper and at the keyboard</td><td class="num">40%</td></tr>
+    <tr class="hl"><td>Capstone notebook, rubric-scored</td><td class="num">30%</td></tr>
+    <tr class="hl"><td>Oral check</td><td class="num">10%</td></tr>
+  </table>
+  <p class="small mt">Passing: 60% overall and at least 50% on each supervised test. Certificate: completion with assessed work.</p>
+  <aside class="notes"><p>Authenticity: proctored tests without assistance, and an oral check in which the participant reworks a capstone step with new numbers.</p></aside>
 </section>
 
 <section class="slide" id="format" data-label="Format">
   <div class="kicker">Format</div>
-  <h2>10 minutes for each presentation</h2>
+  <h2>Ten minutes each: four to walk through, six to rework a step</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>1 · The problem</h4><p class="small mb0">Who, what, why now. One slide.</p></div>
-    <div class="card c-cyan"><h4>2 · What you built</h4><p class="small mb0">Design, decisions, trade-offs. Then the live demo.</p></div>
-    <div class="card c-coral"><h4>3 · What you measured</h4><p class="small mb0">Baseline, improvement, failures found, what comes next.</p></div>
+    <div class="card c-teal"><h4>1 · The matrix</h4><p class="small mb0">What the rows and columns are, and why you centred or scaled.</p></div>
+    <div class="card c-cyan"><h4>2 · The result</h4><p class="small mb0">The error by rank, the rank chosen, what the leading components show.</p></div>
+    <div class="card c-coral"><h4>3 · The rework</h4><p class="small mb0">The assessor gives new numbers for one step; you redo it by hand and check it in code.</p></div>
   </div>
-  <div class="callout note mt"><b>Peer feedback.</b> After each talk, everyone writes one strength, one question and one suggestion.</div>
+  <div class="callout note mt"><b>Peer feedback.</b> After each check, everyone writes one strength, one question and one suggestion.</div>
+  <aside class="notes"><p>Choose the step to rework from the participant's own notebook: a centring, a 2 × 2 SVD, a rank-k error from a list of singular values, a projection or a variance share. The new numbers are in the trainer pack, not in this repository.</p></aside>
+</section>
+
+<section class="slide" id="rework-example" data-lo="LO6 LO4" data-label="A rework, rehearsed">
+  <div class="kicker">Rehearse the rework</div>
+  <h2>A rework looks like this: new numbers, the same step, by hand and in code</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>"Your singular values were replaced by 12, 5, 2 and 1. What relative error does rank 2 give?"</p>
+      <p>By hand: √(2² + 1²) / √(12² + 5² + 2² + 1²) = √5 / √174 ≈ <b>0.170</b></p>
+    </div>
+    <pre class="code" data-file="numpy"><code class="language-python">s = np.array([12, 5, 2, 1.0])
+np.sqrt(np.sum(s[2:]**2) / np.sum(s**2))
+# 0.1695</code></pre>
+  </div>
+  <aside class="notes"><p>A rehearsal example only; the items used in the checks are different and private. Run it with the room before the first check.</p></aside>
 </section>
 
 <section class="slide order" id="running-order" data-label="Running order">
   <div class="kicker">Running order</div>
   <h2>Who presents when</h2>
   <table class="t small">
-    <tr><th>#</th><th>Presenter</th><th>Project</th></tr>
-    <tr><td>1</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
-    <tr><td>2</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
-    <tr><td>3</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
-    <tr><td>4</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
-    <tr><td>5</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
-    <tr><td>6</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
-    <tr><td>7</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
-    <tr><td>8</td><td><input placeholder="name"></td><td><input placeholder="Project"></td></tr>
+    <tr><th>#</th><th>Participant</th><th>Dataset</th></tr>
+    <tr><td>1</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>2</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>3</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>4</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>5</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>6</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>7</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
+    <tr><td>8</td><td><input placeholder="name"></td><td><input placeholder="Dataset"></td></tr>
   </table>
-  <aside class="notes">Type the names in at the start; the fields can be edited live and are not saved, so keep the list in your notes too.</aside>
+  <aside class="notes"><p>Type the names in at the start; the fields can be edited live and are not saved, so keep the list in your notes too.</p></aside>
 </section>
 
-<section class="slide dark" id="final-prep" data-label="Before the first presentation">
-  <div class="kicker">Before the first presentation</div>
-  <h1>Final prep · 20 minutes</h1>
+<section class="slide dark" id="final-prep" data-label="Before the first check">
+  <div class="kicker">Before the first check</div>
+  <h1>Final preparation · 20 minutes</h1>
   <div class="timer" data-minutes="20"></div>
-  <p class="lead">Rehearse once, record a backup, try the demo on this screen.</p>
-  <aside class="notes">Press T to start the timer. Breaks are not slides: press B when the room needs one.</aside>
+  <p class="lead">Run your notebook from the top once more, and rehearse one rework with a neighbour.</p>
+  <aside class="notes"><p>Press T to start the timer. Breaks are not slides: press B when the room needs one.</p></aside>
 </section>
 
 <section class="slide dark presenting" id="now-presenting" data-label="Now presenting">
   <div class="kicker center">Now presenting</div>
-  <div class="center"><input placeholder="Presenter · project"></div>
+  <div class="center"><input placeholder="Participant · dataset"></div>
   <div class="timers mt">
-    <div><h3>Talk and demo</h3><div class="timer" data-minutes="10"></div></div>
+    <div><h3>Walkthrough</h3><div class="timer" data-minutes="4"></div></div>
+    <div><h3>Rework with new numbers</h3><div class="timer" data-minutes="6"></div></div>
   </div>
-  <aside class="notes">Type the presenter's name and press T to start the timer. Reuse this slide for every presenter.</aside>
+  <aside class="notes"><p>Type the participant's name and press T to start the first timer. At four minutes, give the new numbers on paper and start the second. Score the rework on correctness by hand, agreement with code, and the explanation. Reuse this slide for every participant.</p></aside>
 </section>
 
 <section class="slide" id="review" data-label="Trainer review">
   <div class="kicker">Trainer review</div>
-  <h2>What the presentations showed</h2>
+  <h2>What the capstones showed</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>Strongest patterns</h4><p class="small mb0">What several projects got right.</p></div>
-    <div class="card c-coral"><h4>Common gaps</h4><p class="small mb0">What most projects would fix next.</p></div>
+    <div class="card c-teal"><h4>Strongest patterns</h4><p class="small mb0">What several notebooks got right.</p></div>
+    <div class="card c-coral"><h4>Common gaps</h4><p class="small mb0">What most notebooks would fix next.</p></div>
     <div class="card c-purple"><h4>One surprise</h4><p class="small mb0">Something nobody expected.</p></div>
   </div>
-  <aside class="notes">Fill these in from your scoring notes during the last break. Name projects for strengths; keep gaps anonymous.</aside>
+  <aside class="notes"><p>Fill these in from your scoring notes during the last break. Name notebooks for strengths; keep gaps anonymous. Typical gaps: no hand check, the rank chosen by habit, components named without evidence.</p></aside>
 </section>
 
 <section class="slide" id="what-next" data-label="After the course">
   <div class="kicker">After the course</div>
   <h2>Keep going</h2>
   <ul class="bullets">
-    <li><b>Your project stays yours:</b> keep it reproducible and add the next improvement you named today</li>
-    <li><b>Next Academy course:</b> REPLACE: the course that follows this one</li>
+    <li><b>Your notebook stays yours:</b> keep it reproducible, and add the next analysis you named today</li>
+    <li><b>Next Academy courses:</b> FND-MTH-102 Calculus and Optimisation for Machine Learning, and FND-AIC-101 How Machine Learning Works, which builds models on the least squares and projections of this course</li>
   </ul>
+  <aside class="notes"><p>Point those who found the numerical weeks hard to FND-MTH-102, which uses gradients on the same matrices.</p></aside>
 </section>
 
 <section class="slide dark" id="thanks" data-label="Thank you">
