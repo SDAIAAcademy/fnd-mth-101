@@ -3,7 +3,7 @@
 # dependencies = ["numpy>=2.1"]
 # ///
 # %% [markdown]
-# # Lab 2.1 · Loop and vectorised matrix products, costed in FLOPs
+# # Lab 2.1 · Loop and vectorised matrix products, timed and costed in FLOPs
 #
 # Week 2 · Session 1 (Matrix products, attention scores and FLOPs) · 105 min.
 #

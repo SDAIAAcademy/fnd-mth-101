@@ -29,7 +29,7 @@ CACHE = Path(os.environ.get("MTH_CACHE", LABS / "cache"))
 
 np.set_printoptions(precision=4, suppress=True, linewidth=110)
 
-GLOVE_URL = ("https://github.com/RaRe-Technologies/gensim-data/releases/download/"
+GLOVE_URL = ("https://github.com/piskvorky/gensim-data/releases/download/"
              "glove-wiki-gigaword-50/glove-wiki-gigaword-50.gz")
 GLOVE_MD5 = "c289bc5d7f2f02c6dc9f2f9b67641813"
 
@@ -54,7 +54,7 @@ def _glove_file() -> Path:
     CACHE.mkdir(parents=True, exist_ok=True)
     path = CACHE / "glove-wiki-gigaword-50.gz"
     if not path.exists():
-        print("downloading GloVe 50d (66 MB, once) ...")
+        print("downloading GloVe 50d (69 MB, once) ...")
         tmp = path.with_suffix(".part")
         for attempt in range(3):
             try:

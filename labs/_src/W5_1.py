@@ -3,7 +3,7 @@
 # dependencies = ["numpy>=2.1", "scipy>=1.14"]
 # ///
 # %% [markdown]
-# # Lab 5.1 · Least squares by normal equations and by QR
+# # Lab 5.1 · Least squares by normal equations and by QR on nearly collinear data
 #
 # Week 5 · Session 1 (Least squares and conditioning) · 105 min.
 #

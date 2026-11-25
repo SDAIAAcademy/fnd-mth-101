@@ -7,14 +7,16 @@
 
 | Unit | Session | Lab | Notebook |
 |---|---|---|---|
-| Week 1 | Vectors, dot products and similarity | Cosine search over public sentence embeddings | [`W1_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W1_1.ipynb) |
-| Week 2 | Matrix products, attention scores and FLOPs | Loop and vectorised matrix products, costed in FLOPs | [`W2_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W2_1.ipynb) |
+| Week 1 | Vectors, dot products and similarity | Cosine-similarity search over public sentence embeddings | [`W1_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W1_1.ipynb) |
+| Week 2 | Matrix products, attention scores and FLOPs | Loop and vectorised matrix products, timed and costed in FLOPs | [`W2_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W2_1.ipynb) |
 | Week 3 | Span, rank and linear systems | Rank and linear systems on a feature table | [`W3_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W3_1.ipynb) |
 | Week 4 | Orthogonal projection and QR | Projections and QR by Gram-Schmidt | [`W4_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W4_1.ipynb) |
-| Week 5 | Least squares and conditioning | Least squares by normal equations and by QR | [`W5_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W5_1.ipynb) |
+| Week 5 | Least squares and conditioning | Least squares by normal equations and by QR on nearly collinear data | [`W5_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W5_1.ipynb) |
 | Week 6 | Eigenvectors and link ranking | Power iteration and link ranking on a synthetic web graph | [`W6_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W6_1.ipynb) |
 | Week 7 | The SVD and principal components | SVD image compression and PCA on public handwritten digits | [`W7_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W7_1.ipynb) |
 | Week 8 | Low rank in practice | Low-rank ratings and adapter updates, checked by hand | [`W8_1.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/fnd-mth-101/blob/main/labs/W8_1.ipynb) |
+
+Labs 1.1, 2.1, 5.1, 6.1 and 7.1 are the catalog entry's five lab lines; labs 3.1, 4.1 and 8.1 are additions, so that every weekly session has a lab.
 
 Every lab starts with a small case done by hand, then does the same at scale in NumPy and checks one against the other. An exercise left undone raises `NotImplementedError`; the notebook then falls back on a reference value in `data/reference/` so that every later step still runs. The worked versions are in [`solutions/`](solutions/).
 

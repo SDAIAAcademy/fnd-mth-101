@@ -172,7 +172,7 @@ np.allclose(Q @ R, A)             # True</code></pre>
       <div class="opt" data-why="Blames the size of the data: orthogonality loss comes from the angles between columns">Use fewer rows so the factorisation is faster and more accurate</div>
       <div class="opt" data-why="Thinks normalising fixes orthogonality: unit length says nothing about the angles between columns">Normalise each column of Q again to length 1</div>
     </div>
-    <div class="callout tip why"><b>Why.</b> A loss of 0.02 is about 10¹³ times rounding level: the columns are nearly dependent and the method is classical.</div>
+    <div class="callout tip why"><b>Why.</b> A loss of 0.02 is about 10¹⁴ times rounding level: the columns are nearly dependent, and the method in use (typically classical Gram-Schmidt) does not keep Q orthonormal.</div>
   </div>
   <aside class="notes"><p>Answer A. Option D is a common reflex: it fixes lengths, not angles.</p></aside>
 </section>

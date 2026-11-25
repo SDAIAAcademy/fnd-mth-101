@@ -104,15 +104,17 @@ Every lab is a notebook in `labs/`. Open it in Google Colab from the course page
 
 | | Session | Lab | File |
 |---|---|---|---|
-| 1.1 | Week 1 · Session 1 | Cosine search over public sentence embeddings | [`W1_1.ipynb`](labs/W1_1.ipynb) |
-| 2.1 | Week 2 · Session 1 | Loop and vectorised matrix products, costed in FLOPs | [`W2_1.ipynb`](labs/W2_1.ipynb) |
+| 1.1 | Week 1 · Session 1 | Cosine-similarity search over public sentence embeddings | [`W1_1.ipynb`](labs/W1_1.ipynb) |
+| 2.1 | Week 2 · Session 1 | Loop and vectorised matrix products, timed and costed in FLOPs | [`W2_1.ipynb`](labs/W2_1.ipynb) |
 | 3.1 | Week 3 · Session 1 | Rank and linear systems on a feature table | [`W3_1.ipynb`](labs/W3_1.ipynb) |
 | 4.1 | Week 4 · Session 1 | Projections and QR by Gram-Schmidt | [`W4_1.ipynb`](labs/W4_1.ipynb) |
-| 5.1 | Week 5 · Session 1 | Least squares by normal equations and by QR | [`W5_1.ipynb`](labs/W5_1.ipynb) |
+| 5.1 | Week 5 · Session 1 | Least squares by normal equations and by QR on nearly collinear data | [`W5_1.ipynb`](labs/W5_1.ipynb) |
 | 6.1 | Week 6 · Session 1 | Power iteration and link ranking on a synthetic web graph | [`W6_1.ipynb`](labs/W6_1.ipynb) |
 | 7.1 | Week 7 · Session 1 | SVD image compression and PCA on public handwritten digits | [`W7_1.ipynb`](labs/W7_1.ipynb) |
 | 8.1 | Week 8 · Session 1 | Low-rank ratings and adapter updates, checked by hand | [`W8_1.ipynb`](labs/W8_1.ipynb) |
 <!-- /academy:labs -->
+
+Labs 1.1, 2.1, 5.1, 6.1 and 7.1 are the catalog entry's five lab lines. Labs 3.1, 4.1 and 8.1 are additions, so that each of the eight weekly sessions has a lab: they practise the entry's topics of rank and linear systems, orthogonal projection and QR, and low-rank structure in recommenders and model adaptation with checking code against hand computation.
 
 ## Capstone
 

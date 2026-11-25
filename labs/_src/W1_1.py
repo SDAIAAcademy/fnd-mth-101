@@ -3,7 +3,7 @@
 # dependencies = ["numpy>=2.1"]
 # ///
 # %% [markdown]
-# # Lab 1.1 · Cosine search over public sentence embeddings
+# # Lab 1.1 · Cosine-similarity search over public sentence embeddings
 #
 # Week 1 · Session 1 (Vectors, dot products and similarity) · 105 min.
 #
@@ -54,7 +54,7 @@ print("quick mode:", U.QUICK)
 #
 # `help_articles.csv` holds the 60 synthetic articles (codes A001 to A060), `queries.csv` ten
 # learners' questions with the article a content lead judged best. The first call downloads the
-# GloVe file once (66 MB) and checks its published checksum.
+# GloVe file once (69 MB) and checks its published checksum.
 
 # %%
 articles = U.load_csv("help_articles.csv")
@@ -262,7 +262,13 @@ except NotImplementedError:
 leans = U.keep("w1_leans", leans)
 for o, x in sorted(leans.items(), key=lambda kv: -kv[1]):
     print(f"{o:13s} {x:+.3f}")
-U.check(leans["nurse"] > 0.05 > leans["engineer"], "the lean separates some occupations clearly")
+U.check(leans["nurse"] > 0.05 > leans["engineer"], "in these vectors nurse leans to the female words, engineer to the male words")
+
+# %% [markdown]
+# **Know the limits** of this measure before you write about it: one small model trained on 2014
+# encyclopedia and news text, five hand-picked word pairs, and no error bars. A value near zero
+# (pilot, carpenter) shows no lean either way, and other word pairs would give other numbers. It
+# shows an association in the text, not how a search built on the vectors treats people.
 
 # %% [markdown]
 # **Record** in two or three sentences, in the cell below: if the platform used these vectors to

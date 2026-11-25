@@ -95,7 +95,7 @@
           "minutes": 210,
           "lab": {
             "id": "1.1",
-            "title": "Cosine search over public sentence embeddings",
+            "title": "Cosine-similarity search over public sentence embeddings",
             "summary": "Search 60 help articles by meaning with mean GloVe vectors, remove the shared direction, and measure how occupation words lean towards gendered words.",
             "minutes": 105,
             "href": "W1_1.ipynb",
@@ -156,7 +156,7 @@
           "minutes": 210,
           "lab": {
             "id": "2.1",
-            "title": "Loop and vectorised matrix products, costed in FLOPs",
+            "title": "Loop and vectorised matrix products, timed and costed in FLOPs",
             "summary": "Time triple-loop, row-loop and vectorised matrix products on growing sizes, count their FLOPs and memory, and cost the platform's daily scoring.",
             "minutes": 105,
             "href": "W2_1.ipynb",
@@ -341,7 +341,7 @@
           "minutes": 210,
           "lab": {
             "id": "5.1",
-            "title": "Least squares by normal equations and by QR",
+            "title": "Least squares by normal equations and by QR on nearly collinear data",
             "summary": "Fit course hours on nearly collinear features two ways, compare residuals and condition numbers, and diagnose five cases.",
             "minutes": 105,
             "href": "W5_1.ipynb",

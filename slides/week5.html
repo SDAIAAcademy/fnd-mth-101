@@ -74,7 +74,7 @@ beta = np.linalg.lstsq(X, y, rcond=None)[0]</code></pre>
   <div class="quiz" data-type="single" data-lo="LO5">
     <p class="lead">Two candidate fits for the same data. Fit F has residual (1, −2, 1) and fit G has residual (2, −1, −1). The columns of X are (1, 1, 1) and (−1, 0, 1). Which can be the least-squares fit?</p>
     <div class="opts">
-      <div class="opt" data-why="Picks the smaller-looking residual by its first entry: compare orthogonality, not single entries">G, because its residual is more even</div>
+      <div class="opt" data-why="Judges a residual by how even its entries look: what decides is orthogonality to the columns">G, because its residual is more even</div>
       <div class="opt" data-ok>F, because its residual is orthogonal to both columns</div>
       <div class="opt" data-why="Thinks equal norms mean both are optimal: the least-squares residual is unique">Both, since their residuals have the same length</div>
       <div class="opt" data-why="Believes a non-zero residual means no fit is least squares: least squares rarely reaches zero">Neither, because neither residual is zero</div>
@@ -189,11 +189,11 @@ beta = np.linalg.lstsq(X, y, rcond=None)[0]</code></pre>
   <h2>On the course data the two routes agreed to 10⁻¹², because cond(X) was only 2,213</h2>
   <table class="t">
     <tr><th>Video minutes = 7.5 × count + noise of</th><th class="num">cond(X)</th><th class="num">Largest |β normal − β QR|</th></tr>
-    <tr><td>0.6 (the data)</td><td class="num">2.23 × 10³</td><td class="num">2.6 × 10⁻¹¹</td></tr>
+    <tr><td>0.6 (as in the data)</td><td class="num">2.23 × 10³</td><td class="num">2.6 × 10⁻¹¹</td></tr>
     <tr><td>0.06</td><td class="num">2.23 × 10⁴</td><td class="num">4.2 × 10⁻⁹</td></tr>
     <tr class="hl"><td>0.006</td><td class="num">2.23 × 10⁵</td><td class="num">1.7 × 10⁻⁶</td></tr>
   </table>
-  <p class="small mt">Each tenfold rise in cond(X) widened the gap about a hundredfold: the square at work.</p>
+  <p class="small mt">Each tenfold rise in cond(X) widened the gap a hundredfold or more: the square at work.</p>
   <aside class="notes"><p>From the solution run of lab 5.1. On the original data (seed 101): cond(X) = 2,213 and cond(XᵀX) = 4.897 × 10⁶, exactly the square. Residual norms of all three fits: 5.4228480187.</p></aside>
 </section>
 

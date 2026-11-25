@@ -170,7 +170,7 @@ x = np.linalg.inv(A) @ b       # avoid</code></pre>
   <h2>On a computer, "zero" means "small compared with rounding"</h2>
   <ul class="bullets">
     <li>A float64 number holds about 16 significant digits</li>
-    <li>Exact dependence shows as a singular value near 10⁻¹³ of the largest, not exactly 0</li>
+    <li>Exact dependence shows as a singular value of rounding size, about 10⁻¹⁶ times the largest or less, not always exactly 0</li>
     <li><code>np.linalg.matrix_rank</code> counts singular values above a tolerance set from the matrix's size and largest value</li>
   </ul>
   <div class="callout warn mt"><b>Near, not exact.</b> A column that almost repeats another keeps the rank full and still makes a solve unstable. Weeks 4 and 5 measure that.</div>

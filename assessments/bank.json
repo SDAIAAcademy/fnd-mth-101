@@ -66,7 +66,7 @@
       "prompt": "Attention scores are the product Q Kᵀ, where Q and K are both 1,024 × 64. Counting a multiply and an add as two operations, about how many floating-point operations does it take?",
       "options": [
         "About 67 million",
-        "About 4.2 million",
+        "About 8.4 million",
         "About 134 million (2 × 1,024 × 1,024 × 64)",
         "About 1 million"
       ],
@@ -76,7 +76,7 @@
       "explanation": "The result has 1,024 × 1,024 entries and each is a 64-term dot product: 64 multiplies and 64 adds.",
       "misconceptions": [
         "Counts only the multiplications, not the additions",
-        "Computes the 64 × 64 product Kᵀ Q, a different matrix",
+        "Computes the 64 × 64 product Kᵀ Q, a different matrix (2 × 64 × 64 × 1,024)",
         "",
         "Counts the entries of the result, not the work for each entry"
       ],

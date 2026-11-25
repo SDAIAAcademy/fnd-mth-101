@@ -86,7 +86,7 @@ uv run python -c "import numpy, scipy, sklearn; print(numpy.__version__)"</code>
     <p class="lead">Learners are vectors of (video minutes, quizzes). Learner K is (300, 2). Which is nearest to K by Euclidean distance: M (305, 9), N (330, 2) or P (290, 2)?</p>
     <div class="opts">
       <div class="opt" data-why="Takes a perfect match on one coordinate as closeness: P is still 10 minutes away, more than M's distance">P, because it matches K exactly on quizzes</div>
-      <div class="opt" data-why="Adds the raw gaps without squaring and still misreads them: N is 30 away, the farthest of the three">N, because its only difference is in one coordinate</div>
+      <div class="opt" data-why="Counts how many coordinates differ instead of how far: N's one difference is 30 minutes, the largest gap of the three">N, because its only difference is in one coordinate</div>
       <div class="opt" data-ok>M, at a distance of about 8.6</div>
       <div class="opt" data-why="Believes a distance cannot be computed across units: it can, but its meaning depends on the scales chosen">None: minutes and quizzes cannot be combined in one distance</div>
     </div>
@@ -273,12 +273,12 @@ N @ q      # [1.0, 0.889, 1.0]</code></pre>
 </section>
 
 <section class="slide lab" id="lab-1-1" data-auto="lab" data-lab="1.1">
-  <aside class="notes"><p>AI-tutor in this lab: hints, no answers (labs/tutor/TUTOR.md). Watch for: the first GloVe download (66 MB) on a slow network, so start it during step 1; participants who normalise columns instead of rows (axis=0); hand results typed as fractions in strings.</p><p>Fallback: every exercise cell has a safety net, so a participant who is stuck can run on and come back.</p></aside>
+  <aside class="notes"><p>AI-tutor in this lab: hints, no answers (labs/tutor/TUTOR.md). Watch for: the first GloVe download (69 MB) on a slow network, so start it during step 1; participants who normalise columns instead of rows (axis=0); hand results typed as fractions in strings.</p><p>Fallback: every exercise cell has a safety net, so a participant who is stuck can run on and come back.</p></aside>
 </section>
 
 <section class="slide" id="debrief-search" data-lo="LO1">
   <div class="kicker">Debrief · lab 1.1</div>
-  <h2>Removing the shared direction doubled the questions answered first</h2>
+  <h2>Centring and dropping frequent words more than doubled the questions answered first</h2>
   <table class="t">
     <tr><th>Sentence vectors</th><th class="num">Mean pair cosine</th><th class="num">Best article first</th><th class="num">In the top 3</th></tr>
     <tr><td>Mean of all word vectors</td><td class="num">0.853</td><td class="num">2 of 10</td><td class="num">3 of 10</td></tr>
@@ -298,7 +298,7 @@ N @ q      # [1.0, 0.889, 1.0]</code></pre>
     <div class="row"><span>engineer</span><div class="bar c-cyan" style="--w:51%"></div><span class="val">−0.066</span></div>
     <div class="row"><span>secretary</span><div class="bar c-cyan" style="--w:58%"></div><span class="val">−0.076</span></div>
   </div>
-  <p class="small mt">"Secretary" leans male: in news text it is often a title of office. The vectors carry the texts' usage, not the jobs.</p>
+  <p class="small mt">"Secretary" leans male, perhaps because news text often uses it as a title of office. One small model, five word pairs, no error bars: the leans describe the texts' usage, not the jobs, and not yet the search.</p>
   <aside class="notes"><p>From the solution run of lab 1.1. Bars are lengths of the lean, coral for female, cyan for male. Collect two or three of the participants' recorded notes. A good note says what could change for a learner who writes "she" in a goal, and names a test to run on the search before it goes live (the same goal with she and he, compared).</p></aside>
 </section>
 
