@@ -1,0 +1,5 @@
+# The free hosted notebook has NumPy, SciPy, scikit-learn and Matplotlib; this adds what it may lack
+numpy>=2.1
+scipy>=1.14
+scikit-learn>=1.5
+pooch>=1.8

@@ -1,56 +1,248 @@
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">REPLACE: welcome; introduce yourself; one question to the room that calibrates the pace; the rhythm of the day</aside>
+  <aside class="notes"><p>Open with the problem set: ask who reached full marks on PS1, and which item was hardest. Collect one hand-work error to discuss (usually a sign in a dot product).</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-auto="agenda"></section>
+
+<section class="slide" id="review-week1" data-lo="LO1">
+  <div class="kicker">Review · week 1</div>
+  <h2>Which pair is most similar by cosine?</h2>
+  <div class="quiz" data-type="single" data-lo="LO1">
+    <p class="lead">Three vectors: a = (2, 0), b = (10, 1), c = (1, 1). Which pair has the largest cosine similarity?</p>
+    <div class="opts">
+      <div class="opt" data-why="Ranks by dot product, which rewards b's length: a · b = 20 is large only because b is long">a and b, because their dot product, 20, is the largest</div>
+      <div class="opt" data-ok>a and b, at a cosine of about 0.995</div>
+      <div class="opt" data-why="Assumes vectors of similar length are similar in direction: c is at 45° from a">a and c, because they have similar lengths</div>
+      <div class="opt" data-why="Reads the shared second coordinate as shared direction: b points mostly along the first axis">b and c, because both have a second coordinate of 1</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> cos(a, b) = 20 / (2 × 10.05) ≈ 0.995; cos(a, c) ≈ 0.707; cos(b, c) = 11 / (10.05 × 1.414) ≈ 0.774.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Options A and B name the same pair: only B gives the right reason. Ask a participant who chose A to compute cos(a, b) and see that the conclusion holds for another reason.</p></aside>
+</section>
 
 <!-- Session 1 -->
 
 <section class="slide section" id="s1" data-auto="section" data-session="1"></section>
 
-<section class="slide" id="s1-idea">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
+<section class="slide" id="product-rule" data-lo="LO1 LO4">
+  <div class="kicker">Block A · the product</div>
+  <h2>Entry (i, j) of AB is row i of A dotted with column j of B</h2>
   <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+    <div>
+      <p>P = [[2, 1], [1, 3]] (2 × 2), G = [[1, 0, 1], [2, 1, 0]] (2 × 3)</p>
+      <p>Entry (1, 1): (2, 1) · (1, 2) = 4</p>
+      <p><b>P G = [[4, 1, 2], [7, 3, 1]]</b>, a 2 × 3 matrix</p>
+    </div>
+    <div class="card c-amber"><h4>Shapes first</h4><p class="small mb0">(n × k)(k × m) gives n × m. The inner sizes must match. G P does not exist here: 3 does not match 2.</p></div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 2. Work entry (2, 1) with the room: (1, 3) · (1, 2) = 7. Then ask for the shape before any arithmetic: that habit catches most errors.</p></aside>
 </section>
 
-<section class="slide" id="s1-steps">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
+<section class="slide" id="scores-as-product" data-lo="LO1">
+  <div class="kicker">Many dot products</div>
+  <h2>Stacking vectors as rows turns all their dot products into one product</h2>
+  <ul class="bullets">
+    <li>Questions as rows of <b>Q</b> (q × d), articles as rows of <b>A</b> (a × d)</li>
+    <li><b>Q Aᵀ</b> is q × a: entry (i, j) is question i dotted with article j</li>
+    <li>Week 1's search for one question was one row of this matrix</li>
+  </ul>
+  <div class="callout tip mt"><b>Why it matters.</b> One product call replaces q × a separate dot products, and the computer runs it far faster.</div>
+  <aside class="notes"><p>Draw Q with q rows and Aᵀ with a columns; point at one entry and say which row and column made it. This is the bridge from week 1 to attention.</p></aside>
+</section>
+
+<section class="slide" id="attention-scores" data-lo="LO1 LO4">
+  <div class="kicker">Attention</div>
+  <h2>Attention scores are a matrix of dot products, scaled and softened</h2>
   <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+    <div class="step c-teal"><b>1 · Scores</b>S = Q Kᵀ / √d</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>2 · Softmax</b>each row to positive weights adding to 1</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>3 · Mix</b>weights times the value vectors</div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <p class="mt">One query q = (1, 0) against keys (1, 0), (0, 1), (1, 1) with d = 2: scores 0.707, 0, 0.707; weights <b>0.401, 0.198, 0.401</b>.</p>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 2. The division by √d keeps scores from growing with the dimension, so the softmax does not saturate. This course stops at the scores and weights; how a transformer uses them is for the engineering courses.</p></aside>
+</section>
+
+<section class="slide" id="check-attention-shape" data-lo="LO1">
+  <div class="kicker">Checkpoint</div>
+  <h2>The shape of the scores</h2>
+  <div class="quiz" data-type="single" data-lo="LO1">
+    <p class="lead">A layer compares 12 queries with 30 keys, each vector of length 64. What is the shape of S = Q Kᵀ?</p>
+    <div class="opts">
+      <div class="opt" data-why="Multiplies in the wrong order: K Qᵀ would be 30 × 12">30 × 12</div>
+      <div class="opt" data-why="Keeps the vector length as a dimension: the dot product sums it away">12 × 64</div>
+      <div class="opt" data-ok>12 × 30</div>
+      <div class="opt" data-why="Thinks a product keeps the inner size: in (12 × 64)(64 × 30) the 64 disappears">64 × 64</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Q is 12 × 64 and Kᵀ is 64 × 30; the inner 64 is summed in each dot product, leaving one score per query and key.</div>
+  </div>
+  <aside class="notes"><p>Answer C. Ask for the number of dot products: 360, each of 64 multiplications.</p></aside>
+</section>
+
+<section class="slide" id="matrix-is-a-map" data-lo="LO1">
+  <div class="kicker">Block B · maps</div>
+  <h2>A matrix is a map: it sends each vector to a new vector</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>Its columns are where the axis vectors land</li>
+      <li>Rot = [[0, −1], [1, 0]] sends (1, 0) to (0, 1): a quarter turn</li>
+      <li>Ref = [[1, 0], [0, −1]] flips the second coordinate: a mirror</li>
+    </ul>
+    <div class="card c-teal"><h4>Read the columns</h4><p class="small mb0">To know what a 2 × 2 matrix does, draw where (1, 0) and (0, 1) go. Every other vector follows by adding and scaling.</p></div>
+  </div>
+  <aside class="notes"><p>Sketch the unit square and its image under Rot and under Ref. Ask: what does [[2, 0], [0, 2]] do? It doubles every vector.</p></aside>
+</section>
+
+<section class="slide" id="composition" data-lo="LO1 LO4">
+  <div class="kicker">Composition</div>
+  <h2>A product of matrices is one map applied after another, read right to left</h2>
+  <table class="t">
+    <tr><th>Matrix</th><th>Means</th><th>Sends (1, 1) to</th></tr>
+    <tr><td>Ref Rot</td><td>turn first, then mirror</td><td>(−1, −1)</td></tr>
+    <tr class="hl"><td>Rot Ref</td><td>mirror first, then turn</td><td>(1, 1)</td></tr>
+  </table>
+  <div class="callout warn mt"><b>Order matters.</b> Ref Rot ≠ Rot Ref. Matrix products are not commutative, because doing two things in another order is another map.</div>
+  <aside class="notes"><p>Numbers from slide_numbers.py, week 2. Act it out with a sheet of paper: turn then flip, flip then turn. Then show that the product matrix gives the same answer as applying the two in turn.</p></aside>
+</section>
+
+<section class="slide" id="layers-compose" data-lo="LO1">
+  <div class="kicker">In machine learning</div>
+  <h2>Stacked linear layers compose into one matrix</h2>
+  <ul class="bullets">
+    <li>Two linear layers W₂(W₁ x) equal one layer (W₂ W₁) x</li>
+    <li>Without a non-linear step between them, depth adds nothing</li>
+    <li>Shapes chain: (m × h)(h × d) maps d inputs to m outputs</li>
+  </ul>
+  <div class="callout note mt"><b>Cost still counts.</b> W₂(W₁ x) and (W₂ W₁) x give the same result with different numbers of operations. Block C counts them.</div>
+  <aside class="notes"><p>This is why networks put a non-linear function between layers. Keep it to the linear fact; the non-linear part belongs to later courses.</p></aside>
+</section>
+
+<section class="slide" id="check-composition" data-lo="LO1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which matrix does "scale, then turn"?</h2>
+  <div class="quiz" data-type="single" data-lo="LO1">
+    <p class="lead">S doubles every vector's first coordinate; T turns the plane a quarter turn. You want one matrix that scales first, then turns. Which is it?</p>
+    <div class="opts">
+      <div class="opt" data-ok>T S</div>
+      <div class="opt" data-why="Reads a product left to right like a sentence: the right-hand matrix acts first">S T</div>
+      <div class="opt" data-why="Adds maps instead of composing them: S + T is neither map">S + T</div>
+      <div class="opt" data-why="Thinks the order of matrices never changes the result: here S T and T S differ">S T or T S, which are equal</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> (T S) x = T (S x): S acts on x first, then T acts on the result.</div>
+  </div>
+  <aside class="notes"><p>Answer A. If many pick B, write T(S(x)) on the board and drop the brackets.</p></aside>
+</section>
+
+<section class="slide" id="count-flops" data-lo="LO4">
+  <div class="kicker">Block C · cost</div>
+  <h2>An (n × k)(k × m) product costs 2·n·k·m floating-point operations</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>n·m entries, each a dot product of length k: k multiplications and k additions.</p>
+      <p>(3 × 4)(4 × 2): 2 × 3 × 4 × 2 = <b>48 FLOPs</b>.</p>
+    </div>
+    <table class="t small">
+      <tr><th class="num">n</th><th class="num">FLOPs of n × n times n × n</th><th class="num">MB per matrix</th></tr>
+      <tr><td class="num">100</td><td class="num">0.002 G</td><td class="num">0.08</td></tr>
+      <tr><td class="num">1,000</td><td class="num">2 G</td><td class="num">8</td></tr>
+      <tr class="hl"><td class="num">10,000</td><td class="num">2,000 G</td><td class="num">800</td></tr>
+    </table>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 2; memory in float64, 8 bytes a number. Point at the growth: ten times the size, a thousand times the FLOPs, a hundred times the memory.</p></aside>
+</section>
+
+<section class="slide" id="bracket-order" data-lo="LO4">
+  <div class="kicker">Same result, different bill</div>
+  <h2>Where you put the brackets changes the cost, not the answer</h2>
+  <table class="t">
+    <tr><th>Order</th><th class="num">FLOPs</th></tr>
+    <tr><td>(W₂ W₁) x, with W₂ 10 × 1,000, W₁ 1,000 × 1,000, x of length 1,000</td><td class="num">20,020,000</td></tr>
+    <tr class="hl"><td>W₂ (W₁ x)</td><td class="num">2,020,000</td></tr>
+  </table>
+  <p class="small mt">2·10·1,000·1,000 + 2·10·1,000 against 2·1,000·1,000 + 2·10·1,000.</p>
+  <aside class="notes"><p>Work the two sums on the board. The rule of thumb: multiply by the vector first when you can. Libraries do not reorder your brackets for you.</p></aside>
+</section>
+
+<section class="slide" id="vectorise-first-look" data-lo="LO4">
+  <div class="kicker">A first look at vectorisation</div>
+  <h2>A Python loop pays for every number; a vectorised call pays once</h2>
+  <div class="cols cols-2">
+    <pre class="code" data-file="numpy"><code class="language-python"># loop: one Python step per multiply
+for i in range(n):
+    for j in range(m):
+        C[i][j] = sum(A[i][t] * B[t][j]
+                      for t in range(k))
+
+# vectorised: one call
+C = A @ B</code></pre>
+    <ul class="bullets">
+      <li>Same arithmetic, same FLOP count</li>
+      <li>The call runs compiled code over whole blocks of memory</li>
+      <li>Week 8 returns to vectorisation and broadcasting in full</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Do not give the lab's speed-up now: the lab measures it. Ask the room to guess the factor on their laptop and write the guess down; compare at the debrief.</p></aside>
+</section>
+
+<section class="slide" id="check-flops" data-lo="LO4">
+  <div class="kicker">Checkpoint</div>
+  <h2>How much does doubling the size cost?</h2>
+  <div class="quiz" data-type="single" data-lo="LO4">
+    <p class="lead">Multiplying two 500 × 500 matrices takes 0.25 GFLOPs. About how many FLOPs does a 1,000 × 1,000 product take?</p>
+    <div class="opts">
+      <div class="opt" data-why="Scales the cost with n: the cost grows with n³">0.5 GFLOPs</div>
+      <div class="opt" data-why="Scales the cost with the number of entries, n²: each entry also grows longer">1 GFLOP</div>
+      <div class="opt" data-why="Scales with n⁴, counting the entries twice">4 GFLOPs</div>
+      <div class="opt" data-ok>2 GFLOPs</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> 2n³: doubling n multiplies n³ by 8, and 8 × 0.25 = 2.</div>
+  </div>
+  <aside class="notes"><p>Answer D. Check with the formula: 2 × 1,000³ = 2 × 10⁹.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-2-1" data-auto="lab" data-lab="2.1">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>AI-tutor: hints only. Timings differ by laptop and by load; ask participants to close heavy programs. Common errors: an index swapped in the triple loop (B[j][t]), and timing the first call only, which includes warm-up. In quick mode the sizes are smaller.</p></aside>
+</section>
+
+<section class="slide" id="debrief-rates" data-lo="LO4">
+  <div class="kicker">Debrief · lab 2.1</div>
+  <h2>Same FLOPs, rates a thousand times apart</h2>
+  <table class="t">
+    <tr><th>Version</th><th>Size</th><th class="num">Rate</th></tr>
+    <tr><td>Triple Python loop</td><td>32 to 128</td><td class="num">52 to 56 million FLOPs per second</td></tr>
+    <tr><td>Row loop with NumPy rows</td><td>1,024</td><td class="num">0.33 s for 2.1 GFLOPs</td></tr>
+    <tr class="hl"><td>One vectorised call</td><td>1,024</td><td class="num">about 128 GFLOP/s</td></tr>
+  </table>
+  <p class="small mt">One run of the lab's solution on the build laptop; your numbers will differ. At n = 128 the vectorised call was about 595 times faster than the triple loop.</p>
+  <aside class="notes"><p>From the solution run of lab 2.1 (full mode, one laptop processor). Compare with the room's guesses from block C. Collect two or three of the participants' rates to show the spread.</p></aside>
+</section>
+
+<section class="slide" id="debrief-daily-cost" data-lo="LO4">
+  <div class="kicker">Debrief · lab 2.1</div>
+  <h2>The planned search costs 640 times today's, and still fits in seconds a day</h2>
+  <div class="cols cols-2">
+    <div class="stat center"><div class="big">0.30 G</div><div class="lbl">FLOPs a day today: 50,000 questions × 60 articles × 50 numbers</div></div>
+    <div class="stat center"><div class="big">192 G</div><div class="lbl">FLOPs a day planned: 5,000 articles × 384 numbers</div></div>
+  </div>
+  <div class="callout note mt"><b>For the search lead.</b> About 1.5 seconds a day at the rate measured on the build laptop; the article matrix grows to 15.36 MB. Cost is not the obstacle; search quality is.</div>
+  <aside class="notes"><p>From the solution run of lab 2.1. The factor 640 is exact: (5,000 × 384) / (60 × 50). The time depends on the machine.</p></aside>
 </section>
 
 <section class="slide" id="wrap-up">
   <div class="kicker">Week 2 · wrap-up</div>
   <h2>Three things to keep</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-coral"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-purple"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
+    <div class="card c-teal"><h4>Shapes first</h4><p class="small mb0">(n × k)(k × m) is n × m. Check shapes before arithmetic.</p></div>
+    <div class="card c-coral"><h4>Right to left</h4><p class="small mb0">A product of matrices applies the right-hand map first. Order changes the map.</p></div>
+    <div class="card c-purple"><h4>Count, then time</h4><p class="small mb0">2·n·k·m FLOPs is fixed by the maths; the rate is set by how the code runs.</p></div>
   </div>
+  <aside class="notes"><p>Ask for one example of each from the lab.</p></aside>
 </section>
 
 <section class="slide dark" id="next" data-label="Next">
   <div class="kicker">Next</div>
-  <h2>Week 3: REPLACE: the theme of this unit, in a few words</h2>
-  <p class="lead">REPLACE: what participants prepare before then; unfinished labs can be finished at home</p>
-  <aside class="notes">REPLACE: accounts, installs or reading participants need before the next unit</aside>
+  <h2>Week 3: Span, rank and linear systems</h2>
+  <p class="lead">Problem set 2 (60 minutes, AI off for the first attempt): labs/problem-sets/PS2.ipynb.</p>
+  <aside class="notes"><p>Ask participants to revise solving two equations in two unknowns by substitution; week 3 starts from elimination.</p></aside>
 </section>

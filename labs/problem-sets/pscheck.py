@@ -86,7 +86,22 @@ def _ps1(ns):
     yield "5 nearest(X, i) returns the most similar other row", _code(ns, "nearest", nearest_ok)
 
 
-CHECKS = {1: _ps1}
+# ---------------------------------------------------------------- PS2 products, composition, FLOPs
+def _ps2(ns):
+    A, B, F, S, v = ns["A"], ns["B"], ns["F"], ns["S"], ns["v"]
+    yield "1 hand A B agrees with matmul(A, B)", _agree(ns, "AB", "matmul", A, B)
+    yield "2 hand FLOPs of a (4 x 3)(3 x 5) product agree with flops(4, 3, 5)", _agree(ns, "flops_435", "flops", 4, 3, 5)
+    yield "3 hand image of v under F then S agrees with compose(S, F) @ v", _agree(
+        ns, "SFv", "compose", S, F, transform=lambda M: np.asarray(M) @ v)
+    X, Y = RNG.standard_normal((4, 6)), RNG.standard_normal((6, 3))
+    yield "4 matmul matches the library on a random case", _code(ns, "matmul", lambda f: _close(f(X, Y), X @ Y))
+    yield "5 flops follows 2 n k m", _code(ns, "flops", lambda f: all(f(n, k, m) == 2 * n * k * m for n, k, m in [(3, 7, 2), (10, 1, 4)]))
+    def chain_ok(f):
+        return f([(5, 3), (3, 7), (7, 2)]) == 2 * 5 * 3 * 7 + 2 * 5 * 7 * 2 and f([(2, 9), (9, 4)]) == 2 * 2 * 9 * 4
+    yield "6 chain_cost counts a left-to-right chain", _code(ns, "chain_cost", chain_ok)
+
+
+CHECKS = {1: _ps1, 2: _ps2}
 
 
 def check(n: int, ns: dict) -> int:

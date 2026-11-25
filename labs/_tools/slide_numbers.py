@@ -47,7 +47,25 @@ def week1():
         print("dim", d, "nearest", round(dist.min(), 2), "farthest", round(dist.max(), 2), "contrast", round((dist.max() - dist.min()) / dist.min(), 2))
 
 
-WEEKS = {1: week1}
+def week2():
+    P = np.array([[2.0, 1], [1, 3]])
+    G = np.array([[1.0, 0, 1], [2, 1, 0]])
+    print("P G =", (P @ G).tolist(), "shape", (P @ G).shape)
+    q = np.array([1.0, 0.0])
+    K = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
+    s = K @ q / np.sqrt(2)
+    w = np.exp(s - s.max()); w /= w.sum()
+    print("scores", s.round(4), "weights", w.round(4), "sum", w.sum())
+    Rot = np.array([[0.0, -1], [1, 0]])
+    Ref = np.array([[1.0, 0], [0, -1]])
+    e = np.array([1.0, 1.0])
+    print("Ref Rot e", Ref @ Rot @ e, "Rot Ref e", Rot @ Ref @ e)
+    print("flops (3x4)(4x2)", 2 * 3 * 4 * 2, "bytes 1000x1000 float64 MB", 8 * 1000 * 1000 / 1e6)
+    for n in (100, 1000, 10000):
+        print("n", n, "GFLOPs", 2 * n**3 / 1e9, "MB per matrix", 8 * n * n / 1e6)
+
+
+WEEKS = {1: week1, 2: week2}
 
 if __name__ == "__main__":
     for w in ([int(a) for a in sys.argv[1:]] or sorted(WEEKS)):

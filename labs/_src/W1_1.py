@@ -37,6 +37,7 @@ if IN_COLAB:
     if not Path("/content/fnd-mth-101").exists():
         subprocess.run(["git", "clone", "-q", REPO_URL, "/content/fnd-mth-101"], check=True)
     os.chdir("/content/fnd-mth-101/labs")
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-r", "requirements-colab.txt"], check=True)
 else:
     while not Path("_tools").exists() and Path.cwd() != Path.cwd().parent:
         os.chdir("..")  # solutions/ notebooks run from labs/
