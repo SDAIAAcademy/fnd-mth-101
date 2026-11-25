@@ -1,56 +1,231 @@
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">REPLACE: welcome; introduce yourself; one question to the room that calibrates the pace; the rhythm of the day</aside>
+  <aside class="notes"><p>Return the first supervised test before this session if it is marked; take the two most common errors into block A. This week joins weeks 3 and 4: a system with no exact solution, solved by projection.</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-auto="agenda"></section>
+
+<section class="slide" id="review-week4" data-lo="LO1">
+  <div class="kicker">Review · week 4</div>
+  <h2>A property of every projection</h2>
+  <div class="quiz" data-type="single" data-lo="LO1">
+    <p class="lead">P projects onto the span of the columns of A, and r = v − P v. Which statement always holds?</p>
+    <div class="opts">
+      <div class="opt" data-why="Confuses orthogonal with equal length: the residual can be any length">‖r‖ = ‖P v‖</div>
+      <div class="opt" data-why="Thinks a projection matrix is invertible: it squashes the orthogonal directions to zero">P has an inverse</div>
+      <div class="opt" data-why="Applies P to the residual and expects r back: the residual has no part in the subspace">P r = r</div>
+      <div class="opt" data-ok>Aᵀ r = 0</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The residual of an orthogonal projection is orthogonal to every column; in fact P r = 0.</div>
+  </div>
+  <aside class="notes"><p>Answer D. Aᵀ r = 0 is about to become the normal equations.</p></aside>
+</section>
 
 <!-- Session 1 -->
 
 <section class="slide section" id="s1" data-auto="section" data-session="1"></section>
 
-<section class="slide" id="s1-idea">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
-  </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+<section class="slide" id="no-exact-solution" data-lo="LO5">
+  <div class="kicker">Block A · least squares</div>
+  <h2>With more data points than unknowns, there is usually no exact solution</h2>
+  <ul class="bullets">
+    <li>Three points, a line with two coefficients: X β = y has no solution unless the points line up</li>
+    <li><b>Least squares</b> chooses β to make ‖y − X β‖ as small as possible</li>
+    <li>X β ranges over the span of the columns, so the best X β is the <b>projection</b> of y onto it</li>
+  </ul>
+  <div class="callout tip mt"><b>So:</b> the residual y − X β is orthogonal to every column: <b>Xᵀ(y − X β) = 0</b>.</div>
+  <aside class="notes"><p>Draw y outside the plane of the columns and its shadow X β. Every regression a participant has run did exactly this.</p></aside>
 </section>
 
-<section class="slide" id="s1-steps">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" id="normal-equations" data-lo="LO4 LO5">
+  <div class="kicker">The normal equations</div>
+  <h2>XᵀX β = Xᵀy: least squares by hand</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>Points (−1, 1), (0, 1), (1, 4); X = [1, x]</p>
+      <p>XᵀX = [[3, 0], [0, 2]], Xᵀy = (6, 3)</p>
+      <p><b>β = (2, 1.5)</b>: y ≈ 2 + 1.5x</p>
+    </div>
+    <div class="card c-teal"><h4>Check the residual</h4><p class="small mb0">Fitted (0.5, 2, 3.5), residual (0.5, −1, 0.5). It sums to zero and is orthogonal to x: Xᵀr = (0, 0).</p></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <aside class="notes"><p>From slide_numbers.py, week 5. x was chosen centred, so XᵀX is diagonal and the arithmetic is easy. Point that out: centring helps by hand, and it helps the computer too (block C).</p></aside>
+</section>
+
+<section class="slide" id="qr-route" data-lo="LO5">
+  <div class="kicker">The QR route</div>
+  <h2>With X = QR, least squares becomes a triangular solve: R β = Qᵀy</h2>
+  <div class="cols cols-2">
+    <pre class="code" data-file="numpy"><code class="language-python">Q, R = np.linalg.qr(X)
+beta = solve_triangular(R, Q.T @ y)
+
+# the library's own route (SVD)
+beta = np.linalg.lstsq(X, y, rcond=None)[0]</code></pre>
+    <ul class="bullets">
+      <li>Q Qᵀ y is the projection of y; Qᵀy its coordinates</li>
+      <li>XᵀX is never formed</li>
+      <li>Back substitution, as in week 3</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Derive it: XᵀX = RᵀQᵀQR = RᵀR, so the normal equations become RᵀR β = RᵀQᵀy, and R is invertible when the columns are independent. Same answer in exact arithmetic; the difference is rounding, block B.</p></aside>
+</section>
+
+<section class="slide" id="check-least-squares" data-lo="LO5">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which fit is the least-squares fit?</h2>
+  <div class="quiz" data-type="single" data-lo="LO5">
+    <p class="lead">Two candidate fits for the same data. Fit F has residual (1, −2, 1) and fit G has residual (2, −1, −1). The columns of X are (1, 1, 1) and (−1, 0, 1). Which can be the least-squares fit?</p>
+    <div class="opts">
+      <div class="opt" data-why="Picks the smaller-looking residual by its first entry: compare orthogonality, not single entries">G, because its residual is more even</div>
+      <div class="opt" data-ok>F, because its residual is orthogonal to both columns</div>
+      <div class="opt" data-why="Thinks equal norms mean both are optimal: the least-squares residual is unique">Both, since their residuals have the same length</div>
+      <div class="opt" data-why="Believes a non-zero residual means no fit is least squares: least squares rarely reaches zero">Neither, because neither residual is zero</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> F: sums to 0 and (1, −2, 1) · (−1, 0, 1) = 0. G: (2, −1, −1) · (−1, 0, 1) = −3, not orthogonal.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Both residuals have norm √6: equal length does not make G optimal.</p></aside>
+</section>
+
+<section class="slide" id="condition-number" data-lo="LO3">
+  <div class="kicker">Block B · conditioning</div>
+  <h2>The condition number says how much a small change in the data can move the answer</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>A = [[1, 1], [1, 1.0001]], cond(A) ≈ <b>4 × 10⁴</b></p>
+      <table class="t small">
+        <tr><th>b</th><th>Solution of A x = b</th></tr>
+        <tr><td>(2, 2.0001)</td><td>(1, 1)</td></tr>
+        <tr class="hl"><td>(2, 2.0002)</td><td>(0, 2)</td></tr>
+      </table>
+    </div>
+    <div class="card c-coral"><h4>Rule of thumb</h4><p class="small mb0">About log₁₀ cond decimal digits of accuracy are at risk. Float64 carries about 16.</p></div>
+  </div>
+  <aside class="notes"><p>From slide_numbers.py, week 5. A change of 0.0001 in one entry of b moved the solution from (1, 1) to (0, 2). The two columns are nearly parallel: the system cannot tell them apart.</p></aside>
+</section>
+
+<section class="slide" id="squaring" data-lo="LO3 LO5">
+  <div class="kicker">Why QR</div>
+  <h2>Forming XᵀX squares the condition number</h2>
+  <div class="cols cols-2">
+    <div class="stat center"><div class="big">4 × 10⁴</div><div class="lbl">cond(A) for the matrix of the last slide</div></div>
+    <div class="stat center"><div class="big">1.6 × 10⁹</div><div class="lbl">cond(AᵀA): about 9 of 16 digits at risk</div></div>
+  </div>
+  <div class="callout warn mt"><b>The normal equations</b> work with cond(X)²; QR works with cond(X). For well-conditioned data both are fine. As columns approach collinearity, the normal equations fail first.</div>
+  <aside class="notes"><p>From slide_numbers.py, week 5. The lab measures where on the course data the difference shows and where it does not. Do not promise a dramatic failure in float64 at moderate conditioning: there is none.</p></aside>
+</section>
+
+<section class="slide" id="collinear-features" data-lo="LO3">
+  <div class="kicker">In data</div>
+  <h2>Nearly collinear features make coefficients unstable and fitted values stable</h2>
+  <ul class="bullets">
+    <li>Two columns that nearly repeat each other: many β give almost the same X β</li>
+    <li>The <b>fit</b> barely changes when the data is nudged</li>
+    <li>The <b>split</b> of the effect between the two columns can swing widely</li>
+  </ul>
+  <div class="callout note mt"><b>For the report.</b> Do not read the coefficient of one of two nearly collinear features as "the effect" of that feature.</div>
+  <aside class="notes"><p>Example to discuss, not the lab's: house area in square metres and in square feet with a small recording error. The model predicts prices well and cannot say which unit "matters".</p></aside>
+</section>
+
+<section class="slide" id="check-conditioning" data-lo="LO3">
+  <div class="kicker">Checkpoint</div>
+  <h2>Diagnose a fit</h2>
+  <div class="quiz" data-type="single" data-lo="LO3">
+    <p class="lead">A fit has cond(X) = 10⁷. Refitting after rounding the data to four decimals changes two coefficients by 30% and the fitted values by 0.01%. What is the diagnosis?</p>
+    <div class="opts">
+      <div class="opt" data-why="Blames the rounding: rounding only revealed a sensitivity that was already there">The rounding was too coarse; the model is fine</div>
+      <div class="opt" data-why="Reads stable predictions as stable coefficients: the two can differ">The model is stable, since its predictions hardly moved</div>
+      <div class="opt" data-ok>Ill-conditioned: nearly collinear columns; trust the fit, not those two coefficients</div>
+      <div class="opt" data-why="Calls any large condition number rank-deficient: the rank is still full">Rank-deficient: one column must be removed before any fit</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Full rank, high condition number, stable predictions, unstable coefficients: the pattern of near-collinearity.</div>
+  </div>
+  <aside class="notes"><p>Answer C. This is the kind of case the LO3 diagnosis sheet uses: rank, condition number and what moves.</p></aside>
+</section>
+
+<section class="slide" id="scale-and-centre" data-lo="LO3">
+  <div class="kicker">Block C · what helps</div>
+  <h2>Some ill-conditioning is only a matter of units</h2>
+  <table class="t">
+    <tr><th>Cause</th><th>What helps</th></tr>
+    <tr><td>Columns on very different scales (metres and millimetres)</td><td>Divide each column by its standard deviation</td></tr>
+    <tr><td>A large mean far from zero, beside the intercept</td><td>Centre each column</td></tr>
+    <tr class="hl"><td>Columns that nearly repeat each other</td><td>Drop or combine one; scaling does not help</td></tr>
+    <tr><td>Exactly repeated columns</td><td>Drop one: the matrix is rank-deficient</td></tr>
+  </table>
+  <aside class="notes"><p>The lab's stretch measures the first two on its data. Scaling changes the units of the coefficients: say so in the report.</p></aside>
+</section>
+
+<section class="slide" id="three-routes" data-lo="LO5">
+  <div class="kicker">In practice</div>
+  <h2>Prefer QR or the library's least-squares solver; check the condition number</h2>
+  <div class="cols cols-3">
+    <div class="card c-coral"><h4>Normal equations</h4><p class="small mb0">Fast and simple; squares the condition number. Fine when cond(X) is small.</p></div>
+    <div class="card c-teal"><h4>QR</h4><p class="small mb0">The default for full-rank problems: works with cond(X).</p></div>
+    <div class="card c-purple"><h4>SVD (lstsq)</h4><p class="small mb0">Slowest; handles rank deficiency by ignoring tiny singular values. Week 7.</p></div>
+  </div>
+  <aside class="notes"><p>np.linalg.lstsq uses the SVD. SciPy's lstsq offers several drivers; library defaults change, so check the documentation of the version you use.</p></aside>
+</section>
+
+<section class="slide" id="check-route" data-lo="LO5">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which route for this fit?</h2>
+  <div class="quiz" data-type="single" data-lo="LO5">
+    <p class="lead">A feature matrix has cond(X) = 10⁶ in float64. You need coefficients accurate to at least six digits. Which route?</p>
+    <div class="opts">
+      <div class="opt" data-why="Ignores the squaring: cond(XᵀX) = 10¹² leaves about 4 digits">The normal equations: they are fastest</div>
+      <div class="opt" data-ok>QR, which puts about 6 digits at risk and leaves about 10</div>
+      <div class="opt" data-why="Thinks float32 speeds things up harmlessly: it carries only about 7 digits">The normal equations in float32 to save memory</div>
+      <div class="opt" data-why="Inverts XᵀX instead of solving: the conditioning is the same or worse">Invert XᵀX and multiply by Xᵀy</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> QR works with cond(X) = 10⁶: about 16 − 6 = 10 digits remain.</div>
+  </div>
+  <aside class="notes"><p>Answer B. The rule of thumb is rough; the lab measures it.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-5-1" data-auto="lab" data-lab="5.1">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>AI-tutor: hints only. This lab is the evidence for LO5: participants keep the notebook with residuals, condition numbers and the explanation. Watch for: solve_triangular given Q.T @ y with the wrong shape; normal-equation and QR coefficients printed to two decimals, which hides the differences.</p></aside>
+</section>
+
+<section class="slide" id="debrief-agreement" data-lo="LO3 LO5">
+  <div class="kicker">Debrief · lab 5.1</div>
+  <h2>On the course data the two routes agreed to 10⁻¹², because cond(X) was only 2,213</h2>
+  <table class="t">
+    <tr><th>Video minutes = 7.5 × count + noise of</th><th class="num">cond(X)</th><th class="num">Largest |β normal − β QR|</th></tr>
+    <tr><td>0.6 (the data)</td><td class="num">2.23 × 10³</td><td class="num">2.6 × 10⁻¹¹</td></tr>
+    <tr><td>0.06</td><td class="num">2.23 × 10⁴</td><td class="num">4.2 × 10⁻⁹</td></tr>
+    <tr class="hl"><td>0.006</td><td class="num">2.23 × 10⁵</td><td class="num">1.7 × 10⁻⁶</td></tr>
+  </table>
+  <p class="small mt">Each tenfold rise in cond(X) widened the gap about a hundredfold: the square at work.</p>
+  <aside class="notes"><p>From the solution run of lab 5.1. On the original data (seed 101): cond(X) = 2,213 and cond(XᵀX) = 4.897 × 10⁶, exactly the square. Residual norms of all three fits: 5.4228480187.</p></aside>
+</section>
+
+<section class="slide" id="debrief-sensitivity" data-lo="LO3 LO5">
+  <div class="kicker">Debrief · lab 5.1</div>
+  <h2>A 0.01-hour nudge moved the video coefficients, not the fit</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Coefficient</th><th class="num">Fit</th><th class="num">Change after the nudge</th></tr>
+      <tr><td>video_count</td><td class="num">0.4228</td><td class="num">+0.0075</td></tr>
+      <tr><td>video_minutes</td><td class="num">0.0469</td><td class="num">−0.0010</td></tr>
+      <tr><td>quizzes</td><td class="num">0.9294</td><td class="num">−0.0002</td></tr>
+    </table>
+    <div class="card c-coral"><h4>In float32</h4><p class="small mb0">The normal equations gave video_count 0.4308 and video_minutes 0.0458; QR kept 0.4228 and 0.0469. Residual norms differed only in the sixth digit.</p></div>
+  </div>
+  <aside class="notes"><p>From the solution run of lab 5.1. The data were generated with 0.4 per video and 0.05 per minute: the fitted split is close but not exact, which is what nearly collinear columns allow. Practice cases: P1 and P5 well-conditioned, P2 and P4 ill-conditioned (P4 by scale alone), P3 rank-deficient.</p></aside>
 </section>
 
 <section class="slide" id="wrap-up">
   <div class="kicker">Week 5 · wrap-up</div>
   <h2>Three things to keep</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-coral"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-purple"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
+    <div class="card c-teal"><h4>Least squares is projection</h4><p class="small mb0">The residual is orthogonal to the columns: Xᵀ(y − X β) = 0.</p></div>
+    <div class="card c-coral"><h4>XᵀX squares trouble</h4><p class="small mb0">cond(XᵀX) = cond(X)². Use QR or the library's solver.</p></div>
+    <div class="card c-purple"><h4>Fits outlast coefficients</h4><p class="small mb0">Near-collinearity leaves predictions stable and individual coefficients unreliable.</p></div>
   </div>
+  <aside class="notes"><p>Ask each participant to read their three-sentence explanation from step 8 to a neighbour.</p></aside>
 </section>
 
 <section class="slide dark" id="next" data-label="Next">
   <div class="kicker">Next</div>
-  <h2>Week 6: REPLACE: the theme of this unit, in a few words</h2>
-  <p class="lead">REPLACE: what participants prepare before then; unfinished labs can be finished at home</p>
-  <aside class="notes">REPLACE: accounts, installs or reading participants need before the next unit</aside>
+  <h2>Week 6: Eigenvectors and link ranking</h2>
+  <p class="lead">Problem set 5 (60 minutes, AI off for the first attempt): labs/problem-sets/PS5.ipynb.</p>
+  <aside class="notes"><p>The LO3 diagnosis sheet (five numerical cases) is given under supervision; its cases and key are in the trainer pack, not in this repository.</p></aside>
 </section>

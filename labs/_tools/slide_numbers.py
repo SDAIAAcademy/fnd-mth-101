@@ -98,7 +98,19 @@ def week4():
     print("q1", q1, "r12", r12, "w", w.round(4), "r22", np.linalg.norm(w), "q2", (w / np.linalg.norm(w)).round(4))
 
 
-WEEKS = {1: week1, 2: week2, 3: week3, 4: week4}
+def week5():
+    X = np.array([[1.0, -1], [1, 0], [1, 1]])
+    y = np.array([1.0, 1, 4])
+    b = np.linalg.solve(X.T @ X, X.T @ y)
+    r = y - X @ b
+    print("XtX", (X.T @ X).tolist(), "Xty", (X.T @ y).tolist(), "beta", b, "fitted", X @ b, "resid", r, "Xt r", X.T @ r)
+    A = np.array([[1.0, 1], [1, 1.0001]])
+    print("cond A", f"{np.linalg.cond(A):.4g}", "cond AtA", f"{np.linalg.cond(A.T @ A):.4g}")
+    for rhs in ([2.0, 2.0001], [2.0, 2.0002]):
+        print("rhs", rhs, "solution", np.linalg.solve(A, np.array(rhs)).round(4))
+
+
+WEEKS = {1: week1, 2: week2, 3: week3, 4: week4, 5: week5}
 
 if __name__ == "__main__":
     for w in ([int(a) for a in sys.argv[1:]] or sorted(WEEKS)):

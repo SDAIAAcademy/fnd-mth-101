@@ -148,7 +148,30 @@ def _ps4(ns):
     yield "5 gram_schmidt: orthonormal Q, triangular R, Q R = A", _code(ns, "gram_schmidt", gs_ok)
 
 
-CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4}
+# ---------------------------------------------------------------- PS5 least squares and conditioning
+def _ps5(ns):
+    X, y, D = ns["X"], ns["y"], ns["D"]
+    yield "1 hand β by the normal equations agrees with fit_normal(X, y)", _agree(ns, "beta", "fit_normal", X, y)
+    yield "2 hand condition number of D agrees with condition(D)", _agree(ns, "cond_D", "condition", D)
+    yield "3 hand condition number of DᵀD agrees with condition(DᵀD)", _agree(ns, "cond_DtD", "condition", D.T @ D)
+    def qr_ok(f):
+        A = RNG.standard_normal((20, 4))
+        b = RNG.standard_normal(20)
+        return _close(f(A, b), np.linalg.lstsq(A, b, rcond=None)[0])
+    yield "4 fit_qr matches the library's least squares", _code(ns, "fit_qr", qr_ok)
+    def cond_ok(f):
+        A = RNG.standard_normal((8, 3)) @ np.diag([1, 10, 1000])
+        return _close(f(A), np.linalg.cond(A), tol=1e-6)
+    yield "5 condition gives the ratio of the largest to smallest singular value", _code(ns, "condition", cond_ok)
+    def resid_ok(f):
+        A = RNG.standard_normal((15, 3))
+        b = RNG.standard_normal(15)
+        r = np.asarray(f(A, b))
+        return _close(A.T @ r, 0) and _close(r, b - A @ np.linalg.lstsq(A, b, rcond=None)[0])
+    yield "6 residual(A, b) is orthogonal to the columns", _code(ns, "residual", resid_ok)
+
+
+CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4, 5: _ps5}
 
 
 def check(n: int, ns: dict) -> int:

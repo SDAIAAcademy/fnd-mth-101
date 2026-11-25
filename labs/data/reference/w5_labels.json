@@ -1,0 +1,7 @@
+{
+ "P1": "well-conditioned",
+ "P2": "ill-conditioned",
+ "P3": "rank-deficient",
+ "P4": "ill-conditioned",
+ "P5": "well-conditioned"
+}

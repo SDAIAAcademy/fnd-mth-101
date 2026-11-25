@@ -327,7 +327,7 @@
       "deck": "slides/week5.html",
       "sessions": [
         {
-          "title": "Least squares, normal equations and conditioning",
+          "title": "Least squares and conditioning",
           "outcomes": [
             "Fit a line by the normal equations by hand",
             "Fit by QR and compare residuals and coefficients with the normal equations",
@@ -342,32 +342,32 @@
           "lab": {
             "id": "5.1",
             "title": "Least squares by normal equations and by QR",
-            "summary": "Fit hours to complete on nearly collinear course features by the normal equations and by QR, compare residuals and condition numbers, and diagnose five practice cases.",
+            "summary": "Fit course hours on nearly collinear features two ways, compare residuals and condition numbers, and diagnose five cases.",
             "minutes": 105,
             "href": "W5_1.ipynb",
             "steps": [
               {
-                "text": "Set up; a three-point line by hand with the normal equations",
+                "text": "Set up; a line by hand with the normal equations",
                 "minutes": 15
               },
               {
-                "text": "Fit the course data with the normal equations",
+                "text": "Fit with the normal equations",
                 "minutes": 15
               },
               {
-                "text": "Fit with QR, and with the library's solver",
+                "text": "Fit with QR and with the library",
                 "minutes": 15
               },
               {
-                "text": "Condition numbers of X and of X transpose X",
+                "text": "Condition numbers of X and of XᵀX",
                 "minutes": 15
               },
               {
-                "text": "Nudge the data: how far do the coefficients move?",
+                "text": "Nudge the data and watch the coefficients",
                 "minutes": 15
               },
               {
-                "text": "Compare the residuals of the three fits",
+                "text": "Compare the residuals",
                 "minutes": 10
               },
               {
@@ -375,11 +375,11 @@
                 "minutes": 15
               },
               {
-                "text": "Explain the difference in three sentences",
+                "text": "Explain the difference",
                 "minutes": 5
               }
             ],
-            "stretch": "Centre and scale the columns, then measure the condition number again"
+            "stretch": "Centre and scale the columns, then measure again"
           },
           "summary": "Least squares as projection, the normal equations, the QR route, condition numbers and what nearly collinear features do to a fit"
         }
