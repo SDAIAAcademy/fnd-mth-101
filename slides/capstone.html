@@ -32,14 +32,13 @@
   <div class="kicker">How the notebook is scored</div>
   <h2>The rubric</h2>
   <div class="bars">
-    <div class="row"><span>Data matrix stated: source, licence, shape, centring and scaling, each choice justified</span><div class="bar c-teal" style="--w:60%"></div><span class="val">15%</span></div>
-    <div class="row"><span>SVD computed and checked: a small case agrees with hand work; reconstruction error reported by rank</span><div class="bar c-cyan" style="--w:100%"></div><span class="val">25%</span></div>
-    <div class="row"><span>Rank chosen from the error curve and the singular values, with the trade-off stated</span><div class="bar c-coral" style="--w:80%"></div><span class="val">20%</span></div>
-    <div class="row"><span>Leading components interpreted in the dataset's own terms, with their limits</span><div class="bar c-purple" style="--w:100%"></div><span class="val">25%</span></div>
-    <div class="row"><span>Notebook runs from top to bottom; seed, data source and licence stated; outputs honest</span><div class="bar c-amber" style="--w:60%"></div><span class="val">15%</span></div>
+    <div class="row"><span>Data matrix stated and justified: source, licence, shape, centring, scaling</span><div class="bar c-teal" style="--w:60%"></div><span class="val">15%</span></div>
+    <div class="row"><span>SVD checked by hand on a small case; error reported by rank</span><div class="bar c-cyan" style="--w:100%"></div><span class="val">25%</span></div>
+    <div class="row"><span>Rank chosen from the error curve, trade-off stated</span><div class="bar c-coral" style="--w:80%"></div><span class="val">20%</span></div>
+    <div class="row"><span>Leading components interpreted, with their limits</span><div class="bar c-purple" style="--w:100%"></div><span class="val">25%</span></div>
+    <div class="row"><span>Runs top to bottom; seed and source stated; outputs honest</span><div class="bar c-amber" style="--w:60%"></div><span class="val">15%</span></div>
   </div>
-  <div class="callout tip mt"><b>Measured beats claimed.</b> An error by rank you computed is worth more than a rank you asserted.</div>
-  <aside class="notes"><p>Walk through each criterion with one example of full marks. The notebook is 30% of the course; the oral check is scored separately (10%), so nothing in this table is counted twice.</p></aside>
+  <aside class="notes"><p>The full wording of each criterion is in the README and course.json. Walk through each with one example of full marks: an error by rank you computed is worth more than a rank you asserted. The notebook is 30% of the course; the oral check is scored separately (10%), so nothing in this table is counted twice.</p></aside>
 </section>
 
 <section class="slide" id="assessment-overall" data-label="The whole course">
@@ -77,7 +76,7 @@
       <p>By hand: √(2² + 1²) / √(12² + 5² + 2² + 1²) = √5 / √174 ≈ <b>0.170</b></p>
     </div>
     <pre class="code" data-file="numpy"><code class="language-python">s = np.array([12, 5, 2, 1.0])
-np.sqrt(np.sum(s[2:]**2) / np.sum(s**2))
+np.sqrt((s[2:]**2).sum() / (s**2).sum())
 # 0.1695</code></pre>
   </div>
   <aside class="notes"><p>A rehearsal example only; the items used in the checks are different and private. Run it with the room before the first check.</p></aside>
