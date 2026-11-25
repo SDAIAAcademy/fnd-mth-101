@@ -9,7 +9,7 @@
     "en": "Linear Algebra for Machine Learning",
     "ar": "الجبر الخطي لتعلم الآلة"
   },
-  "tagline": "Compute each idea of linear algebra by hand on a small case and in NumPy on real data, from cosine search to least squares, link ranking and low-rank structure",
+  "tagline": "Compute vectors, projections, least squares and the SVD by hand and in array code, and judge when a numerical result can be trusted",
   "description": "Participants compute each idea of linear algebra twice: by hand on small cases and in array code on real data. They treat data as vectors, matrices as transformations, least squares as projection, and eigen and singular value decompositions as ways to find structure. Labs use public embeddings and images and a synthetic link graph. The capstone is a low-rank analysis of a public dataset, defended orally.",
   "track": "foundations",
   "level": 100,
@@ -62,7 +62,7 @@
   ],
   "case_study": {
     "name": "The online learning platform (fictional)",
-    "summary": "An unnamed online platform of short courses wants better search, cheaper scoring, honest fits and a fair ranking of its help centre. Its synthetic data (60 help articles, 400 learners, 120 courses, a 40-page link graph, 3,596 ratings) is generated with a fixed seed; the labs also use public GloVe word vectors, the handwritten digits bundled with scikit-learn, a CC0 test image bundled with scikit-image: the word vectors are downloaded at run time and nothing public is copied into the course."
+    "summary": "An unnamed online platform of short courses wants better search, cheaper scoring, honest fits and a fair ranking of its help centre. Its synthetic data (60 help articles, 400 learners, 120 courses, a 40-page link graph, 3,596 ratings) is generated with a fixed seed. The labs also use public GloVe word vectors, downloaded at run time, and two datasets bundled with the libraries: the handwritten digits in scikit-learn and a CC0 test image in scikit-image. Nothing public is copied into the course."
   },
   "format": "extended",
   "format_note": "Extended: 8 weeks part-time, one session and one lab a week, weekly graded problem sets and a capstone",
@@ -647,5 +647,49 @@
     "sessions_per_day": 1,
     "session_lab": true,
     "lab_minutes": 105
-  }
+  },
+  "sources": [
+    {
+      "group": "Data",
+      "items": [
+        {
+          "title": "GloVe: Global Vectors for Word Representation (Stanford NLP), the 6B 50-dimensional vectors, Public Domain Dedication and License",
+          "url": "https://github.com/stanfordnlp/GloVe"
+        },
+        {
+          "title": "gensim-data: the release the labs download the GloVe vectors from",
+          "url": "https://github.com/piskvorky/gensim-data"
+        },
+        {
+          "title": "scikit-learn: load_digits, the bundled handwritten digits",
+          "url": "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html"
+        },
+        {
+          "title": "UCI Machine Learning Repository: Optical Recognition of Handwritten Digits (CC BY 4.0)",
+          "url": "https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits"
+        },
+        {
+          "title": "scikit-image: the bundled test images (skimage.data.brick, CC0)",
+          "url": "https://scikit-image.org/docs/stable/api/skimage.data.html"
+        }
+      ]
+    },
+    {
+      "group": "Methods and tools",
+      "items": [
+        {
+          "title": "NumPy: linear algebra (numpy.linalg)",
+          "url": "https://numpy.org/doc/stable/reference/routines.linalg.html"
+        },
+        {
+          "title": "SciPy: linear algebra (scipy.linalg)",
+          "url": "https://docs.scipy.org/doc/scipy/reference/linalg.html"
+        },
+        {
+          "title": "Hu et al. (2021), LoRA: Low-Rank Adaptation of Large Language Models",
+          "url": "https://arxiv.org/abs/2106.09685"
+        }
+      ]
+    }
+  ]
 }
