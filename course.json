@@ -1,0 +1,338 @@
+{
+  "$schema": "https://sdaiaacademy.github.io/engine/schemas/course.schema.json",
+  "engine": "1",
+  "id": "fnd-mth-101",
+  "code": "FND-MTH-101",
+  "version": "2027.1.0",
+  "lang": "en",
+  "title": {
+    "en": "Linear Algebra for Machine Learning",
+    "ar": "الجبر الخطي لتعلم الآلة"
+  },
+  "tagline": "REPLACE: one line under the title: what participants can do after the course",
+  "description": "Participants compute each idea of linear algebra twice: by hand on small cases and in array code on real data. They treat data as vectors, matrices as transformations, least squares as projection, and eigen and singular value decompositions as ways to find structure. Labs use public embeddings and images and a synthetic link graph. The capstone is a low-rank analysis of a public dataset, defended orally.",
+  "track": "foundations",
+  "level": 100,
+  "audience": "Beginners. Career changers and non-computing graduates closing bridging gaps before advanced study, and computing graduates refreshing the mathematics behind models; a placement test lets participants skip any course whose content they already command.",
+  "prerequisites": [
+    "School algebra: solving equations and reading graphs of functions",
+    "Writes short Python programs with lists, loops and functions (FND-PRG-101 or equivalent)"
+  ],
+  "site": {
+    "url": "https://sdaiaacademy.github.io/fnd-mth-101/",
+    "repo": "SDAIAAcademy/fnd-mth-101"
+  },
+  "outcomes": [
+    {
+      "id": "LO1",
+      "text": "Explain the geometric meaning of vectors, dot products, norms, projections and matrix products, given two- and three-dimensional examples",
+      "level": "Awareness",
+      "evidence": "supervised AI-off test, at least 70% correct"
+    },
+    {
+      "id": "LO2",
+      "text": "Describe what rank, eigenvalues and singular values reveal about a matrix and name one machine learning use of each, given covariance and data matrices",
+      "level": "Awareness",
+      "evidence": "written answers marked against a rubric"
+    },
+    {
+      "id": "LO3",
+      "text": "Identify ill-conditioned or rank-deficient systems and explain their effect on a least-squares fit, given five numerical cases",
+      "level": "Awareness",
+      "evidence": "a diagnosis sheet correct on four of five"
+    },
+    {
+      "id": "LO4",
+      "text": "Compute products, inverses, projections and decompositions by hand for small matrices and in array code for large ones, given the weekly problem sets",
+      "level": "Applied",
+      "evidence": "notebooks in which hand and code results agree within tolerance"
+    },
+    {
+      "id": "LO5",
+      "text": "Implement least squares through QR factorisation and compare it with the normal equations, given synthetic data with nearly collinear features",
+      "level": "Applied",
+      "evidence": "a notebook comparing residuals and condition numbers, with the difference explained"
+    },
+    {
+      "id": "LO6",
+      "text": "Apply the singular value decomposition to build low-rank approximations and principal components, given a public image, ratings or embedding matrix",
+      "level": "Applied",
+      "evidence": "the capstone notebook with error by rank and an interpretation of the leading components"
+    }
+  ],
+  "case_study": {
+    "name": "REPLACE: the name of the fictional organisation every lab works on",
+    "summary": "REPLACE: two sentences on the case study and its synthetic data"
+  },
+  "format": "extended",
+  "format_note": "Extended: 8 weeks part-time, one session and one lab a week, weekly graded problem sets and a capstone",
+  "hours": {
+    "instruction": 14,
+    "lab": 14,
+    "guided_self_study": 8,
+    "assessment": 3,
+    "capstone": 6
+  },
+  "unit": "week",
+  "days": [
+    {
+      "id": "week1",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week1.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "1.1",
+            "title": "REPLACE: what participants build in lab 1.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W1_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "week2",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week2.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "2.1",
+            "title": "REPLACE: what participants build in lab 2.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W2_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "week3",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week3.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "3.1",
+            "title": "REPLACE: what participants build in lab 3.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W3_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "week4",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week4.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "4.1",
+            "title": "REPLACE: what participants build in lab 4.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W4_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "week5",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week5.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "5.1",
+            "title": "REPLACE: what participants build in lab 5.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W5_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "week6",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week6.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "6.1",
+            "title": "REPLACE: what participants build in lab 6.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W6_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "week7",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week7.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "7.1",
+            "title": "REPLACE: what participants build in lab 7.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W7_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "week8",
+      "kind": "day",
+      "title": "REPLACE: the theme of this unit, in a few words",
+      "deck": "slides/week8.html",
+      "sessions": [
+        {
+          "title": "REPLACE: the title of Session 1",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+          ],
+          "lo": [],
+          "minutes": 210,
+          "lab": {
+            "id": "8.1",
+            "title": "REPLACE: what participants build in lab 8.1",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "minutes": 105,
+            "href": "W8_1.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "capstone",
+      "kind": "capstone",
+      "title": "Capstone project presentations",
+      "deck": "slides/capstone.html",
+      "subtitle": "REPLACE: the catalog gives 10 minutes for each presentation and nothing about questions; decide whether the questions are inside those minutes, set capstone.talk_minutes and capstone.qa_minutes in course.json and the timers of the now-presenting slide, and remove this line"
+    }
+  ],
+  "capstone": {
+    "summary": "A low-rank analysis of a public dataset of the participant's choice, submitted as a notebook and defended in a ten-minute oral check in which the participant reworks one step with new numbers",
+    "submission": "REPLACE: what participants submit and how: a public repository link, or a shared folder for a course without code",
+    "talk_minutes": 10,
+    "rubric": [
+      {
+        "criterion": "REPLACE: rubric criterion 1 and its weight (the weights add up to 100)",
+        "weight": 25
+      },
+      {
+        "criterion": "REPLACE: rubric criterion 2 and its weight (the weights add up to 100)",
+        "weight": 25
+      },
+      {
+        "criterion": "REPLACE: rubric criterion 3 and its weight (the weights add up to 100)",
+        "weight": 20
+      },
+      {
+        "criterion": "REPLACE: rubric criterion 4 and its weight (the weights add up to 100)",
+        "weight": 20
+      },
+      {
+        "criterion": "REPLACE: rubric criterion 5 and its weight (the weights add up to 100)",
+        "weight": 10
+      }
+    ]
+  },
+  "labs": {
+    "kind": "notebooks",
+    "base": "labs/"
+  },
+  "tools": [
+    {
+      "slot": "Array computing",
+      "examples": [
+        "NumPy",
+        "SciPy",
+        "JAX"
+      ]
+    },
+    {
+      "slot": "Notebook environment",
+      "examples": [
+        "JupyterLab",
+        "marimo",
+        "a free hosted notebook service"
+      ]
+    },
+    {
+      "slot": "Problem-set checking",
+      "examples": [
+        "nbgrader",
+        "pytest"
+      ]
+    },
+    {
+      "slot": "Hint-only tutor",
+      "examples": [
+        "an open-weight model in tutor mode",
+        "an approved assistant with a tutor instruction"
+      ]
+    }
+  ],
+  "checks": {
+    "sessions_per_day": 1,
+    "session_lab": true,
+    "lab_minutes": 105
+  }
+}
