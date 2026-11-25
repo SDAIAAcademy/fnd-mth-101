@@ -76,7 +76,8 @@
       <p>By hand: √(2² + 1²) / √(12² + 5² + 2² + 1²) = √5 / √174 ≈ <b>0.170</b></p>
     </div>
     <pre class="code" data-file="numpy"><code class="language-python">s = np.array([12, 5, 2, 1.0])
-np.sqrt((s[2:]**2).sum() / (s**2).sum())
+tail = (s[2:]**2).sum()
+np.sqrt(tail / (s**2).sum())
 # 0.1695</code></pre>
   </div>
   <aside class="notes"><p>A rehearsal example only; the items used in the checks are different and private. Run it with the room before the first check.</p></aside>
