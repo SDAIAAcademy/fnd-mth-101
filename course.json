@@ -204,7 +204,7 @@
       "deck": "slides/week3.html",
       "sessions": [
         {
-          "title": "Span, independence, rank and linear systems",
+          "title": "Span, rank and linear systems",
           "outcomes": [
             "Decide whether a set of vectors is independent and state the rank of a matrix",
             "Solve a three-by-three system by elimination by hand and with a solver",
@@ -219,12 +219,12 @@
           "lab": {
             "id": "3.1",
             "title": "Rank and linear systems on a feature table",
-            "summary": "Solve a small system by elimination, find the redundant column of the learner feature table from its rank, and compare solving with inverting.",
+            "summary": "Solve a small system by elimination, find the repeated column of the learner table from its rank, and compare solving with inverting.",
             "minutes": 105,
             "href": "W3_1.ipynb",
             "steps": [
               {
-                "text": "Set up; elimination by hand on a three-by-three system, then a solver",
+                "text": "Set up; elimination by hand, then a solver",
                 "minutes": 20
               },
               {
@@ -232,15 +232,15 @@
                 "minutes": 15
               },
               {
-                "text": "The rank of the feature table, and the column it repeats",
+                "text": "The rank of the table, and the column it repeats",
                 "minutes": 20
               },
               {
-                "text": "What the repeated column does to a solve and an inverse",
+                "text": "What the repeated column does to a solve",
                 "minutes": 15
               },
               {
-                "text": "A basis: drop the column and check the rank",
+                "text": "A basis: drop the column, check the rank",
                 "minutes": 10
               },
               {
@@ -248,11 +248,11 @@
                 "minutes": 15
               },
               {
-                "text": "Record which columns to keep, and why",
+                "text": "Record which columns to keep",
                 "minutes": 10
               }
             ],
-            "stretch": "Find the null space of the full table and read the repeated column off it"
+            "stretch": "Read the repeated column off the null space of the full table"
           },
           "summary": "Span, independence, basis and rank, and solving linear systems by elimination, with the inverse and its cost"
         }

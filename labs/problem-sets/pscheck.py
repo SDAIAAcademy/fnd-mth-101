@@ -101,7 +101,31 @@ def _ps2(ns):
     yield "6 chain_cost counts a left-to-right chain", _code(ns, "chain_cost", chain_ok)
 
 
-CHECKS = {1: _ps1, 2: _ps2}
+# ---------------------------------------------------------------- PS3 elimination, inverse, rank
+def _ps3(ns):
+    M, b, R = ns["M"], ns["b"], ns["R"]
+    yield "1 hand inverse of M agrees with inverse2(M)", _agree(ns, "M_inv", "inverse2", M)
+    yield "2 hand solution of M x = b agrees with solve(M, b)", _agree(ns, "x", "solve", M, b)
+    yield "3 hand rank of R agrees with rank(R)", _agree(ns, "rank_R", "rank", R)
+    def inv_ok(f):
+        for _ in range(3):
+            A = RNG.standard_normal((2, 2)) + 2 * np.eye(2)
+            if not _close(np.asarray(f(A)) @ A, np.eye(2)):
+                return False
+        return True
+    yield "4 inverse2 gives M⁻¹ M = I on random matrices", _code(ns, "inverse2", inv_ok)
+    def solve_ok(f):
+        A = RNG.standard_normal((5, 5)) + 3 * np.eye(5)
+        rhs = RNG.standard_normal(5)
+        return _close(A @ np.asarray(f(A, rhs)), rhs)
+    yield "5 solve gives A x = b on a random 5 x 5 system", _code(ns, "solve", solve_ok)
+    def rank_ok(f):
+        L = RNG.standard_normal((6, 2)) @ RNG.standard_normal((2, 4))
+        return int(f(L)) == 2 and int(f(np.eye(3))) == 3
+    yield "6 rank finds the rank of a random rank-2 matrix", _code(ns, "rank", rank_ok)
+
+
+CHECKS = {1: _ps1, 2: _ps2, 3: _ps3}
 
 
 def check(n: int, ns: dict) -> int:

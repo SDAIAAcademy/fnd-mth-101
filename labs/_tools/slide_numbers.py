@@ -65,7 +65,25 @@ def week2():
         print("n", n, "GFLOPs", 2 * n**3 / 1e9, "MB per matrix", 8 * n * n / 1e6)
 
 
-WEEKS = {1: week1, 2: week2}
+def week3():
+    A = np.array([[2.0, 1, 1], [4, 3, 3], [8, 7, 9]])
+    b = np.array([4.0, 10, 24])
+    print("3x3 solution", np.linalg.solve(A, b))
+    M = A.copy(); bb = b.copy()
+    M[1] -= 2 * M[0]; bb[1] -= 2 * bb[0]
+    M[2] -= 4 * M[0]; bb[2] -= 4 * bb[0]
+    print("after step 1", M.tolist(), bb.tolist())
+    f = M[2, 1] / M[1, 1]
+    M[2] -= f * M[1]; bb[2] -= f * bb[1]
+    print("after step 2", M.tolist(), bb.tolist())
+    P = np.array([[4.0, 7], [2, 6]])
+    print("inverse of [[4,7],[2,6]]", np.linalg.inv(P).round(4).tolist(), "det", round(np.linalg.det(P), 6))
+    T = np.array([[2.0, 120, 8], [3, 180, 10], [1, 60, 5], [4, 240, 12]])
+    print("course table hours, minutes, lessons rank", np.linalg.matrix_rank(T), "sv", np.linalg.svd(T, compute_uv=False).round(4))
+    print("rank of (1,2),(2,4)", np.linalg.matrix_rank(np.array([[1.0, 2], [2, 4]])))
+
+
+WEEKS = {1: week1, 2: week2, 3: week3}
 
 if __name__ == "__main__":
     for w in ([int(a) for a in sys.argv[1:]] or sorted(WEEKS)):
