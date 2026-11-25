@@ -83,7 +83,22 @@ def week3():
     print("rank of (1,2),(2,4)", np.linalg.matrix_rank(np.array([[1.0, 2], [2, 4]])))
 
 
-WEEKS = {1: week1, 2: week2, 3: week3}
+def week4():
+    a, b = np.array([3.0, 1]), np.array([2.0, 4])
+    p = (b @ a) / (a @ a) * a
+    print("projection", p, "residual", b - p, "dot", (b - p) @ a)
+    A = np.array([[1.0, 0], [0, 1], [1, 1]])
+    P = A @ np.linalg.solve(A.T @ A, A.T)
+    v = np.array([1.0, 2, 0])
+    print("P", P.round(4).tolist(), "Pv", (P @ v).round(4), "resid", (v - P @ v).round(4))
+    M = np.array([[3.0, 1], [4, 0]])
+    q1 = M[:, 0] / np.linalg.norm(M[:, 0])
+    r12 = q1 @ M[:, 1]
+    w = M[:, 1] - r12 * q1
+    print("q1", q1, "r12", r12, "w", w.round(4), "r22", np.linalg.norm(w), "q2", (w / np.linalg.norm(w)).round(4))
+
+
+WEEKS = {1: week1, 2: week2, 3: week3, 4: week4}
 
 if __name__ == "__main__":
     for w in ([int(a) for a in sys.argv[1:]] or sorted(WEEKS)):

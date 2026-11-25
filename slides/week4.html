@@ -1,56 +1,213 @@
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">REPLACE: welcome; introduce yourself; one question to the room that calibrates the pace; the rhythm of the day</aside>
+  <aside class="notes"><p>Collect PS3 difficulties: usually the pivot tolerance in rank(A). This week is geometry again: the nearest point, and a basis that makes it easy to find. The first supervised test follows this week.</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-auto="agenda"></section>
+
+<section class="slide" id="review-week3" data-lo="LO2 LO3">
+  <div class="kicker">Review · week 3</div>
+  <h2>Reading a rank</h2>
+  <div class="quiz" data-type="single" data-lo="LO2">
+    <p class="lead">A 1,000 × 6 table of features has rank 5. What can you conclude?</p>
+    <div class="opts">
+      <div class="opt" data-why="Thinks rank counts rows: it is at most the smaller of rows and columns, here 6">Five of the 1,000 rows are independent, the rest repeat them</div>
+      <div class="opt" data-why="Thinks a lower rank means a missing value: rank is about combinations, not gaps">One column has missing values</div>
+      <div class="opt" data-ok>One column is a combination of the others; a model cannot separate all six effects</div>
+      <div class="opt" data-why="Thinks the last column is the culprit: any one of the dependent columns could be removed">The sixth column must be deleted</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Six columns but only five independent directions: some non-zero combination of columns is zero.</div>
+  </div>
+  <aside class="notes"><p>Answer C. Ask which column to drop: any one in the dependent combination; the choice is about meaning, not mathematics.</p></aside>
+</section>
 
 <!-- Session 1 -->
 
 <section class="slide section" id="s1" data-auto="section" data-session="1"></section>
 
-<section class="slide" id="s1-idea">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
+<section class="slide" id="nearest-point" data-lo="LO1">
+  <div class="kicker">Block A · projection onto a line</div>
+  <h2>The projection is the nearest point on the line, and the residual meets it at a right angle</h2>
   <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+    <div>
+      <p><b>p = (b · a / a · a) a</b></p>
+      <p>b = (2, 4), a = (3, 1): b · a = 10, a · a = 10, so <b>p = (3, 1)</b>.</p>
+      <p>Residual b − p = (−1, 3), and (−1, 3) · (3, 1) = 0.</p>
+    </div>
+    <div class="card c-teal"><h4>Why a right angle</h4><p class="small mb0">If the residual leaned along the line, sliding the point that way would bring it closer. The nearest point leaves only the orthogonal part.</p></div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <aside class="notes"><p>From slide_numbers.py, week 4. Draw b, the line, p and the residual. The coefficient b · a / a · a is the "shadow length" in units of a.</p></aside>
 </section>
 
-<section class="slide" id="s1-steps">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" id="projection-onto-plane" data-lo="LO1 LO4">
+  <div class="kicker">Onto a subspace</div>
+  <h2>Onto the span of several columns, the projection matrix is A (AᵀA)⁻¹ Aᵀ</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>A with columns (1, 0, 1) and (0, 1, 1); v = (1, 2, 0)</p>
+      <p>P v = <b>(0, 1, 1)</b>, residual (1, 1, −1)</p>
+      <p class="small">The residual is orthogonal to both columns: (1, 1, −1) · (1, 0, 1) = 0 and · (0, 1, 1) = 0.</p>
+    </div>
+    <ul class="bullets">
+      <li>Condition: <b>Aᵀ(v − P v) = 0</b>, the normal equations</li>
+      <li>Compute it with a solve, never an inverse</li>
+    </ul>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <aside class="notes"><p>From slide_numbers.py, week 4. Derive the formula from the orthogonality condition: Aᵀ(v − A c) = 0 gives AᵀA c = Aᵀ v. Week 5 meets the same equations as least squares.</p></aside>
+</section>
+
+<section class="slide" id="projection-properties" data-lo="LO1">
+  <div class="kicker">Two properties</div>
+  <h2>Projecting twice changes nothing, and a projection matrix is symmetric</h2>
+  <div class="cols cols-2">
+    <div class="card c-teal"><h4>P² = P</h4><p class="small mb0">A point already on the subspace stays where it is.</p></div>
+    <div class="card c-cyan"><h4>Pᵀ = P</h4><p class="small mb0">An orthogonal projection treats both sides alike. A projection that is not symmetric projects at a slant.</p></div>
+  </div>
+  <div class="callout tip mt"><b>Use them as checks.</b> If your P fails either, the code is wrong. The lab and the problem set test both.</div>
+  <aside class="notes"><p>Ask: what is P for a projection onto the whole space? The identity. Onto a single unit vector q? q qᵀ.</p></aside>
+</section>
+
+<section class="slide" id="check-projection" data-lo="LO1">
+  <div class="kicker">Checkpoint</div>
+  <h2>Where does the projection land?</h2>
+  <div class="quiz" data-type="single" data-lo="LO1">
+    <p class="lead">Project b = (4, 2) onto the line through a = (1, 0). Which is the projection, and why?</p>
+    <div class="opts">
+      <div class="opt" data-why="Projects onto the other axis: the line through (1, 0) is the first axis">(0, 2), the part along the second axis</div>
+      <div class="opt" data-ok>(4, 0), since b · a / a · a = 4</div>
+      <div class="opt" data-why="Returns the coefficient as if it were the point: 4 is a length along a, the point is 4a">(4), the number b · a</div>
+      <div class="opt" data-why="Normalises b instead of projecting it: the projection keeps the shadow's length">(0.894, 0), the unit vector of b on the axis</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> b · a = 4 and a · a = 1, so p = 4a = (4, 0); the residual (0, 2) is orthogonal to the line.</div>
+  </div>
+  <aside class="notes"><p>Answer B. Distinguish the coefficient (a number) from the projection (a vector) explicitly.</p></aside>
+</section>
+
+<section class="slide" id="orthonormal-bases" data-lo="LO1 LO4">
+  <div class="kicker">Block B · orthonormal bases</div>
+  <h2>With an orthonormal basis, projecting is just dot products</h2>
+  <ul class="bullets">
+    <li><b>Orthonormal</b>: unit length, pairwise orthogonal: QᵀQ = I</li>
+    <li>Projection onto their span: <b>P = Q Qᵀ</b>, no solve needed</li>
+    <li>The coordinates of v are simply the dot products qᵢ · v</li>
+  </ul>
+  <div class="callout note mt"><b>The plan.</b> Turn any independent columns into orthonormal ones with the same span. That is Gram-Schmidt, and the bookkeeping is the QR factorisation.</div>
+  <aside class="notes"><p>Compare: A(AᵀA)⁻¹Aᵀ needs a solve; Q Qᵀ needs only products. QᵀQ = I is what makes the solve disappear.</p></aside>
+</section>
+
+<section class="slide" id="gram-schmidt" data-lo="LO4">
+  <div class="kicker">Gram-Schmidt</div>
+  <h2>Gram-Schmidt removes from each column what earlier columns already explain</h2>
+  <table class="t small">
+    <tr><th>Columns (3, 4) and (1, 0)</th><th>Result</th></tr>
+    <tr><td>q₁ = (3, 4) / 5</td><td>(0.6, 0.8)</td></tr>
+    <tr><td>Coefficient r₁₂ = q₁ · (1, 0)</td><td>0.6</td></tr>
+    <tr><td>What is left: (1, 0) − 0.6 q₁</td><td>(0.64, −0.48), length 0.8</td></tr>
+    <tr class="hl"><td>q₂ = what is left / 0.8</td><td>(0.8, −0.6)</td></tr>
+  </table>
+  <aside class="notes"><p>From slide_numbers.py, week 4. Check q₁ · q₂ = 0.48 − 0.48 = 0 with the room. Each step is a week-4 projection: subtract the shadow on what you have, keep the rest.</p></aside>
+</section>
+
+<section class="slide" id="qr" data-lo="LO4">
+  <div class="kicker">The factorisation</div>
+  <h2>A = Q R: Q holds the orthonormal columns, R the coefficients</h2>
+  <div class="cols cols-2">
+    <div>
+      <p>For the example: <b>R = [[5, 0.6], [0, 0.8]]</b></p>
+      <p>Column 1 of A = 5 q₁; column 2 = 0.6 q₁ + 0.8 q₂.</p>
+    </div>
+    <pre class="code" data-file="numpy"><code class="language-python">Q, R = np.linalg.qr(A)
+np.allclose(Q.T @ Q, np.eye(2))   # True
+np.allclose(Q @ R, A)             # True</code></pre>
+  </div>
+  <div class="callout note mt"><b>Signs.</b> A library may return −q and −r for some columns. Both are correct: QR is unique only up to those signs.</div>
+  <aside class="notes"><p>R is upper triangular because column j uses only q₁ to qⱼ. The library uses Householder reflections, not Gram-Schmidt: same Q and R up to signs, better rounding.</p></aside>
+</section>
+
+<section class="slide" id="check-qr" data-lo="LO4">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which check proves your QR is right?</h2>
+  <div class="quiz" data-type="single" data-lo="LO4">
+    <p class="lead">Your function returns Q (5 × 3) and R (3 × 3) for a 5 × 3 matrix A. Which set of checks is enough?</p>
+    <div class="opts">
+      <div class="opt" data-why="Checks only one of the two properties: an orthonormal Q of the wrong span passes">QᵀQ = I</div>
+      <div class="opt" data-why="Checks the product only: Q R = A also holds for Q = A and R = I">Q R = A</div>
+      <div class="opt" data-why="Compares with the library entry by entry: correct factorisations can differ in sign">Q equals np.linalg.qr(A)[0] entry by entry</div>
+      <div class="opt" data-ok>QᵀQ = I, Q R = A and R upper triangular</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Together they define a QR factorisation; each alone admits wrong answers.</div>
+  </div>
+  <aside class="notes"><p>Answer D. This is the property check the problem-set checker uses: it never needs your numbers to equal the library's.</p></aside>
+</section>
+
+<section class="slide" id="rounding-in-gs" data-lo="LO3 LO4">
+  <div class="kicker">Block C · rounding</div>
+  <h2>When columns are nearly parallel, subtracting shadows leaves mostly rounding</h2>
+  <ul class="bullets">
+    <li>Two columns at a tiny angle: almost all of the second is its shadow on the first</li>
+    <li>What is left is small, and rounding errors are a large part of it</li>
+    <li><b>Classical</b> Gram-Schmidt projects the original column each time; <b>modified</b> projects the updated one, and keeps more accuracy</li>
+    <li>Libraries use Householder reflections, which keep Q orthonormal to rounding level</li>
+  </ul>
+  <aside class="notes"><p>Do not give the lab's table now. Ask the room to predict which of the three loses orthogonality first as the columns become nearly parallel.</p></aside>
+</section>
+
+<section class="slide" id="why-orthogonality-matters" data-lo="LO3">
+  <div class="kicker">Why it matters</div>
+  <h2>A Q that is not orthonormal gives wrong projections without any error message</h2>
+  <div class="cols cols-2">
+    <div class="card c-coral"><h4>Silent failure</h4><p class="small mb0">Q Qᵀ v is a projection only if QᵀQ = I. Code that skips the check returns numbers that look fine.</p></div>
+    <div class="card c-teal"><h4>The habit</h4><p class="small mb0">After any factorisation, measure max |QᵀQ − I| and max |QR − A|. Both should be near 10⁻¹⁵ in float64.</p></div>
+  </div>
+  <aside class="notes"><p>Week 5 fits least squares through QR. Nearly collinear features are the data version of nearly parallel columns.</p></aside>
+</section>
+
+<section class="slide" id="check-rounding" data-lo="LO3">
+  <div class="kicker">Checkpoint</div>
+  <h2>A measured loss of orthogonality</h2>
+  <div class="quiz" data-type="single" data-lo="LO3">
+    <p class="lead">For a QR of a feature matrix you measure max |QᵀQ − I| = 0.02. What is the soundest next step?</p>
+    <div class="opts">
+      <div class="opt" data-ok>Suspect nearly dependent columns, check the condition number, and use a Householder QR</div>
+      <div class="opt" data-why="Treats 0.02 as negligible: in float64 a sound Q is within about 1e-15">Accept it: 0.02 is a small number</div>
+      <div class="opt" data-why="Blames the size of the data: orthogonality loss comes from the angles between columns">Use fewer rows so the factorisation is faster and more accurate</div>
+      <div class="opt" data-why="Thinks normalising fixes orthogonality: unit length says nothing about the angles between columns">Normalise each column of Q again to length 1</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> A loss of 0.02 is about 10¹³ times rounding level: the columns are nearly dependent and the method is classical.</div>
+  </div>
+  <aside class="notes"><p>Answer A. Option D is a common reflex: it fixes lengths, not angles.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-4-1" data-auto="lab" data-lab="4.1">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>AI-tutor: hints only. Watch for: R[i, j] computed from the updated vector in the classical version (that is the modified method), and projection matrices built with inv. In step 3 the share kept looks high: the slides of week 5 explain why a fit without an intercept flatters itself.</p></aside>
+</section>
+
+<section class="slide" id="debrief-orthogonality" data-lo="LO3 LO4">
+  <div class="kicker">Debrief · lab 4.1</div>
+  <h2>Classical Gram-Schmidt lost half its orthogonality at a condition number of 10⁸</h2>
+  <table class="t">
+    <tr><th class="num">ε</th><th class="num">Condition number</th><th class="num">Classical</th><th class="num">Modified</th><th class="num">Householder</th></tr>
+    <tr><td class="num">10⁻⁴</td><td class="num">1.73 × 10⁴</td><td class="num">2.3 × 10⁻⁹</td><td class="num">2.8 × 10⁻¹³</td><td class="num">2.2 × 10⁻¹⁶</td></tr>
+    <tr><td class="num">10⁻⁷</td><td class="num">1.73 × 10⁷</td><td class="num">1.3 × 10⁻²</td><td class="num">1.6 × 10⁻⁹</td><td class="num">4.4 × 10⁻¹⁶</td></tr>
+    <tr class="hl"><td class="num">10⁻⁸</td><td class="num">1.73 × 10⁸</td><td class="num">5.0 × 10⁻¹</td><td class="num">7.1 × 10⁻⁹</td><td class="num">2.2 × 10⁻¹⁶</td></tr>
+  </table>
+  <p class="small mt">Loss of orthogonality, max |QᵀQ − I|. On the learner columns (condition number about 553) all three stayed near 10⁻¹⁴.</p>
+  <aside class="notes"><p>From the solution run of lab 4.1. Projecting weekly minutes onto quizzes and posts kept 92.5% of ‖y‖², with the residual orthogonal to both columns to 3 × 10⁻¹¹. Ask: why is 92.5% not a good fit? There is no intercept; week 5.</p></aside>
 </section>
 
 <section class="slide" id="wrap-up">
   <div class="kicker">Week 4 · wrap-up</div>
   <h2>Three things to keep</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-coral"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-purple"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
+    <div class="card c-teal"><h4>Nearest means orthogonal</h4><p class="small mb0">The residual of a projection is orthogonal to the subspace: Aᵀ(v − P v) = 0.</p></div>
+    <div class="card c-coral"><h4>QR is projection bookkeeping</h4><p class="small mb0">Q spans the same space with orthonormal columns; R records how to rebuild A.</p></div>
+    <div class="card c-purple"><h4>Measure the loss</h4><p class="small mb0">Check max |QᵀQ − I| after every factorisation; prefer Householder.</p></div>
   </div>
+  <aside class="notes"><p>Link forward: least squares is a projection of the targets onto the span of the features.</p></aside>
 </section>
 
 <section class="slide dark" id="next" data-label="Next">
   <div class="kicker">Next</div>
-  <h2>Week 5: REPLACE: the theme of this unit, in a few words</h2>
-  <p class="lead">REPLACE: what participants prepare before then; unfinished labs can be finished at home</p>
-  <aside class="notes">REPLACE: accounts, installs or reading participants need before the next unit</aside>
+  <h2>Week 5: Least squares and conditioning</h2>
+  <p class="lead">Problem set 4 (60 minutes, AI off for the first attempt): labs/problem-sets/PS4.ipynb. Then the first supervised test, on weeks 1 to 4.</p>
+  <aside class="notes"><p>The first supervised test: 90 minutes, AI off, 45 on paper and 45 at the keyboard. Bring a pen; no notes. Practice questions are on the course's practice page.</p></aside>
 </section>

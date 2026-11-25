@@ -125,7 +125,30 @@ def _ps3(ns):
     yield "6 rank finds the rank of a random rank-2 matrix", _code(ns, "rank", rank_ok)
 
 
-CHECKS = {1: _ps1, 2: _ps2, 3: _ps3}
+# ---------------------------------------------------------------- PS4 projections and Gram-Schmidt
+def _ps4(ns):
+    a, b, G = ns["a"], ns["b"], ns["G"]
+    yield "1 hand projection of b on a agrees with project_line(b, a)", _agree(ns, "proj_ba", "project_line", b, a)
+    yield "2 hand second column of Q agrees with gram_schmidt(G)", _agree(
+        ns, "q2", "gram_schmidt", G, transform=lambda QR: np.asarray(QR[0])[:, 1])
+    def pl_ok(f):
+        u, w = RNG.standard_normal(4), RNG.standard_normal(4)
+        pr = np.asarray(f(w, u))
+        return _close((w - pr) @ u, 0) and _close(pr, (w @ u) / (u @ u) * u)
+    yield "3 project_line leaves a residual orthogonal to the line", _code(ns, "project_line", pl_ok)
+    def pm_ok(f):
+        A = RNG.standard_normal((6, 2))
+        P = np.asarray(f(A))
+        return _close(P @ P, P) and _close(P, P.T) and _close(P @ A, A)
+    yield "4 projection_matrix: P squared is P, P symmetric, P A = A", _code(ns, "projection_matrix", pm_ok)
+    def gs_ok(f):
+        A = RNG.standard_normal((7, 4))
+        Q, R = (np.asarray(x) for x in f(A))
+        return _close(Q.T @ Q, np.eye(4)) and _close(Q @ R, A) and _close(np.tril(R, -1), 0)
+    yield "5 gram_schmidt: orthonormal Q, triangular R, Q R = A", _code(ns, "gram_schmidt", gs_ok)
+
+
+CHECKS = {1: _ps1, 2: _ps2, 3: _ps3, 4: _ps4}
 
 
 def check(n: int, ns: dict) -> int:

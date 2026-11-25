@@ -266,7 +266,7 @@
       "deck": "slides/week4.html",
       "sessions": [
         {
-          "title": "Orthogonal projection and QR factorisation",
+          "title": "Orthogonal projection and QR",
           "outcomes": [
             "Project a vector onto a line and onto a plane by hand and in code",
             "Check the properties of a projection matrix",
@@ -280,7 +280,7 @@
           "lab": {
             "id": "4.1",
             "title": "Projections and QR by Gram-Schmidt",
-            "summary": "Project learners' weekly minutes onto the span of two features, build QR by classical and modified Gram-Schmidt, and watch orthogonality fail on nearly dependent columns.",
+            "summary": "Project weekly minutes onto two features, build QR by Gram-Schmidt, and watch orthogonality fail on nearly dependent columns.",
             "minutes": 105,
             "href": "W4_1.ipynb",
             "steps": [
@@ -289,7 +289,7 @@
                 "minutes": 15
               },
               {
-                "text": "The projection matrix: P squared is P, and the residual is orthogonal",
+                "text": "The projection matrix and its residual",
                 "minutes": 15
               },
               {
@@ -301,7 +301,7 @@
                 "minutes": 20
               },
               {
-                "text": "Check against the library: Q transpose Q and QR",
+                "text": "Check against the library",
                 "minutes": 10
               },
               {
@@ -309,11 +309,11 @@
                 "minutes": 20
               },
               {
-                "text": "Record what the loss of orthogonality means for week 5",
+                "text": "Record what this means for week 5",
                 "minutes": 10
               }
             ],
-            "stretch": "Compare your Q with the library's: explain the columns whose signs differ"
+            "stretch": "Explain the columns whose signs differ from the library's Q"
           },
           "summary": "Orthogonal projection onto a line and onto a subspace, projection matrices, and the QR factorisation by Gram-Schmidt"
         }
