@@ -1,0 +1,16 @@
+{
+ "nurse": 0.129704,
+ "engineer": -0.065679,
+ "teacher": 0.016613,
+ "programmer": -0.038557,
+ "doctor": 0.01946,
+ "receptionist": 0.127687,
+ "pilot": 0.000579,
+ "secretary": -0.075902,
+ "scientist": -0.04047,
+ "librarian": 0.029226,
+ "mechanic": -0.012111,
+ "designer": 0.03148,
+ "housekeeper": 0.119664,
+ "carpenter": -0.007285
+}

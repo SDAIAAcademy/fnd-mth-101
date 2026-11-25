@@ -1,0 +1,40 @@
+{
+ "occupations": [
+  "nurse",
+  "engineer",
+  "teacher",
+  "programmer",
+  "doctor",
+  "receptionist",
+  "pilot",
+  "secretary",
+  "scientist",
+  "librarian",
+  "mechanic",
+  "designer",
+  "housekeeper",
+  "carpenter"
+ ],
+ "gender_pairs": [
+  [
+   "she",
+   "he"
+  ],
+  [
+   "woman",
+   "man"
+  ],
+  [
+   "her",
+   "his"
+  ],
+  [
+   "female",
+   "male"
+  ],
+  [
+   "mother",
+   "father"
+  ]
+ ]
+}

@@ -9,7 +9,7 @@
     "en": "Linear Algebra for Machine Learning",
     "ar": "الجبر الخطي لتعلم الآلة"
   },
-  "tagline": "REPLACE: one line under the title: what participants can do after the course",
+  "tagline": "Compute each idea of linear algebra by hand on a small case and in NumPy on real data, from cosine search to least squares, link ranking and low-rank structure",
   "description": "Participants compute each idea of linear algebra twice: by hand on small cases and in array code on real data. They treat data as vectors, matrices as transformations, least squares as projection, and eigen and singular value decompositions as ways to find structure. Labs use public embeddings and images and a synthetic link graph. The capstone is a low-rank analysis of a public dataset, defended orally.",
   "track": "foundations",
   "level": 100,
@@ -61,8 +61,8 @@
     }
   ],
   "case_study": {
-    "name": "REPLACE: the name of the fictional organisation every lab works on",
-    "summary": "REPLACE: two sentences on the case study and its synthetic data"
+    "name": "The online learning platform (fictional)",
+    "summary": "An unnamed online platform of short courses wants better search, cheaper scoring, honest fits and a fair ranking of its help centre. Its synthetic data (60 help articles, 400 learners, 120 courses, a 40-page link graph, 3,596 ratings) is generated with a fixed seed; the labs also use public GloVe word vectors, the handwritten digits bundled with scikit-learn and a public-domain test image, downloaded at run time."
   },
   "format": "extended",
   "format_note": "Extended: 8 weeks part-time, one session and one lab a week, weekly graded problem sets and a capstone",
@@ -78,221 +78,534 @@
     {
       "id": "week1",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Vectors and similarity",
       "deck": "slides/week1.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "Vectors, dot products and similarity",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Compute a dot product, a norm and a cosine by hand and in NumPy",
+            "Explain why cosine compares directions and ignores length",
+            "Describe how distances behave as the dimension grows"
           ],
-          "lo": [],
+          "lo": [
+            "LO1",
+            "LO4"
+          ],
           "minutes": 210,
           "lab": {
             "id": "1.1",
-            "title": "REPLACE: what participants build in lab 1.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "Cosine search over public sentence embeddings",
+            "summary": "Search 60 help articles by meaning with mean GloVe vectors, remove the shared direction, and measure how occupation words lean towards gendered words.",
             "minutes": 105,
-            "href": "W1_1.ipynb"
-          }
+            "href": "W1_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up and load the data",
+                "minutes": 10
+              },
+              {
+                "text": "By hand, then in code: dot product, norms and cosine",
+                "minutes": 15
+              },
+              {
+                "text": "Embed the 60 article titles",
+                "minutes": 15
+              },
+              {
+                "text": "Search with one matrix product and score ten questions",
+                "minutes": 20
+              },
+              {
+                "text": "Find the cone, centre it, search again",
+                "minutes": 20
+              },
+              {
+                "text": "Distances in high dimensions",
+                "minutes": 10
+              },
+              {
+                "text": "Measure occupation words against gendered words and record what it means",
+                "minutes": 15
+              }
+            ],
+            "stretch": "Show that Euclidean distance and cosine rank unit vectors in the same order"
+          },
+          "summary": "Vectors as data points and directions, the dot product, norms and cosine similarity, and what distance means in high dimensions"
         }
-      ]
+      ],
+      "subtitle": "Data as vectors, and the angle between them as similarity"
     },
     {
       "id": "week2",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Matrices as maps, and their cost",
       "deck": "slides/week2.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "Matrix products, attention scores and FLOPs",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Compute a matrix product by hand and state the shape of every product",
+            "Explain a matrix product as one map followed by another",
+            "Count the FLOPs and bytes of a product and compare loop and vectorised code"
           ],
-          "lo": [],
+          "lo": [
+            "LO1",
+            "LO4"
+          ],
           "minutes": 210,
           "lab": {
             "id": "2.1",
-            "title": "REPLACE: what participants build in lab 2.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "Loop and vectorised matrix products, costed in FLOPs",
+            "summary": "Time triple-loop, row-loop and vectorised matrix products on growing sizes, count their FLOPs and memory, and cost the platform's daily scoring.",
             "minutes": 105,
-            "href": "W2_1.ipynb"
-          }
+            "href": "W2_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up; a product by hand, then in code",
+                "minutes": 15
+              },
+              {
+                "text": "Attention scores as one product, with a row softmax",
+                "minutes": 15
+              },
+              {
+                "text": "Composition: two maps, one matrix, and why order matters",
+                "minutes": 10
+              },
+              {
+                "text": "Time a triple-loop product on growing sizes",
+                "minutes": 15
+              },
+              {
+                "text": "Count FLOPs and bytes, and compute the rate achieved",
+                "minutes": 15
+              },
+              {
+                "text": "Time the row-loop and vectorised products",
+                "minutes": 20
+              },
+              {
+                "text": "Cost the platform's daily scoring",
+                "minutes": 15
+              }
+            ],
+            "stretch": "Repeat the timing in 32-bit floats and compare time and memory"
+          },
+          "summary": "Attention scores as a matrix of dot products, matrix products as composition of maps, and counting floating-point operations and memory"
         }
-      ]
+      ],
+      "subtitle": "A matrix product is a map, a table of dot products and a bill for arithmetic"
     },
     {
       "id": "week3",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Span, rank and linear systems",
       "deck": "slides/week3.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "Span, independence, rank and linear systems",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Decide whether a set of vectors is independent and state the rank of a matrix",
+            "Solve a three-by-three system by elimination by hand and with a solver",
+            "Explain what a rank-deficient feature table does to a solve"
           ],
-          "lo": [],
+          "lo": [
+            "LO2",
+            "LO3",
+            "LO4"
+          ],
           "minutes": 210,
           "lab": {
             "id": "3.1",
-            "title": "REPLACE: what participants build in lab 3.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "Rank and linear systems on a feature table",
+            "summary": "Solve a small system by elimination, find the redundant column of the learner feature table from its rank, and compare solving with inverting.",
             "minutes": 105,
-            "href": "W3_1.ipynb"
-          }
+            "href": "W3_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up; elimination by hand on a three-by-three system, then a solver",
+                "minutes": 20
+              },
+              {
+                "text": "Span: is a vector a combination of two others?",
+                "minutes": 15
+              },
+              {
+                "text": "The rank of the feature table, and the column it repeats",
+                "minutes": 20
+              },
+              {
+                "text": "What the repeated column does to a solve and an inverse",
+                "minutes": 15
+              },
+              {
+                "text": "A basis: drop the column and check the rank",
+                "minutes": 10
+              },
+              {
+                "text": "Solve against invert: residuals and time",
+                "minutes": 15
+              },
+              {
+                "text": "Record which columns to keep, and why",
+                "minutes": 10
+              }
+            ],
+            "stretch": "Find the null space of the full table and read the repeated column off it"
+          },
+          "summary": "Span, independence, basis and rank, and solving linear systems by elimination, with the inverse and its cost"
         }
-      ]
+      ],
+      "subtitle": "When columns repeat each other, and what that does to a system of equations"
     },
     {
       "id": "week4",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Orthogonal projection and QR",
       "deck": "slides/week4.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "Orthogonal projection and QR factorisation",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Project a vector onto a line and onto a plane by hand and in code",
+            "Check the properties of a projection matrix",
+            "Build a QR factorisation by Gram-Schmidt and check it against the library"
           ],
-          "lo": [],
+          "lo": [
+            "LO1",
+            "LO4"
+          ],
           "minutes": 210,
           "lab": {
             "id": "4.1",
-            "title": "REPLACE: what participants build in lab 4.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "Projections and QR by Gram-Schmidt",
+            "summary": "Project learners' weekly minutes onto the span of two features, build QR by classical and modified Gram-Schmidt, and watch orthogonality fail on nearly dependent columns.",
             "minutes": 105,
-            "href": "W4_1.ipynb"
-          }
+            "href": "W4_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up; project onto a line by hand, then in code",
+                "minutes": 15
+              },
+              {
+                "text": "The projection matrix: P squared is P, and the residual is orthogonal",
+                "minutes": 15
+              },
+              {
+                "text": "Project weekly minutes onto two features",
+                "minutes": 15
+              },
+              {
+                "text": "Classical Gram-Schmidt QR",
+                "minutes": 20
+              },
+              {
+                "text": "Check against the library: Q transpose Q and QR",
+                "minutes": 10
+              },
+              {
+                "text": "Nearly dependent columns: classical against modified",
+                "minutes": 20
+              },
+              {
+                "text": "Record what the loss of orthogonality means for week 5",
+                "minutes": 10
+              }
+            ],
+            "stretch": "Compare your Q with the library's: explain the columns whose signs differ"
+          },
+          "summary": "Orthogonal projection onto a line and onto a subspace, projection matrices, and the QR factorisation by Gram-Schmidt"
         }
-      ]
+      ],
+      "subtitle": "The nearest point in a subspace, and a basis that makes it easy"
     },
     {
       "id": "week5",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Least squares and conditioning",
       "deck": "slides/week5.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "Least squares, normal equations and conditioning",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Fit a line by the normal equations by hand",
+            "Fit by QR and compare residuals and coefficients with the normal equations",
+            "Diagnose an ill-conditioned or rank-deficient system from its numbers"
           ],
-          "lo": [],
+          "lo": [
+            "LO3",
+            "LO4",
+            "LO5"
+          ],
           "minutes": 210,
           "lab": {
             "id": "5.1",
-            "title": "REPLACE: what participants build in lab 5.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "Least squares by normal equations and by QR",
+            "summary": "Fit hours to complete on nearly collinear course features by the normal equations and by QR, compare residuals and condition numbers, and diagnose five practice cases.",
             "minutes": 105,
-            "href": "W5_1.ipynb"
-          }
+            "href": "W5_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up; a three-point line by hand with the normal equations",
+                "minutes": 15
+              },
+              {
+                "text": "Fit the course data with the normal equations",
+                "minutes": 15
+              },
+              {
+                "text": "Fit with QR, and with the library's solver",
+                "minutes": 15
+              },
+              {
+                "text": "Condition numbers of X and of X transpose X",
+                "minutes": 15
+              },
+              {
+                "text": "Nudge the data: how far do the coefficients move?",
+                "minutes": 15
+              },
+              {
+                "text": "Compare the residuals of the three fits",
+                "minutes": 10
+              },
+              {
+                "text": "Diagnose five practice cases",
+                "minutes": 15
+              },
+              {
+                "text": "Explain the difference in three sentences",
+                "minutes": 5
+              }
+            ],
+            "stretch": "Centre and scale the columns, then measure the condition number again"
+          },
+          "summary": "Least squares as projection, the normal equations, the QR route, condition numbers and what nearly collinear features do to a fit"
         }
-      ]
+      ],
+      "subtitle": "Least squares is a projection; conditioning decides how far to trust it"
     },
     {
       "id": "week6",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Eigenvectors and link ranking",
       "deck": "slides/week6.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "Eigenvectors, covariance and power iteration",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Find the eigenvalues and eigenvectors of a two-by-two symmetric matrix by hand",
+            "Explain what the leading eigenvector of a covariance matrix shows",
+            "Rank pages by power iteration with damping, and explain dangling pages and islands"
           ],
-          "lo": [],
+          "lo": [
+            "LO2",
+            "LO4"
+          ],
           "minutes": 210,
           "lab": {
             "id": "6.1",
-            "title": "REPLACE: what participants build in lab 6.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "Power iteration and link ranking on a synthetic web graph",
+            "summary": "Rank the 40 pages of the help centre by power iteration, find what a dangling page, an island and a link farm do, and fix them with damping.",
             "minutes": 105,
-            "href": "W6_1.ipynb"
-          }
+            "href": "W6_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up; eigenpairs of a two-by-two symmetric matrix by hand, then the library",
+                "minutes": 15
+              },
+              {
+                "text": "Build the link matrix of the 40 pages",
+                "minutes": 15
+              },
+              {
+                "text": "Power iteration without damping: what goes wrong",
+                "minutes": 15
+              },
+              {
+                "text": "Fix the dangling page and add damping",
+                "minutes": 20
+              },
+              {
+                "text": "Convergence: iterations against tolerance, and a check with the library",
+                "minutes": 15
+              },
+              {
+                "text": "The link farm: its effect, and a damping sweep",
+                "minutes": 15
+              },
+              {
+                "text": "Record the ranking for the content lead",
+                "minutes": 10
+              }
+            ],
+            "stretch": "Show that the number of iterations follows the damping factor"
+          },
+          "summary": "Eigenvectors of symmetric matrices, covariance and the idea of principal components, and power iteration for link ranking"
         }
-      ]
+      ],
+      "subtitle": "Directions a matrix only stretches, and the page a random reader ends on"
     },
     {
       "id": "week7",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Singular values and low rank",
       "deck": "slides/week7.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "The singular value decomposition and PCA",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Read a singular value decomposition and state what each factor holds",
+            "Build a rank-k approximation and predict its error from the singular values",
+            "Compute principal components of centred data and interpret the leading ones"
           ],
-          "lo": [],
+          "lo": [
+            "LO2",
+            "LO4",
+            "LO6"
+          ],
           "minutes": 210,
           "lab": {
             "id": "7.1",
-            "title": "REPLACE: what participants build in lab 7.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "SVD image compression and PCA on public handwritten digits",
+            "summary": "Compress a public-domain image by truncated SVD and report error and storage by rank, then find the principal components of the public handwritten digits.",
             "minutes": 105,
-            "href": "W7_1.ipynb"
-          }
+            "href": "W7_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up; check an SVD of a two-by-two by hand",
+                "minutes": 15
+              },
+              {
+                "text": "Load the image; its SVD and singular values",
+                "minutes": 10
+              },
+              {
+                "text": "Rank-k approximations: error and storage by rank",
+                "minutes": 20
+              },
+              {
+                "text": "Check the error against the tail of the singular values",
+                "minutes": 10
+              },
+              {
+                "text": "Digits: centre, then principal components through the SVD",
+                "minutes": 20
+              },
+              {
+                "text": "Explained variance and the two leading components",
+                "minutes": 20
+              },
+              {
+                "text": "Record what the leading components show",
+                "minutes": 10
+              }
+            ],
+            "stretch": "Rebuild one digit from 5, 10 and 20 components and say which details come back first"
+          },
+          "summary": "The singular value decomposition, low-rank approximation and its error, and principal component analysis through the SVD"
         }
-      ]
+      ],
+      "subtitle": "Every matrix is a sum of rank-one layers, largest first"
     },
     {
       "id": "week8",
       "kind": "day",
-      "title": "REPLACE: the theme of this unit, in a few words",
+      "title": "Low rank in practice, and working numerically",
       "deck": "slides/week8.html",
       "sessions": [
         {
-          "title": "REPLACE: the title of Session 1",
+          "title": "Low rank in practice and checking your work",
           "outcomes": [
-            "REPLACE: what a participant can do after this session; list in lo the course outcomes it serves"
+            "Predict held-out ratings with a truncated SVD and choose the rank",
+            "Count the parameters of a low-rank weight update",
+            "Find a broadcasting or rounding error by checking code against a hand case"
           ],
-          "lo": [],
+          "lo": [
+            "LO2",
+            "LO4",
+            "LO6"
+          ],
           "minutes": 210,
           "lab": {
             "id": "8.1",
-            "title": "REPLACE: what participants build in lab 8.1",
-            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 105",
+            "title": "Low-rank ratings and adapter updates, checked by hand",
+            "summary": "Predict held-out course ratings with a truncated SVD, count the parameters of a low-rank weight update, and find a planted broadcasting bug and a rounding trap by checking against hand work.",
             "minutes": 105,
-            "href": "W8_1.ipynb"
-          }
+            "href": "W8_1.ipynb",
+            "steps": [
+              {
+                "text": "Set up; broadcasting shapes by hand",
+                "minutes": 10
+              },
+              {
+                "text": "Ratings: fill, centre, truncate, and test error by rank",
+                "minutes": 25
+              },
+              {
+                "text": "A low-rank weight update: parameters against the full matrix",
+                "minutes": 15
+              },
+              {
+                "text": "Floating-point limits: 32 against 64 bits, and cancellation",
+                "minutes": 15
+              },
+              {
+                "text": "Check a function against a hand case, with a tolerance",
+                "minutes": 15
+              },
+              {
+                "text": "Find and fix the planted broadcasting bug",
+                "minutes": 15
+              },
+              {
+                "text": "Choose the capstone dataset and write its plan",
+                "minutes": 10
+              }
+            ],
+            "stretch": "Fit the ratings with alternating least squares on the observed entries only and compare with the SVD"
+          },
+          "summary": "Low-rank structure in recommenders and in model adaptation, vectorisation and broadcasting, floating-point limits, and checking code against hand computation"
         }
-      ]
+      ],
+      "subtitle": "Low-rank models in recommenders and adapters, and code you can trust"
     },
     {
       "id": "capstone",
       "kind": "capstone",
-      "title": "Capstone project presentations",
+      "title": "Capstone oral checks",
       "deck": "slides/capstone.html",
-      "subtitle": "REPLACE: the catalog gives 10 minutes for each presentation and nothing about questions; decide whether the questions are inside those minutes, set capstone.talk_minutes and capstone.qa_minutes in course.json and the timers of the now-presenting slide, and remove this line"
+      "subtitle": "Ten minutes each: four to walk through the notebook, six to rework one step with new numbers"
     }
   ],
   "capstone": {
     "summary": "A low-rank analysis of a public dataset of the participant's choice, submitted as a notebook and defended in a ten-minute oral check in which the participant reworks one step with new numbers",
-    "submission": "REPLACE: what participants submit and how: a public repository link, or a shared folder for a course without code",
-    "talk_minutes": 10,
+    "submission": "A link to a public GitHub repository with the capstone notebook, its data source and licence, and the notebook's outputs; then a ten-minute oral check in which the participant walks through the notebook and reworks one step with new numbers the assessor gives",
+    "talk_minutes": 4,
     "rubric": [
       {
-        "criterion": "REPLACE: rubric criterion 1 and its weight (the weights add up to 100)",
+        "criterion": "Data matrix stated: source, licence, shape, centring and scaling, each choice justified",
+        "weight": 15
+      },
+      {
+        "criterion": "SVD computed and checked: a small case agrees with hand work; reconstruction error reported by rank",
         "weight": 25
       },
       {
-        "criterion": "REPLACE: rubric criterion 2 and its weight (the weights add up to 100)",
+        "criterion": "Rank chosen from the error curve and the singular values, with the trade-off stated",
+        "weight": 20
+      },
+      {
+        "criterion": "Leading components interpreted in the dataset's own terms, with their limits",
         "weight": 25
       },
       {
-        "criterion": "REPLACE: rubric criterion 3 and its weight (the weights add up to 100)",
-        "weight": 20
-      },
-      {
-        "criterion": "REPLACE: rubric criterion 4 and its weight (the weights add up to 100)",
-        "weight": 20
-      },
-      {
-        "criterion": "REPLACE: rubric criterion 5 and its weight (the weights add up to 100)",
-        "weight": 10
+        "criterion": "Notebook runs from top to bottom; seed, data source and licence stated; outputs honest",
+        "weight": 15
       }
-    ]
+    ],
+    "qa_minutes": 6
   },
   "labs": {
     "kind": "notebooks",

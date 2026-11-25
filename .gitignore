@@ -34,3 +34,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 /*.log
+
+# Lab caches and run outputs
+labs/cache/
+labs/artifacts/
+# The lock file is not committed: its hashes are long digit runs. labs/pyproject.toml pins the lower bounds.
+labs/uv.lock
