@@ -85,7 +85,7 @@ The entry's 45 hours, in minutes:
 
 The problem sets are scored by [`labs/problem-sets/pscheck.py`](labs/problem-sets/pscheck.py), which stores no answers: it checks that each hand answer agrees with the participant's own code, and checks the code against properties and the library. The capstone rubric scores the notebook only; the oral check is scored on its own, so nothing counts twice.
 
-**Held outside this repository**, in the trainer pack: the worked answers to the problem sets, the two tests' blueprint and items, the five-case diagnosis sheet for LO3 with its key, and the oral check's new-number items with their answers. Publishing them would defeat the assessment. The lab solutions are public, in [`labs/solutions/`](labs/solutions/).
+**Held outside this repository**, in the trainer pack: the worked answers to the problem sets, the blueprint of the two tests (their items are written for each cohort from it and kept there too), the five-case diagnosis sheet for LO3 with its key, and the oral check's new-number items with their answers. Publishing them would defeat the assessment. The lab solutions are public, in [`labs/solutions/`](labs/solutions/).
 
 ## AI policy
 
